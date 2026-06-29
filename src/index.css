@@ -18,18 +18,21 @@
 }
 
 @layer utilities {
-  /* Animação para textos em degradê */
+  /* Animação Premium para textos em degradê */
   .animate-shimmer {
-    background-size: 200% auto;
-    animation: shimmer 5s linear infinite;
+    background-size: 300% 300%;
+    animation: liquidGradient 6s ease-in-out infinite alternate;
   }
   
-  @keyframes shimmer {
+  @keyframes liquidGradient {
     0% {
-      background-position: 0% center;
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
     }
     100% {
-      background-position: 200% center;
+      background-position: 0% 50%;
     }
   }
 

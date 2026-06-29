@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 
 // Animações Stagger
-const containerVariants = {
+const containerVariants: any = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -13,7 +13,7 @@ const containerVariants = {
   }
 };
 
-const itemVariants = {
+const itemVariants: any = {
   hidden: { opacity: 0, y: 50, scale: 0.95 },
   visible: { 
     opacity: 1, 
@@ -23,7 +23,7 @@ const itemVariants = {
   }
 };
 
-const slideRightVariants = {
+const slideRightVariants: any = {
   hidden: { opacity: 0, x: -40 },
   visible: { 
     opacity: 1, 
