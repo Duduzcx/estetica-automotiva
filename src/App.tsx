@@ -217,7 +217,7 @@ export default function App() {
               
               {/* Imagem Sobreposta (ANTES) */}
               <img 
-                src="https://images.unsplash.com/photo-1582239474722-e3e7f41b2fcc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
                 id="img-antes" 
                 className="absolute inset-0 w-full h-full object-cover pointer-events-none" 
                 alt="Antes" 
