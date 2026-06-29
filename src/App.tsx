@@ -148,7 +148,7 @@ export default function App() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="relative z-10 text-center max-w-5xl mx-auto mt-24"
+          className="relative z-10 text-center max-w-5xl mx-auto mt-4 md:mt-16"
         >
           <motion.p variants={itemVariants} className="text-neve-blue font-bold tracking-[0.3em] uppercase mb-6 text-xs md:text-sm font-heading">A excelência em cada milímetro</motion.p>
           <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold text-white mb-8 leading-[1.1] tracking-tight">
@@ -157,7 +157,7 @@ export default function App() {
           <motion.p variants={itemVariants} className="text-lg md:text-xl text-gray-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
             Estética automotiva premium. Proteção, limpeza profunda e vitrificação. Brilho extremo e cuidado em cada detalhe.
           </motion.p>
-          <motion.div variants={itemVariants}>
+          <motion.div variants={itemVariants} className="mt-10 md:mt-0">
             <a href="#agendamento" className="inline-flex items-center justify-center bg-neve-blue text-white hover:bg-neve-blueHover px-10 py-5 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(30,144,255,0.2)] hover:shadow-[0_0_40px_rgba(30,144,255,0.5)] hover:-translate-y-1">
               Agendar Avaliação
             </a>
@@ -256,7 +256,7 @@ export default function App() {
             <p className="text-gray-400 text-base md:text-xl font-light">Configure sua reserva com exclusividade em poucos cliques.</p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-neve-card/90 backdrop-blur-2xl border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-14 shadow-[0_20px_40px_rgba(0,0,0,0.5)] w-full max-w-[95%] md:max-w-none mx-auto">
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-neve-card/90 backdrop-blur-2xl border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-14 shadow-[0_20px_40px_rgba(0,0,0,0.5)] w-full max-w-[95%] md:max-w-none mx-auto min-h-[680px] md:min-h-[750px]">
             
             {/* Progress Indicator */}
             <div className="flex items-center justify-between mb-10 md:mb-16 relative px-2">
@@ -360,7 +360,7 @@ export default function App() {
                       <input type="text" placeholder="Seu Nome Completo" value={name} onChange={e => setName(e.target.value)} className="w-full bg-neve-dark border border-white/10 rounded-2xl p-5 md:p-8 min-h-[64px] md:min-h-[72px] text-white text-base md:text-xl focus:outline-none focus:border-neve-blue transition-all" />
                     </div>
                     <div>
-                      <input type="text" placeholder="Modelo do Veículo (ex: Porsche 911)" value={car} onChange={e => setCar(e.target.value)} className="w-full bg-neve-dark border border-white/10 rounded-2xl p-5 md:p-8 min-h-[64px] md:min-h-[72px] text-white text-base md:text-xl focus:outline-none focus:border-neve-blue transition-all" />
+                      <input type="text" placeholder="Modelo (ex: Porsche 911)" value={car} onChange={e => setCar(e.target.value)} className="w-full bg-neve-dark border border-white/10 rounded-2xl p-5 md:p-8 min-h-[64px] md:min-h-[72px] text-white text-sm md:text-xl placeholder:text-sm md:placeholder:text-xl focus:outline-none focus:border-neve-blue transition-all" />
                     </div>
                   </div>
                   
