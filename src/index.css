@@ -3,17 +3,21 @@
 
 @layer base {
   body {
-    @apply bg-elite-black text-white overflow-x-hidden;
+    @apply bg-neve-dark text-white overflow-x-hidden font-sans;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
   }
   
   ::-webkit-scrollbar {
     width: 8px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-[#050505];
+    @apply bg-neve-dark;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-elite-gold rounded;
+    @apply bg-neve-blue rounded;
   }
 }
 

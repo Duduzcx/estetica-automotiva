@@ -93,22 +93,25 @@ export default function App() {
   ];
 
   return (
-    <div className="antialiased selection:bg-elite-gold selection:text-black font-sans bg-[#050505] text-white min-h-screen relative overflow-hidden">
+    <div className="antialiased selection:bg-neve-blue selection:text-white font-sans bg-neve-dark text-white min-h-screen relative overflow-hidden">
       
+      {/* Borda Gradiente no Topo */}
+      <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-neve-gradient1 via-neve-gradient2 to-neve-gradient3 z-50"></div>
+
       {/* Dynamic Background: CSS Grid & Soft Glows */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-20" style={{ backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
-      <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-elite-gold/5 blur-[150px] rounded-full pointer-events-none z-0"></div>
-      <div className="fixed bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-blue-900/10 blur-[180px] rounded-full pointer-events-none z-0"></div>
+      <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-neve-gradient1/5 blur-[150px] rounded-full pointer-events-none z-0"></div>
+      <div className="fixed bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-neve-blue/10 blur-[180px] rounded-full pointer-events-none z-0"></div>
 
       {/* Navbar */}
-      <nav className="fixed w-full z-50 transition-all duration-300 backdrop-blur-xl bg-[#050505]/70 border-b border-white/5" id="navbar">
+      <nav className="fixed w-full z-40 transition-all duration-300 backdrop-blur-md bg-neve-dark/50 border-b border-white/5" id="navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-24">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
-              <span className="text-3xl font-bold tracking-tighter text-white uppercase">Elite<span className="text-elite-gold">AutoSpa</span></span>
+              <span className="text-2xl md:text-3xl font-bold tracking-tighter text-white uppercase font-heading">Neve<span className="text-neve-blue">na Nave</span></span>
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="hidden md:block">
-              <a href="#agendamento" className="bg-elite-gold text-[#050505] px-8 py-3.5 rounded-full font-bold tracking-wide hover:bg-[#f3c63a] transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:-translate-y-1 inline-block">
+              <a href="#agendamento" className="bg-neve-blue text-white px-8 py-3.5 rounded-full font-bold tracking-wide hover:bg-neve-blueHover transition-all duration-300 shadow-[0_0_20px_rgba(30,144,255,0.2)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)] hover:-translate-y-1 inline-block">
                 Agendar Avaliação
               </a>
             </motion.div>
@@ -117,28 +120,28 @@ export default function App() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 py-16 md:px-8 md:py-24">
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="absolute inset-0 z-0">
           <img src="https://images.unsplash.com/photo-1610647752706-3bb12232b3ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=100" alt="Supercarro detalhado brilhante" className="w-full h-full object-cover object-center scale-[1.03]" style={{ filter: "brightness(0.35) contrast(1.1)" }} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-neve-dark via-transparent to-transparent"></div>
         </motion.div>
 
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="relative z-10 text-center px-6 max-w-5xl mx-auto mt-24"
+          className="relative z-10 text-center max-w-5xl mx-auto mt-24"
         >
-          <motion.p variants={itemVariants} className="text-elite-gold font-bold tracking-[0.3em] uppercase mb-6 text-xs md:text-sm">A excelência em cada milímetro</motion.p>
+          <motion.p variants={itemVariants} className="text-neve-blue font-bold tracking-[0.3em] uppercase mb-6 text-xs md:text-sm font-heading">A excelência em cada milímetro</motion.p>
           <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold text-white mb-8 leading-[1.1] tracking-tight">
-            Eleve o Nível do seu <br className="hidden md:block" /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f3c63a] to-[#fff3b8] animate-shimmer">Veículo.</span>
+            Sua nave <br className="hidden md:block" /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-neve-blue to-white animate-shimmer">impecável.</span>
           </motion.h1>
-          <motion.p variants={itemVariants} className="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
-            Estética automotiva de alta performance. Proteção extrema, brilho inigualável e um cuidado obsessivo com os detalhes mais ínfimos.
+          <motion.p variants={itemVariants} className="text-lg md:text-xl text-gray-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+            Estética automotiva premium. Proteção, limpeza profunda e vitrificação. Brilho extremo e cuidado em cada detalhe.
           </motion.p>
           <motion.div variants={itemVariants}>
-            <a href="#agendamento" className="inline-flex items-center justify-center bg-[#050505]/50 backdrop-blur-md border border-elite-gold/50 text-elite-gold hover:bg-elite-gold hover:text-black px-10 py-5 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.1)] hover:shadow-[0_0_40px_rgba(212,175,55,0.4)] hover:-translate-y-1">
-              Agendar Serviço <i className="fa-brands fa-whatsapp ml-3 text-lg"></i>
+            <a href="#agendamento" className="inline-flex items-center justify-center bg-neve-blue text-white hover:bg-neve-blueHover px-10 py-5 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(30,144,255,0.2)] hover:shadow-[0_0_40px_rgba(30,144,255,0.5)] hover:-translate-y-1">
+              Agendar Avaliação <i className="fa-brands fa-whatsapp ml-3 text-lg"></i>
             </a>
           </motion.div>
         </motion.div>
@@ -147,37 +150,37 @@ export default function App() {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 1 }}
           className="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/30 animate-bounce"
         >
-          <div className="w-[1px] h-16 bg-gradient-to-b from-elite-gold to-transparent mx-auto mb-2"></div>
+          <div className="w-[1px] h-16 bg-gradient-to-b from-neve-blue to-transparent mx-auto mb-2"></div>
         </motion.div>
       </section>
 
       {/* Serviços Section */}
-      <section id="servicos" className="py-32 relative z-10">
+      <section id="servicos" className="py-16 md:py-32 relative z-10">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div 
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
             variants={containerVariants}
-            className="text-center mb-24"
+            className="text-center mb-16 md:mb-24"
           >
-            <motion.h2 variants={itemVariants} className="text-elite-gold font-bold tracking-[0.2em] uppercase text-xs mb-4">Nosso Portfólio</motion.h2>
+            <motion.h2 variants={itemVariants} className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Nosso Portfólio</motion.h2>
             <motion.h3 variants={itemVariants} className="text-4xl md:text-6xl font-bold tracking-tight text-white">Serviços Premium</motion.h3>
           </motion.div>
 
           <motion.div 
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}
             variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10"
           >
             {servicesData.map((srv, idx) => (
               <motion.div 
                 key={idx}
                 variants={itemVariants}
-                className="group relative p-8 rounded-[2rem] bg-[#0a0a0a]/60 backdrop-blur-xl border border-white/5 cursor-pointer transition-all duration-500 hover:shadow-[0_0_40px_rgba(212,175,55,0.15)] hover:border-elite-gold/50 hover:-translate-y-2"
+                className="group relative p-8 rounded-[2rem] bg-neve-card/60 backdrop-blur-xl border border-white/5 cursor-pointer transition-all duration-500 hover:shadow-[0_0_40px_rgba(255,0,255,0.15)] hover:border-neve-gradient1/50 hover:-translate-y-2"
               >
-                <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8 text-elite-gold text-2xl transition-all duration-500 group-hover:scale-110 group-hover:bg-elite-gold group-hover:text-[#050505] group-hover:shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+                <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8 text-neve-blue text-2xl transition-all duration-500 group-hover:scale-110 group-hover:bg-neve-blue group-hover:text-white group-hover:shadow-[0_0_20px_rgba(30,144,255,0.4)]">
                   <i className={srv.icon}></i>
                 </div>
-                <h4 className="text-xl font-bold mb-4 text-white tracking-wide group-hover:text-elite-gold transition-colors">{srv.title}</h4>
+                <h4 className="text-xl font-bold mb-4 text-white tracking-wide group-hover:text-neve-blue transition-colors">{srv.title}</h4>
                 <p className="text-gray-400 text-sm leading-relaxed font-light">{srv.desc}</p>
               </motion.div>
             ))}
@@ -186,21 +189,21 @@ export default function App() {
       </section>
 
       {/* Before/After Slider */}
-      <section className="py-32 relative z-10 overflow-hidden">
+      <section className="py-16 md:py-32 relative z-10 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 items-center">
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
               variants={containerVariants}
             >
-              <motion.h2 variants={slideRightVariants} className="text-elite-gold font-bold tracking-[0.2em] uppercase text-xs mb-4">Resultados Reais</motion.h2>
+              <motion.h2 variants={slideRightVariants} className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Resultados Reais</motion.h2>
               <motion.h3 variants={slideRightVariants} className="text-4xl md:text-6xl font-bold mb-8 leading-tight tracking-tight">A Arte da <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500 animate-shimmer">Transformação</span></motion.h3>
               <motion.p variants={slideRightVariants} className="text-gray-400 text-lg mb-10 font-light leading-relaxed">Deslize a linha ao lado para comparar a pintura cega, repleta de teias de aranha e hologramas, com o resultado do nosso Polimento Técnico. A profundidade e o reflexo são restaurados de forma impecável.</motion.p>
               <motion.ul variants={containerVariants} className="space-y-5 mb-8">
                 {["Remoção de 95% dos micro-riscos", "Nivelamento perfeito do verniz", "Reflexo de espelho impecável"].map((item, i) => (
                   <motion.li key={i} variants={slideRightVariants} className="flex items-center text-gray-300 font-medium tracking-wide">
-                    <div className="w-6 h-6 rounded-full bg-elite-gold/10 flex items-center justify-center mr-4">
-                      <i className="fa-solid fa-check text-elite-gold text-xs"></i>
+                    <div className="w-6 h-6 rounded-full bg-neve-blue/10 flex items-center justify-center mr-4">
+                      <i className="fa-solid fa-check text-neve-blue text-xs"></i>
                     </div>
                     {item}
                   </motion.li>
@@ -241,10 +244,10 @@ export default function App() {
               {/* Linha Divisória Visual (Handle) */}
               <div 
                 id="slider-linha" 
-                className="absolute top-0 bottom-0 w-1 bg-elite-gold z-10 pointer-events-none transform -translate-x-1/2 flex items-center justify-center" 
+                className="absolute top-0 bottom-0 w-1 bg-neve-blue z-10 pointer-events-none transform -translate-x-1/2 flex items-center justify-center" 
                 style={{ left: `${sliderValue}%` }}
               >
-                <div className="w-10 h-10 bg-elite-gold rounded-full flex items-center justify-center text-black shadow-[0_0_15px_rgba(212,175,55,0.8)]">
+                <div className="w-10 h-10 bg-neve-blue rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(30,144,255,0.8)]">
                   <i className="fa-solid fa-arrows-left-right"></i>
                 </div>
               </div>
@@ -254,22 +257,22 @@ export default function App() {
       </section>
 
       {/* Smart Booking System */}
-      <section id="agendamento" className="py-32 relative z-10">
+      <section id="agendamento" className="py-16 md:py-32 relative z-10">
         <div className="max-w-3xl mx-auto px-6 lg:px-8 relative z-10">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16 md:mb-20">
             <h3 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">Agende seu Horário</h3>
             <p className="text-gray-400 text-lg font-light">Configure sua reserva com exclusividade em poucos cliques.</p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-[#0a0a0a]/80 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 md:p-14 shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-neve-card/80 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-6 md:p-14 shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
             
             {/* Progress Indicator */}
             <div className="flex items-center justify-between mb-14 relative">
               <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-white/5 z-0 rounded-full"></div>
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-elite-gold z-0 transition-all duration-700 rounded-full shadow-[0_0_15px_#d4af37]" style={{ width: `${progressPercentage}%` }}></div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-neve-blue z-0 transition-all duration-700 rounded-full shadow-[0_0_15px_rgba(30,144,255,0.8)]" style={{ width: `${progressPercentage}%` }}></div>
               
               {[1,2,3,4].map(num => (
-                <div key={num} className={`step-indicator z-10 w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all duration-500 text-sm ${step >= num ? 'bg-elite-gold text-[#050505] shadow-[0_0_20px_rgba(212,175,55,0.4)] scale-110' : 'bg-[#121212] border border-white/10 text-gray-500 scale-100'}`}>
+                <div key={num} className={`step-indicator z-10 w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all duration-500 text-sm ${step >= num ? 'bg-neve-blue text-white shadow-[0_0_20px_rgba(30,144,255,0.4)] scale-110' : 'bg-neve-dark border border-white/10 text-gray-500 scale-100'}`}>
                   {num}
                 </div>
               ))}
@@ -279,8 +282,8 @@ export default function App() {
               {/* Step 1 */}
               {step === 1 && (
                 <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="step-container active">
-                  <h4 className="text-2xl font-semibold mb-8 tracking-wide">Qual serviço seu carro precisa?</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <h4 className="text-2xl font-semibold mb-8 tracking-wide font-heading">Qual serviço seu carro precisa?</h4>
+                  <div className="flex flex-col md:grid md:grid-cols-2 gap-5">
                     {[
                       { label: 'Vitrificação Cerâmica', desc: 'Proteção máxima e brilho' },
                       { label: 'Polimento Técnico', desc: 'Correção de pintura' },
@@ -289,15 +292,15 @@ export default function App() {
                     ].map(item => (
                       <label key={item.label} className="cursor-pointer group">
                         <input type="radio" name="service" value={item.label} className="peer sr-only" checked={service === item.label} onChange={() => setService(item.label)} />
-                        <div className="p-6 rounded-2xl border border-white/5 bg-[#121212] peer-checked:border-elite-gold peer-checked:bg-elite-gold/5 transition-all duration-300 hover:border-white/20">
-                          <div className="font-bold text-lg text-white group-hover:text-elite-gold transition-colors">{item.label}</div>
-                          <div className="text-sm text-gray-500 mt-2 font-light">{item.desc}</div>
+                        <div className="p-6 min-h-[56px] rounded-2xl border border-white/5 bg-neve-dark peer-checked:border-neve-blue peer-checked:bg-neve-blue/10 transition-all duration-300 hover:border-white/20">
+                          <div className="font-bold text-lg text-white group-hover:text-neve-blue transition-colors">{item.label}</div>
+                          <div className="text-sm text-gray-400 mt-2 font-light">{item.desc}</div>
                         </div>
                       </label>
                     ))}
                   </div>
                   <div className="mt-12 flex justify-end">
-                    <button type="button" disabled={!service} className="bg-elite-gold text-[#050505] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-[#f3d568] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)]" onClick={handleNext}>Avançar</button>
+                    <button type="button" disabled={!service} className="bg-neve-blue text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-neve-blueHover hover:shadow-[0_0_25px_rgba(30,144,255,0.4)]" onClick={handleNext}>Avançar</button>
                   </div>
                 </motion.div>
               )}
@@ -305,17 +308,17 @@ export default function App() {
               {/* Step 2 */}
               {step === 2 && (
                 <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="step-container active">
-                  <h4 className="text-2xl font-semibold mb-8 tracking-wide">Data da Reserva</h4>
+                  <h4 className="text-2xl font-semibold mb-8 tracking-wide font-heading">Data da Reserva</h4>
                   <div className="mb-8">
                     <input 
                       type="date" min={todayDateStr} value={date}
                       onChange={(e) => { setDate(e.target.value); setTime(''); }}
-                      className="w-full bg-[#121212] border border-white/10 rounded-2xl p-6 text-white text-lg focus:outline-none focus:border-elite-gold transition-all" 
+                      className="w-full bg-neve-dark border border-white/10 rounded-2xl p-6 text-white text-lg focus:outline-none focus:border-neve-blue transition-all min-h-[56px]" 
                     />
                   </div>
                   <div className="mt-12 flex justify-between items-center">
-                    <button type="button" className="text-gray-500 hover:text-white px-4 py-4 transition-colors text-sm font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-2"></i> Voltar</button>
-                    <button type="button" disabled={!date} className="bg-elite-gold text-[#050505] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-[#f3d568] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)]" onClick={handleNext}>Avançar</button>
+                    <button type="button" className="text-gray-400 hover:text-white px-4 py-4 transition-colors text-sm font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-2"></i> Voltar</button>
+                    <button type="button" disabled={!date} className="bg-neve-blue text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-neve-blueHover hover:shadow-[0_0_25px_rgba(30,144,255,0.4)]" onClick={handleNext}>Avançar</button>
                   </div>
                 </motion.div>
               )}
@@ -323,15 +326,15 @@ export default function App() {
               {/* Step 3 */}
               {step === 3 && (
                 <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="step-container active">
-                  <h4 className="text-2xl font-semibold mb-4 tracking-wide">Horário da Reserva</h4>
-                  <p className="text-sm text-gray-400 mb-10">Data selecionada: <span className="font-medium text-elite-gold">{new Date(date + 'T00:00:00').toLocaleDateString('pt-BR', {day: '2-digit', month: 'long'})}</span></p>
+                  <h4 className="text-2xl font-semibold mb-4 tracking-wide font-heading">Horário da Reserva</h4>
+                  <p className="text-sm text-gray-400 mb-10">Data selecionada: <span className="font-medium text-neve-blue">{new Date(date + 'T00:00:00').toLocaleDateString('pt-BR', {day: '2-digit', month: 'long'})}</span></p>
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
                     {timeSlots.map((slot, i) => (
                       slot.isBooked ? (
                         <label key={i} className="block relative cursor-not-allowed opacity-40">
                           <input type="radio" disabled className="peer sr-only" />
-                          <div className="p-5 text-center rounded-2xl border border-red-900/20 bg-[#121212] text-gray-600 overflow-hidden relative flex items-center justify-center">
+                          <div className="p-5 min-h-[56px] text-center rounded-2xl border border-red-900/20 bg-neve-dark text-gray-600 overflow-hidden relative flex items-center justify-center">
                             <span className="line-through">{slot.time}</span>
                             <div className="absolute inset-0 flex items-center justify-center bg-[#050505]/80">
                               <span className="text-[9px] font-bold text-red-500 tracking-[0.2em] uppercase">Esgotado</span>
@@ -341,7 +344,7 @@ export default function App() {
                       ) : (
                         <label key={i} className="block relative cursor-pointer">
                           <input type="radio" name="time" value={slot.time} className="peer sr-only" checked={time === slot.time} onChange={() => setTime(slot.time)} />
-                          <div className="p-5 text-center rounded-2xl border border-white/5 bg-[#121212] peer-checked:border-elite-gold peer-checked:bg-elite-gold peer-checked:text-[#050505] font-bold transition-all hover:border-elite-gold/30">
+                          <div className="p-5 min-h-[56px] text-center rounded-2xl border border-white/5 bg-neve-dark peer-checked:border-neve-blue peer-checked:bg-neve-blue peer-checked:text-white font-bold transition-all hover:border-neve-blue/30 flex items-center justify-center">
                             {slot.time}
                           </div>
                         </label>
@@ -350,8 +353,8 @@ export default function App() {
                   </div>
 
                   <div className="mt-12 flex justify-between items-center">
-                    <button type="button" className="text-gray-500 hover:text-white px-4 py-4 transition-colors text-sm font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-2"></i> Voltar</button>
-                    <button type="button" disabled={!time} className="bg-elite-gold text-[#050505] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-[#f3d568] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)]" onClick={handleNext}>Avançar</button>
+                    <button type="button" className="text-gray-400 hover:text-white px-4 py-4 transition-colors text-sm font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-2"></i> Voltar</button>
+                    <button type="button" disabled={!time} className="bg-neve-blue text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-neve-blueHover hover:shadow-[0_0_25px_rgba(30,144,255,0.4)]" onClick={handleNext}>Avançar</button>
                   </div>
                 </motion.div>
               )}
@@ -359,25 +362,25 @@ export default function App() {
               {/* Step 4 */}
               {step === 4 && (
                 <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="step-container active">
-                  <h4 className="text-2xl font-semibold mb-8 tracking-wide">Finalizar Reserva</h4>
+                  <h4 className="text-2xl font-semibold mb-8 tracking-wide font-heading">Finalizar Reserva</h4>
                   <div className="space-y-6">
                     <div>
-                      <input type="text" placeholder="Seu Nome Completo" value={name} onChange={e => setName(e.target.value)} className="w-full bg-[#121212] border border-white/10 rounded-2xl p-6 text-white focus:outline-none focus:border-elite-gold transition-all" />
+                      <input type="text" placeholder="Seu Nome Completo" value={name} onChange={e => setName(e.target.value)} className="w-full bg-neve-dark border border-white/10 rounded-2xl p-6 min-h-[56px] text-white focus:outline-none focus:border-neve-blue transition-all" />
                     </div>
                     <div>
-                      <input type="text" placeholder="Modelo do Veículo (ex: Porsche 911)" value={car} onChange={e => setCar(e.target.value)} className="w-full bg-[#121212] border border-white/10 rounded-2xl p-6 text-white focus:outline-none focus:border-elite-gold transition-all" />
+                      <input type="text" placeholder="Modelo do Veículo (ex: Porsche 911)" value={car} onChange={e => setCar(e.target.value)} className="w-full bg-neve-dark border border-white/10 rounded-2xl p-6 min-h-[56px] text-white focus:outline-none focus:border-neve-blue transition-all" />
                     </div>
                   </div>
                   
-                  <div className="bg-[#121212]/50 border border-elite-gold/20 rounded-2xl p-8 mt-10">
-                    <h5 className="text-elite-gold text-[10px] font-bold uppercase mb-4 tracking-[0.2em]">Resumo do Agendamento</h5>
+                  <div className="bg-neve-dark/50 border border-neve-blue/20 rounded-2xl p-8 mt-10">
+                    <h5 className="text-neve-blue text-[10px] font-bold uppercase mb-4 tracking-[0.2em] font-heading">Resumo do Agendamento</h5>
                     <p className="text-gray-400 mb-2 font-light">Serviço: <span className="text-white font-medium">{service}</span></p>
                     <p className="text-gray-400 font-light">Data e Hora: <span className="text-white font-medium">{new Date(date + 'T00:00:00').toLocaleDateString('pt-BR')} às {time}</span></p>
                   </div>
 
                   <div className="mt-12 flex justify-between items-center">
-                    <button type="button" className="text-gray-500 hover:text-white px-2 py-4 transition-colors text-sm font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left"></i> Voltar</button>
-                    <button type="button" disabled={name.length < 3 || car.length < 3 || isRedirecting} className="bg-[#25D366] text-white px-8 py-5 rounded-full font-bold text-sm uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-[#20b858] flex items-center shadow-[0_0_20px_rgba(37,211,102,0.2)] hover:shadow-[0_0_30px_rgba(37,211,102,0.4)]" onClick={handleFinish}>
+                    <button type="button" className="text-gray-400 hover:text-white px-2 py-4 transition-colors text-sm font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-2"></i> Voltar</button>
+                    <button type="button" disabled={name.length < 3 || car.length < 3 || isRedirecting} className="bg-[#25D366] text-white px-6 md:px-8 py-5 rounded-full font-bold text-sm uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-[#20b858] flex items-center shadow-[0_0_20px_rgba(37,211,102,0.2)] hover:shadow-[0_0_30px_rgba(37,211,102,0.4)]" onClick={handleFinish}>
                       <i className={isRedirecting ? "fa-solid fa-circle-check text-xl mr-3 animate-pulse" : "fa-brands fa-whatsapp text-xl mr-3"}></i> 
                       <span>{isRedirecting ? "Conectando..." : "Confirmar via WhatsApp"}</span>
                     </button>
@@ -390,34 +393,34 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#030303] border-t border-white/5 pt-24 pb-12 relative overflow-hidden z-10">
+      <footer className="bg-neve-black border-t border-white/5 pt-24 pb-12 relative overflow-hidden z-10">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mb-20">
             <div className="flex flex-col">
-              <span className="text-3xl font-bold tracking-tighter text-white uppercase mb-6">Elite<span className="text-elite-gold">AutoSpa</span></span>
+              <span className="text-2xl md:text-3xl font-bold tracking-tighter text-white uppercase mb-6 font-heading">Neve<span className="text-neve-blue">na Nave</span></span>
               <p className="text-gray-400 text-sm leading-relaxed max-w-xs font-light">A referência definitiva em estética automotiva de alto padrão. Tratamos seu veículo como uma obra de arte.</p>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-8 tracking-[0.1em] uppercase text-xs">Contato</h4>
+              <h4 className="text-white font-bold mb-8 tracking-[0.1em] uppercase text-xs font-heading">Contato</h4>
               <ul className="text-gray-400 text-sm space-y-5 font-light">
-                <li className="flex items-center"><i className="fa-solid fa-location-dot w-6 text-elite-gold"></i> Av. das Nações Unidas, 1000 - SP</li>
-                <li className="flex items-center"><i className="fa-solid fa-phone w-6 text-elite-gold"></i> (11) 99999-9999</li>
-                <li className="flex items-center"><i className="fa-solid fa-envelope w-6 text-elite-gold"></i> contato@eliteautospa.com</li>
+                <li className="flex items-center"><i className="fa-solid fa-location-dot w-6 text-neve-blue"></i> Av. das Nações Unidas, 1000 - SP</li>
+                <li className="flex items-center"><i className="fa-solid fa-phone w-6 text-neve-blue"></i> (11) 99999-9999</li>
+                <li className="flex items-center"><i className="fa-solid fa-envelope w-6 text-neve-blue"></i> contato@nevenanave.com</li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-8 tracking-[0.1em] uppercase text-xs">Redes Sociais</h4>
+              <h4 className="text-white font-bold mb-8 tracking-[0.1em] uppercase text-xs font-heading">Redes Sociais</h4>
               <div className="flex space-x-5">
-                <a href="#" className="w-12 h-12 rounded-full bg-[#121212] border border-white/5 flex items-center justify-center text-white hover:bg-elite-gold hover:text-[#050505] hover:border-elite-gold transition-all duration-300"><i className="fa-brands fa-instagram text-xl"></i></a>
-                <a href="#" className="w-12 h-12 rounded-full bg-[#121212] border border-white/5 flex items-center justify-center text-white hover:bg-elite-gold hover:text-[#050505] hover:border-elite-gold transition-all duration-300"><i className="fa-brands fa-tiktok text-xl"></i></a>
-                <a href="#" className="w-12 h-12 rounded-full bg-[#121212] border border-white/5 flex items-center justify-center text-white hover:bg-elite-gold hover:text-[#050505] hover:border-elite-gold transition-all duration-300"><i className="fa-brands fa-youtube text-xl"></i></a>
+                <a href="#" className="w-12 h-12 rounded-full bg-neve-dark border border-white/5 flex items-center justify-center text-white hover:bg-neve-blue hover:text-white hover:border-neve-blue transition-all duration-300"><i className="fa-brands fa-instagram text-xl"></i></a>
+                <a href="#" className="w-12 h-12 rounded-full bg-neve-dark border border-white/5 flex items-center justify-center text-white hover:bg-neve-blue hover:text-white hover:border-neve-blue transition-all duration-300"><i className="fa-brands fa-tiktok text-xl"></i></a>
+                <a href="#" className="w-12 h-12 rounded-full bg-neve-dark border border-white/5 flex items-center justify-center text-white hover:bg-neve-blue hover:text-white hover:border-neve-blue transition-all duration-300"><i className="fa-brands fa-youtube text-xl"></i></a>
               </div>
             </div>
           </div>
           <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 font-light">
-            <p>&copy; 2024 Elite AutoSpa. Todos os direitos reservados.</p>
+            <p>&copy; {new Date().getFullYear()} Neve na Nave. Todos os direitos reservados.</p>
             <p className="mt-6 md:mt-0 font-medium tracking-wide">
-              Desenvolvido por <a href="#" className="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 via-white to-gray-400 font-bold tracking-[0.15em] hover:from-elite-gold hover:via-[#fff3b8] hover:to-elite-gold transition-all duration-700 cursor-pointer animate-shimmer">ZcxPages</a>
+              Desenvolvido por <a href="#" className="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 via-white to-gray-400 font-bold tracking-[0.15em] hover:from-neve-blue hover:via-[#fff3b8] hover:to-neve-blue transition-all duration-700 cursor-pointer animate-shimmer">ZcxPages</a>
             </p>
           </div>
         </div>
@@ -427,7 +430,7 @@ export default function App() {
       <motion.a 
         initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 1, type: "spring" }}
         href="https://wa.me/5511937696256" target="_blank" rel="noreferrer" 
-        className="fixed bottom-8 right-8 w-16 h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center text-3xl shadow-[0_4px_30px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform z-50 animate-bounce" 
+        className="fixed bottom-6 right-6 w-16 h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center text-3xl shadow-[0_4px_14px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform z-50 animate-pulse" 
         aria-label="Falar no WhatsApp"
       >
         <i className="fa-brands fa-whatsapp"></i>
