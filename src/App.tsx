@@ -39,6 +39,8 @@ export default function App() {
 
   // --- Booking System ---
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   // --- Booking System ---
   const [step, setStep] = useState(1);
   const [service, setService] = useState('');
@@ -51,26 +53,8 @@ export default function App() {
   const timeSlotsConfig = ["08:00", "09:00", "10:00", "11:30", "13:30", "15:00", "16:30", "18:00"];
   const todayDateStr = new Date().toISOString().split('T')[0];
 
-  const handleNext = () => {
-    setStep(prev => prev + 1);
-    setTimeout(() => {
-      const el = document.getElementById('agendamento');
-      if (el) {
-        const y = el.getBoundingClientRect().top + window.scrollY - 100;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-      }
-    }, 50);
-  };
-  const handlePrev = () => {
-    setStep(prev => prev - 1);
-    setTimeout(() => {
-      const el = document.getElementById('agendamento');
-      if (el) {
-        const y = el.getBoundingClientRect().top + window.scrollY - 100;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-      }
-    }, 50);
-  };
+  const handleNext = () => setStep(prev => prev + 1);
+  const handlePrev = () => setStep(prev => prev - 1);
 
   const generateTimeSlots = (dateStr: string) => {
     const charSum = dateStr.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -125,11 +109,33 @@ export default function App() {
               </a>
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="md:hidden flex items-center">
-              <button className="text-white text-2xl focus:outline-none"><i className="fa-solid fa-bars"></i></button>
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white text-2xl focus:outline-none w-10 h-10 flex items-center justify-center">
+                <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
+              </button>
             </motion.div>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            exit={{ opacity: 0, y: -20 }} 
+            className="fixed inset-0 z-30 bg-neve-dark/95 backdrop-blur-xl pt-24 px-6 md:hidden flex flex-col"
+          >
+            <div className="flex flex-col space-y-6 mt-8">
+              <a href="#servicos" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-bold text-white border-b border-white/5 pb-4">Serviços Premium</a>
+              <a href="#agendamento" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-bold text-white border-b border-white/5 pb-4">Agendamento</a>
+              <a href="https://wa.me/5511937696256" target="_blank" rel="noreferrer" className="mt-8 flex items-center justify-center bg-[#25D366] text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-[0_0_20px_rgba(37,211,102,0.3)]">
+                <i className="fa-brands fa-whatsapp text-xl mr-3"></i> Falar no WhatsApp
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 py-16 md:px-8 md:py-24">
@@ -412,15 +418,6 @@ export default function App() {
         </div>
       </footer>
 
-      {/* FAB WhatsApp */}
-      <motion.a 
-        initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 1, type: "spring" }}
-        href="https://wa.me/5511937696256" target="_blank" rel="noreferrer" 
-        className="fixed bottom-6 right-6 w-16 h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center text-3xl shadow-[0_4px_14px_rgba(37,211,102,0.4)] opacity-70 backdrop-blur-sm hover:opacity-100 hover:scale-110 transition-all duration-300 z-50 animate-pulse" 
-        aria-label="Falar no WhatsApp"
-      >
-        <i className="fa-brands fa-whatsapp"></i>
-      </motion.a>
     </div>
   );
 }
