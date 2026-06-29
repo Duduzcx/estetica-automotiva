@@ -10,7 +10,7 @@
     width: 8px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-elite-dark;
+    @apply bg-[#050505];
   }
   ::-webkit-scrollbar-thumb {
     @apply bg-elite-gold rounded;
@@ -18,51 +18,24 @@
 }
 
 @layer utilities {
-  /* Before/After Custom Slider Essentials */
-  .ba-slider {
-      position: relative;
-      overflow: hidden;
-      cursor: ew-resize;
-      user-select: none;
-      touch-action: none;
+  /* Animação para textos em degradê */
+  .animate-shimmer {
+    background-size: 200% auto;
+    animation: shimmer 5s linear infinite;
   }
-  .ba-slider img {
-      pointer-events: none;
-  }
-  .ba-slider .before-image {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 50%; /* Default start */
-      height: 100%;
-      object-fit: cover;
-      object-position: left;
-      z-index: 10;
-  }
-  .ba-slider-handle {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  
+  @keyframes shimmer {
+    0% {
+      background-position: 0% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
   }
 
   /* Custom Input styling for Dark Mode Calendar */
   input[type="date"]::-webkit-calendar-picker-indicator {
       filter: invert(1);
       cursor: pointer;
-  }
-  
-  /* Pulse Animation for CTA (Fallback if not using Framer completely for this) */
-  @keyframes pulse-gold {
-      0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
-      70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
-  }
-  .btn-pulse {
-      animation: pulse-gold 2s infinite;
   }
 }

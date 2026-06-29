@@ -119,7 +119,6 @@ export default function App() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="absolute inset-0 z-0">
-          {/* Nova imagem 4K do Unsplash com overlay mais elegante */}
           <img src="https://images.unsplash.com/photo-1610647752706-3bb12232b3ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=100" alt="Supercarro detalhado brilhante" className="w-full h-full object-cover object-center scale-[1.03]" style={{ filter: "brightness(0.35) contrast(1.1)" }} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
         </motion.div>
@@ -132,7 +131,7 @@ export default function App() {
         >
           <motion.p variants={itemVariants} className="text-elite-gold font-bold tracking-[0.3em] uppercase mb-6 text-xs md:text-sm">A excelência em cada milímetro</motion.p>
           <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold text-white mb-8 leading-[1.1] tracking-tight">
-            Eleve o Nível do seu <br className="hidden md:block" /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f3c63a] to-[#fff3b8]">Veículo.</span>
+            Eleve o Nível do seu <br className="hidden md:block" /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f3c63a] to-[#fff3b8] animate-shimmer">Veículo.</span>
           </motion.h1>
           <motion.p variants={itemVariants} className="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
             Estética automotiva de alta performance. Proteção extrema, brilho inigualável e um cuidado obsessivo com os detalhes mais ínfimos.
@@ -195,7 +194,7 @@ export default function App() {
               variants={containerVariants}
             >
               <motion.h2 variants={slideRightVariants} className="text-elite-gold font-bold tracking-[0.2em] uppercase text-xs mb-4">Resultados Reais</motion.h2>
-              <motion.h3 variants={slideRightVariants} className="text-4xl md:text-6xl font-bold mb-8 leading-tight tracking-tight">A Arte da <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">Transformação</span></motion.h3>
+              <motion.h3 variants={slideRightVariants} className="text-4xl md:text-6xl font-bold mb-8 leading-tight tracking-tight">A Arte da <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500 animate-shimmer">Transformação</span></motion.h3>
               <motion.p variants={slideRightVariants} className="text-gray-400 text-lg mb-10 font-light leading-relaxed">Deslize a linha ao lado para comparar a pintura cega, repleta de teias de aranha e hologramas, com o resultado do nosso Polimento Técnico. A profundidade e o reflexo são restaurados de forma impecável.</motion.p>
               <motion.ul variants={containerVariants} className="space-y-5 mb-8">
                 {["Remoção de 95% dos micro-riscos", "Nivelamento perfeito do verniz", "Reflexo de espelho impecável"].map((item, i) => (
@@ -211,47 +210,44 @@ export default function App() {
             
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 30 }} whileInView={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 0.8, type: "spring", bounce: 0.3 }} viewport={{ once: true }}
-              className="relative h-[450px] md:h-[600px] w-full rounded-[2.5rem] shadow-2xl border border-white/10 overflow-hidden bg-[#050505]"
+              className="relative w-full max-w-4xl mx-auto h-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-2xl"
             >
-              {/* Imagem DEPOIS (Fundo 100%) */}
-              <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Carro polido e brilhante (Depois)" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+              {/* Imagem de Fundo (DEPOIS) */}
+              <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" className="absolute inset-0 w-full h-full object-cover pointer-events-none" alt="Depois" />
               
-              {/* Imagem ANTES (Clipped via state) */}
-              <div 
-                className="absolute inset-0 pointer-events-none" 
-                style={{ clipPath: `polygon(0 0, ${sliderValue}% 0, ${sliderValue}% 100%, 0 100%)` }}
-              >
-                <img 
-                  src="https://images.unsplash.com/photo-1582239474722-e3e7f41b2fcc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
-                  alt="Carro arranhado (Antes)" 
-                  className="absolute inset-0 w-full h-full object-cover" 
-                  style={{ filter: "sepia(30%) contrast(80%) brightness(80%)" }} 
-                />
-              </div>
+              {/* Imagem Sobreposta (ANTES) */}
+              <img 
+                src="https://images.unsplash.com/photo-1582239474722-e3e7f41b2fcc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                id="img-antes" 
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none" 
+                alt="Antes" 
+                style={{ 
+                  clipPath: `polygon(0 0, ${sliderValue}% 0, ${sliderValue}% 100%, 0 100%)`,
+                  filter: "sepia(30%) contrast(80%) brightness(80%)"
+                }} 
+              />
               
-              {/* Handle visual da divisória neon */}
-              <div 
-                className="absolute top-0 bottom-0 w-[2px] bg-elite-gold shadow-[0_0_20px_#d4af37] pointer-events-none z-20"
-                style={{ left: `${sliderValue}%`, transform: 'translateX(-50%)' }}
-              >
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-[#050505] border border-elite-gold rounded-full flex items-center justify-center text-elite-gold shadow-[0_0_30px_rgba(212,175,55,0.6)] backdrop-blur-md">
-                  <i className="fa-solid fa-arrows-left-right text-sm"></i>
-                </div>
-              </div>
-
-              {/* Badges Flutuantes */}
-              <div className="absolute top-8 left-8 bg-[#050505]/60 backdrop-blur-xl border border-white/10 text-gray-400 px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] z-10 pointer-events-none shadow-lg">Antes</div>
-              <div className="absolute top-8 right-8 bg-[#d4af37]/10 backdrop-blur-xl border border-elite-gold/30 text-elite-gold px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] z-10 pointer-events-none shadow-[0_0_20px_rgba(212,175,55,0.15)]">Depois</div>
-
-              {/* Input Range invisível para capturar touch/mouse nativamente com precisão milimétrica */}
+              {/* Input Range (Invisível, captura o toque) */}
               <input 
                 type="range" 
                 min="0" 
                 max="100" 
                 value={sliderValue} 
                 onChange={(e) => setSliderValue(Number(e.target.value))}
-                className="absolute inset-0 w-full h-full opacity-0 z-30 cursor-ew-resize appearance-none"
+                id="slider-range" 
+                className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20" 
               />
+              
+              {/* Linha Divisória Visual (Handle) */}
+              <div 
+                id="slider-linha" 
+                className="absolute top-0 bottom-0 w-1 bg-elite-gold z-10 pointer-events-none transform -translate-x-1/2 flex items-center justify-center" 
+                style={{ left: `${sliderValue}%` }}
+              >
+                <div className="w-10 h-10 bg-elite-gold rounded-full flex items-center justify-center text-black shadow-[0_0_15px_rgba(212,175,55,0.8)]">
+                  <i className="fa-solid fa-arrows-left-right"></i>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -421,7 +417,7 @@ export default function App() {
           <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 font-light">
             <p>&copy; 2024 Elite AutoSpa. Todos os direitos reservados.</p>
             <p className="mt-6 md:mt-0 font-medium tracking-wide">
-              Desenvolvido por <a href="#" className="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 via-white to-gray-400 font-bold tracking-[0.15em] hover:from-elite-gold hover:via-[#fff3b8] hover:to-elite-gold transition-all duration-700 cursor-pointer">ZcxPages</a>
+              Desenvolvido por <a href="#" className="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 via-white to-gray-400 font-bold tracking-[0.15em] hover:from-elite-gold hover:via-[#fff3b8] hover:to-elite-gold transition-all duration-700 cursor-pointer animate-shimmer">ZcxPages</a>
             </p>
           </div>
         </div>
