@@ -37,8 +37,7 @@ export default function App() {
   const heroY = useTransform(scrollY, [0, 1000], [0, 350]);
   const heroOpacity = useTransform(scrollY, [0, 600], [1, 0]);
 
-  // --- Before/After Slider ---
-  const [sliderValue, setSliderValue] = useState(50);
+  // --- Booking System ---
 
   // --- Booking System ---
   const [step, setStep] = useState(1);
@@ -104,7 +103,7 @@ export default function App() {
       <div className="fixed bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-neve-blue/10 blur-[180px] rounded-full pointer-events-none z-0"></div>
 
       {/* Navbar */}
-      <nav className="fixed w-full z-40 transition-all duration-300 backdrop-blur-md bg-neve-dark/50 border-b border-white/5" id="navbar">
+      <nav className="fixed w-full z-40 transition-all duration-300 backdrop-blur-md bg-neve-dark/30 border-b border-white/5 shadow-[0_1px_3px_rgba(0,0,0,0.2)]" id="navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-24">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
@@ -222,57 +221,34 @@ export default function App() {
               <img 
                 src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
                 id="img-antes" 
-                className="absolute inset-0 w-full h-full object-cover pointer-events-none" 
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none animate-crossfade" 
                 alt="Antes" 
                 style={{ 
-                  clipPath: `polygon(0 0, ${sliderValue}% 0, ${sliderValue}% 100%, 0 100%)`,
                   filter: "sepia(30%) contrast(80%) brightness(80%)"
                 }} 
               />
-              
-              {/* Input Range (Invisível, captura o toque) */}
-              <input 
-                type="range" 
-                min="0" 
-                max="100" 
-                value={sliderValue} 
-                onChange={(e) => setSliderValue(Number(e.target.value))}
-                id="slider-range" 
-                className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20" 
-              />
-              
-              {/* Linha Divisória Visual (Handle) */}
-              <div 
-                id="slider-linha" 
-                className="absolute top-0 bottom-0 w-1 bg-neve-blue z-10 pointer-events-none transform -translate-x-1/2 flex items-center justify-center" 
-                style={{ left: `${sliderValue}%` }}
-              >
-                <div className="w-10 h-10 bg-neve-blue rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(30,144,255,0.8)]">
-                  <i className="fa-solid fa-arrows-left-right"></i>
-                </div>
-              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* Smart Booking System */}
-      <section id="agendamento" className="py-16 md:py-32 relative z-10">
-        <div className="max-w-3xl mx-auto px-6 lg:px-8 relative z-10">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16 md:mb-20">
+      <section id="agendamento" className="py-24 md:py-40 relative z-10">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20 md:mb-24">
             <h3 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">Agende seu Horário</h3>
-            <p className="text-gray-400 text-lg font-light">Configure sua reserva com exclusividade em poucos cliques.</p>
+            <p className="text-gray-400 text-xl font-light">Configure sua reserva com exclusividade em poucos cliques.</p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-neve-card/80 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-6 md:p-14 shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-neve-card/80 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
             
             {/* Progress Indicator */}
-            <div className="flex items-center justify-between mb-14 relative">
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-white/5 z-0 rounded-full"></div>
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-neve-blue z-0 transition-all duration-700 rounded-full shadow-[0_0_15px_rgba(30,144,255,0.8)]" style={{ width: `${progressPercentage}%` }}></div>
+            <div className="flex items-center justify-between mb-16 relative">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1.5 bg-white/5 z-0 rounded-full"></div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1.5 bg-neve-blue z-0 transition-all duration-700 rounded-full shadow-[0_0_15px_rgba(30,144,255,0.8)]" style={{ width: `${progressPercentage}%` }}></div>
               
               {[1,2,3,4].map(num => (
-                <div key={num} className={`step-indicator z-10 w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all duration-500 text-sm ${step >= num ? 'bg-neve-blue text-white shadow-[0_0_20px_rgba(30,144,255,0.4)] scale-110' : 'bg-neve-dark border border-white/10 text-gray-500 scale-100'}`}>
+                <div key={num} className={`step-indicator z-10 w-14 h-14 rounded-full flex items-center justify-center font-bold transition-all duration-500 text-base ${step >= num ? 'bg-neve-blue text-white shadow-[0_0_20px_rgba(30,144,255,0.4)] scale-110' : 'bg-neve-dark border border-white/10 text-gray-500 scale-100'}`}>
                   {num}
                 </div>
               ))}
@@ -282,8 +258,8 @@ export default function App() {
               {/* Step 1 */}
               {step === 1 && (
                 <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="step-container active">
-                  <h4 className="text-2xl font-semibold mb-8 tracking-wide font-heading">Qual serviço seu carro precisa?</h4>
-                  <div className="flex flex-col md:grid md:grid-cols-2 gap-5">
+                  <h4 className="text-3xl font-semibold mb-10 tracking-wide font-heading">Qual serviço seu carro precisa?</h4>
+                  <div className="flex flex-col md:grid md:grid-cols-2 gap-6">
                     {[
                       { label: 'Vitrificação Cerâmica', desc: 'Proteção máxima e brilho' },
                       { label: 'Polimento Técnico', desc: 'Correção de pintura' },
@@ -292,15 +268,15 @@ export default function App() {
                     ].map(item => (
                       <label key={item.label} className="cursor-pointer group">
                         <input type="radio" name="service" value={item.label} className="peer sr-only" checked={service === item.label} onChange={() => setService(item.label)} />
-                        <div className="p-6 min-h-[56px] rounded-2xl border border-white/5 bg-neve-dark peer-checked:border-neve-blue peer-checked:bg-neve-blue/10 transition-all duration-300 hover:border-white/20">
-                          <div className="font-bold text-lg text-white group-hover:text-neve-blue transition-colors">{item.label}</div>
-                          <div className="text-sm text-gray-400 mt-2 font-light">{item.desc}</div>
+                        <div className="p-8 min-h-[80px] rounded-2xl border border-white/5 bg-neve-dark peer-checked:border-neve-blue peer-checked:bg-neve-blue/10 transition-all duration-300 hover:border-white/20">
+                          <div className="font-bold text-xl text-white group-hover:text-neve-blue transition-colors">{item.label}</div>
+                          <div className="text-base text-gray-400 mt-3 font-light">{item.desc}</div>
                         </div>
                       </label>
                     ))}
                   </div>
-                  <div className="mt-12 flex justify-end">
-                    <button type="button" disabled={!service} className="bg-neve-blue text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-neve-blueHover hover:shadow-[0_0_25px_rgba(30,144,255,0.4)]" onClick={handleNext}>Avançar</button>
+                  <div className="mt-14 flex justify-end">
+                    <button type="button" disabled={!service} className="bg-neve-blue text-white px-12 py-5 rounded-full font-bold uppercase tracking-widest text-base disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-neve-blueHover hover:shadow-[0_0_25px_rgba(30,144,255,0.4)]" onClick={handleNext}>Avançar</button>
                   </div>
                 </motion.div>
               )}
@@ -308,17 +284,17 @@ export default function App() {
               {/* Step 2 */}
               {step === 2 && (
                 <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="step-container active">
-                  <h4 className="text-2xl font-semibold mb-8 tracking-wide font-heading">Data da Reserva</h4>
-                  <div className="mb-8">
+                  <h4 className="text-3xl font-semibold mb-10 tracking-wide font-heading">Data da Reserva</h4>
+                  <div className="mb-10">
                     <input 
                       type="date" min={todayDateStr} value={date}
                       onChange={(e) => { setDate(e.target.value); setTime(''); }}
-                      className="w-full bg-neve-dark border border-white/10 rounded-2xl p-6 text-white text-lg focus:outline-none focus:border-neve-blue transition-all min-h-[56px]" 
+                      className="w-full bg-neve-dark border border-white/10 rounded-2xl p-8 text-white text-xl focus:outline-none focus:border-neve-blue transition-all min-h-[72px]" 
                     />
                   </div>
-                  <div className="mt-12 flex justify-between items-center">
-                    <button type="button" className="text-gray-400 hover:text-white px-4 py-4 transition-colors text-sm font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-2"></i> Voltar</button>
-                    <button type="button" disabled={!date} className="bg-neve-blue text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-neve-blueHover hover:shadow-[0_0_25px_rgba(30,144,255,0.4)]" onClick={handleNext}>Avançar</button>
+                  <div className="mt-14 flex justify-between items-center">
+                    <button type="button" className="text-gray-400 hover:text-white px-6 py-5 transition-colors text-base font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-3"></i> Voltar</button>
+                    <button type="button" disabled={!date} className="bg-neve-blue text-white px-12 py-5 rounded-full font-bold uppercase tracking-widest text-base disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-neve-blueHover hover:shadow-[0_0_25px_rgba(30,144,255,0.4)]" onClick={handleNext}>Avançar</button>
                   </div>
                 </motion.div>
               )}
@@ -326,25 +302,25 @@ export default function App() {
               {/* Step 3 */}
               {step === 3 && (
                 <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="step-container active">
-                  <h4 className="text-2xl font-semibold mb-4 tracking-wide font-heading">Horário da Reserva</h4>
-                  <p className="text-sm text-gray-400 mb-10">Data selecionada: <span className="font-medium text-neve-blue">{new Date(date + 'T00:00:00').toLocaleDateString('pt-BR', {day: '2-digit', month: 'long'})}</span></p>
+                  <h4 className="text-3xl font-semibold mb-6 tracking-wide font-heading">Horário da Reserva</h4>
+                  <p className="text-base text-gray-400 mb-12">Data selecionada: <span className="font-medium text-neve-blue">{new Date(date + 'T00:00:00').toLocaleDateString('pt-BR', {day: '2-digit', month: 'long'})}</span></p>
                   
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     {timeSlots.map((slot, i) => (
                       slot.isBooked ? (
                         <label key={i} className="block relative cursor-not-allowed opacity-40">
                           <input type="radio" disabled className="peer sr-only" />
-                          <div className="p-5 min-h-[56px] text-center rounded-2xl border border-red-900/20 bg-neve-dark text-gray-600 overflow-hidden relative flex items-center justify-center">
-                            <span className="line-through">{slot.time}</span>
+                          <div className="p-6 min-h-[72px] text-center rounded-2xl border border-red-900/20 bg-neve-dark text-gray-600 overflow-hidden relative flex items-center justify-center">
+                            <span className="line-through text-lg">{slot.time}</span>
                             <div className="absolute inset-0 flex items-center justify-center bg-[#050505]/80">
-                              <span className="text-[9px] font-bold text-red-500 tracking-[0.2em] uppercase">Esgotado</span>
+                              <span className="text-[10px] font-bold text-red-500 tracking-[0.2em] uppercase">Esgotado</span>
                             </div>
                           </div>
                         </label>
                       ) : (
                         <label key={i} className="block relative cursor-pointer">
                           <input type="radio" name="time" value={slot.time} className="peer sr-only" checked={time === slot.time} onChange={() => setTime(slot.time)} />
-                          <div className="p-5 min-h-[56px] text-center rounded-2xl border border-white/5 bg-neve-dark peer-checked:border-neve-blue peer-checked:bg-neve-blue peer-checked:text-white font-bold transition-all hover:border-neve-blue/30 flex items-center justify-center">
+                          <div className="p-6 min-h-[72px] text-center rounded-2xl border border-white/5 bg-neve-dark peer-checked:border-neve-blue peer-checked:bg-neve-blue peer-checked:text-white font-bold text-lg transition-all hover:border-neve-blue/30 flex items-center justify-center">
                             {slot.time}
                           </div>
                         </label>
@@ -352,9 +328,9 @@ export default function App() {
                     ))}
                   </div>
 
-                  <div className="mt-12 flex justify-between items-center">
-                    <button type="button" className="text-gray-400 hover:text-white px-4 py-4 transition-colors text-sm font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-2"></i> Voltar</button>
-                    <button type="button" disabled={!time} className="bg-neve-blue text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-neve-blueHover hover:shadow-[0_0_25px_rgba(30,144,255,0.4)]" onClick={handleNext}>Avançar</button>
+                  <div className="mt-14 flex justify-between items-center">
+                    <button type="button" className="text-gray-400 hover:text-white px-6 py-5 transition-colors text-base font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-3"></i> Voltar</button>
+                    <button type="button" disabled={!time} className="bg-neve-blue text-white px-12 py-5 rounded-full font-bold uppercase tracking-widest text-base disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-neve-blueHover hover:shadow-[0_0_25px_rgba(30,144,255,0.4)]" onClick={handleNext}>Avançar</button>
                   </div>
                 </motion.div>
               )}
@@ -362,27 +338,27 @@ export default function App() {
               {/* Step 4 */}
               {step === 4 && (
                 <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="step-container active">
-                  <h4 className="text-2xl font-semibold mb-8 tracking-wide font-heading">Finalizar Reserva</h4>
-                  <div className="space-y-6">
+                  <h4 className="text-3xl font-semibold mb-10 tracking-wide font-heading">Finalizar Reserva</h4>
+                  <div className="space-y-8">
                     <div>
-                      <input type="text" placeholder="Seu Nome Completo" value={name} onChange={e => setName(e.target.value)} className="w-full bg-neve-dark border border-white/10 rounded-2xl p-6 min-h-[56px] text-white focus:outline-none focus:border-neve-blue transition-all" />
+                      <input type="text" placeholder="Seu Nome Completo" value={name} onChange={e => setName(e.target.value)} className="w-full bg-neve-dark border border-white/10 rounded-2xl p-8 min-h-[72px] text-white text-xl focus:outline-none focus:border-neve-blue transition-all" />
                     </div>
                     <div>
-                      <input type="text" placeholder="Modelo do Veículo (ex: Porsche 911)" value={car} onChange={e => setCar(e.target.value)} className="w-full bg-neve-dark border border-white/10 rounded-2xl p-6 min-h-[56px] text-white focus:outline-none focus:border-neve-blue transition-all" />
+                      <input type="text" placeholder="Modelo do Veículo (ex: Porsche 911)" value={car} onChange={e => setCar(e.target.value)} className="w-full bg-neve-dark border border-white/10 rounded-2xl p-8 min-h-[72px] text-white text-xl focus:outline-none focus:border-neve-blue transition-all" />
                     </div>
                   </div>
                   
-                  <div className="bg-neve-dark/50 border border-neve-blue/20 rounded-2xl p-8 mt-10">
-                    <h5 className="text-neve-blue text-[10px] font-bold uppercase mb-4 tracking-[0.2em] font-heading">Resumo do Agendamento</h5>
-                    <p className="text-gray-400 mb-2 font-light">Serviço: <span className="text-white font-medium">{service}</span></p>
-                    <p className="text-gray-400 font-light">Data e Hora: <span className="text-white font-medium">{new Date(date + 'T00:00:00').toLocaleDateString('pt-BR')} às {time}</span></p>
+                  <div className="bg-neve-dark/50 border border-neve-blue/20 rounded-2xl p-10 mt-12">
+                    <h5 className="text-neve-blue text-[11px] font-bold uppercase mb-5 tracking-[0.2em] font-heading">Resumo do Agendamento</h5>
+                    <p className="text-gray-400 mb-3 text-lg font-light">Serviço: <span className="text-white font-medium">{service}</span></p>
+                    <p className="text-gray-400 text-lg font-light">Data e Hora: <span className="text-white font-medium">{new Date(date + 'T00:00:00').toLocaleDateString('pt-BR')} às {time}</span></p>
                   </div>
 
-                  <div className="mt-12 flex justify-between items-center">
-                    <button type="button" className="text-gray-400 hover:text-white px-2 py-4 transition-colors text-sm font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-2"></i> Voltar</button>
-                    <button type="button" disabled={name.length < 3 || car.length < 3 || isRedirecting} className="bg-[#25D366] text-white px-6 md:px-8 py-5 rounded-full font-bold text-sm uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-[#20b858] flex items-center shadow-[0_0_20px_rgba(37,211,102,0.2)] hover:shadow-[0_0_30px_rgba(37,211,102,0.4)]" onClick={handleFinish}>
-                      <i className={isRedirecting ? "fa-solid fa-circle-check text-xl mr-3 animate-pulse" : "fa-brands fa-whatsapp text-xl mr-3"}></i> 
-                      <span>{isRedirecting ? "Conectando..." : "Confirmar via WhatsApp"}</span>
+                  <div className="mt-14 flex justify-between items-center">
+                    <button type="button" className="text-gray-400 hover:text-white px-4 py-5 transition-colors text-base font-bold uppercase tracking-widest" onClick={handlePrev}><i className="fa-solid fa-arrow-left mr-3"></i> Voltar</button>
+                    <button type="button" disabled={name.length < 3 || car.length < 3 || isRedirecting} className="bg-[#25D366] text-white px-8 md:px-10 py-6 rounded-full font-bold text-base uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-[#20b858] flex items-center shadow-[0_0_20px_rgba(37,211,102,0.2)] hover:shadow-[0_0_30px_rgba(37,211,102,0.4)]" onClick={handleFinish}>
+                      <i className={isRedirecting ? "fa-solid fa-circle-check text-2xl mr-4 animate-pulse" : "fa-brands fa-whatsapp text-2xl mr-4"}></i> 
+                      <span>{isRedirecting ? "Conectando..." : "Confirmar Reserva"}</span>
                     </button>
                   </div>
                 </motion.div>
@@ -403,7 +379,7 @@ export default function App() {
             <div>
               <h4 className="text-white font-bold mb-8 tracking-[0.1em] uppercase text-xs font-heading">Contato</h4>
               <ul className="text-gray-400 text-sm space-y-5 font-light">
-                <li className="flex items-center"><i className="fa-solid fa-location-dot w-6 text-neve-blue"></i> Av. das Nações Unidas, 1000 - SP</li>
+                <li className="flex items-center"><i className="fa-solid fa-location-dot w-6 text-neve-blue"></i> 📍 Santana de Parnaíba - SP</li>
                 <li className="flex items-center"><i className="fa-solid fa-phone w-6 text-neve-blue"></i> (11) 99999-9999</li>
                 <li className="flex items-center"><i className="fa-solid fa-envelope w-6 text-neve-blue"></i> contato@nevenanave.com</li>
               </ul>
@@ -411,7 +387,7 @@ export default function App() {
             <div>
               <h4 className="text-white font-bold mb-8 tracking-[0.1em] uppercase text-xs font-heading">Redes Sociais</h4>
               <div className="flex space-x-5">
-                <a href="#" className="w-12 h-12 rounded-full bg-neve-dark border border-white/5 flex items-center justify-center text-white hover:bg-neve-blue hover:text-white hover:border-neve-blue transition-all duration-300"><i className="fa-brands fa-instagram text-xl"></i></a>
+                <a href="https://www.instagram.com/nevenanavee?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-neve-dark border border-white/5 flex items-center justify-center text-white hover:bg-neve-blue hover:text-white hover:border-neve-blue transition-all duration-300"><i className="fa-brands fa-instagram text-xl"></i></a>
                 <a href="#" className="w-12 h-12 rounded-full bg-neve-dark border border-white/5 flex items-center justify-center text-white hover:bg-neve-blue hover:text-white hover:border-neve-blue transition-all duration-300"><i className="fa-brands fa-tiktok text-xl"></i></a>
                 <a href="#" className="w-12 h-12 rounded-full bg-neve-dark border border-white/5 flex items-center justify-center text-white hover:bg-neve-blue hover:text-white hover:border-neve-blue transition-all duration-300"><i className="fa-brands fa-youtube text-xl"></i></a>
               </div>
@@ -430,7 +406,7 @@ export default function App() {
       <motion.a 
         initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 1, type: "spring" }}
         href="https://wa.me/5511937696256" target="_blank" rel="noreferrer" 
-        className="fixed bottom-6 right-6 w-16 h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center text-3xl shadow-[0_4px_14px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform z-50 animate-pulse" 
+        className="fixed bottom-6 right-6 w-16 h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center text-3xl shadow-[0_4px_14px_rgba(37,211,102,0.4)] opacity-70 backdrop-blur-sm hover:opacity-100 hover:scale-110 transition-all duration-300 z-50 animate-pulse" 
         aria-label="Falar no WhatsApp"
       >
         <i className="fa-brands fa-whatsapp"></i>
