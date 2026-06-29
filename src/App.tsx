@@ -51,8 +51,26 @@ export default function App() {
   const timeSlotsConfig = ["08:00", "09:00", "10:00", "11:30", "13:30", "15:00", "16:30", "18:00"];
   const todayDateStr = new Date().toISOString().split('T')[0];
 
-  const handleNext = () => setStep(prev => prev + 1);
-  const handlePrev = () => setStep(prev => prev - 1);
+  const handleNext = () => {
+    setStep(prev => prev + 1);
+    setTimeout(() => {
+      const el = document.getElementById('agendamento');
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 50);
+  };
+  const handlePrev = () => {
+    setStep(prev => prev - 1);
+    setTimeout(() => {
+      const el = document.getElementById('agendamento');
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 50);
+  };
 
   const generateTimeSlots = (dateStr: string) => {
     const charSum = dateStr.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -94,18 +112,10 @@ export default function App() {
   return (
     <div className="antialiased selection:bg-neve-blue selection:text-white font-sans bg-neve-dark text-white min-h-screen relative overflow-hidden">
       
-      {/* Borda Gradiente no Topo */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-neve-gradient1 via-neve-gradient2 to-neve-gradient3 z-50"></div>
-
-      {/* Dynamic Background: CSS Grid & Soft Glows */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-20" style={{ backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
-      <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-neve-gradient1/5 blur-[150px] rounded-full pointer-events-none z-0"></div>
-      <div className="fixed bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-neve-blue/10 blur-[180px] rounded-full pointer-events-none z-0"></div>
-
       {/* Navbar */}
-      <nav className="fixed w-full z-40 transition-all duration-300 backdrop-blur-md bg-neve-dark/30 border-b border-white/10" id="navbar">
+      <nav className="fixed w-full z-40 transition-all duration-300 backdrop-blur-md bg-neve-dark/30 border-b border-white/5" id="navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-24">
+          <div className="flex items-center justify-between h-16 md:h-20">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
               <span className="text-2xl md:text-3xl font-bold tracking-tighter text-white uppercase font-heading">Neve<span className="text-neve-blue">na Nave</span></span>
             </motion.div>
@@ -113,6 +123,9 @@ export default function App() {
               <a href="#agendamento" className="bg-neve-blue text-white px-8 py-3.5 rounded-full font-bold tracking-wide hover:bg-neve-blueHover transition-all duration-300 shadow-[0_0_20px_rgba(30,144,255,0.2)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)] hover:-translate-y-1 inline-block">
                 Agendar Avaliação
               </a>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="md:hidden flex items-center">
+              <button className="text-white text-2xl focus:outline-none"><i className="fa-solid fa-bars"></i></button>
             </motion.div>
           </div>
         </div>
@@ -140,7 +153,7 @@ export default function App() {
           </motion.p>
           <motion.div variants={itemVariants}>
             <a href="#agendamento" className="inline-flex items-center justify-center bg-neve-blue text-white hover:bg-neve-blueHover px-10 py-5 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(30,144,255,0.2)] hover:shadow-[0_0_40px_rgba(30,144,255,0.5)] hover:-translate-y-1">
-              Agendar Avaliação <i className="fa-brands fa-whatsapp ml-3 text-lg"></i>
+              Agendar Avaliação
             </a>
           </motion.div>
         </motion.div>
@@ -215,17 +228,14 @@ export default function App() {
               className="relative w-full max-w-4xl mx-auto h-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-2xl"
             >
               {/* Imagem de Fundo (DEPOIS) */}
-              <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" className="absolute inset-0 w-full h-full object-cover pointer-events-none" alt="Depois - Vitrificado" />
+              <img src="/carro-limpo.png" className="absolute inset-0 w-full h-full object-cover pointer-events-none" alt="Depois - Vitrificado" />
               
               {/* Imagem Sobreposta (ANTES) */}
               <img 
-                src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                src="/carro-sujo.png" 
                 id="img-antes" 
                 className="absolute inset-0 w-full h-full object-cover pointer-events-none animate-crossfade" 
                 alt="Antes - Sujo e Opaco" 
-                style={{ 
-                  filter: "sepia(50%) contrast(70%) brightness(55%) saturate(30%) blur(0.5px)"
-                }} 
               />
             </motion.div>
           </div>
@@ -240,7 +250,7 @@ export default function App() {
             <p className="text-gray-400 text-base md:text-xl font-light">Configure sua reserva com exclusividade em poucos cliques.</p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-neve-card/90 backdrop-blur-2xl border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-14 shadow-[0_20px_40px_rgba(0,0,0,0.5)] w-full max-w-[95%] md:max-w-none mx-auto overflow-hidden">
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-neve-card/90 backdrop-blur-2xl border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-14 shadow-[0_20px_40px_rgba(0,0,0,0.5)] w-full max-w-[95%] md:max-w-none mx-auto">
             
             {/* Progress Indicator */}
             <div className="flex items-center justify-between mb-10 md:mb-16 relative px-2">
