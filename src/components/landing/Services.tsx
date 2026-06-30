@@ -83,14 +83,14 @@ export function Services() {
   ];
 
   return (
-    <section ref={sectionRef} id="servicos" className="relative bg-neve-dark overflow-hidden">
+    <section ref={sectionRef} id="servicos" className="relative bg-white overflow-hidden">
       <div ref={wrapperRef} className="h-screen flex flex-col justify-center pt-20">
         
         <div className="px-6 lg:px-16 mb-12 shrink-0">
           <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">
             Nosso Portfólio
           </h2>
-          <h3 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white whitespace-normal break-words max-w-4xl">
+          <h3 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 whitespace-normal break-words max-w-4xl">
             Serviços Premium
           </h3>
         </div>
@@ -100,15 +100,15 @@ export function Services() {
           {servicesData.map((srv, idx) => (
             <div 
               key={idx}
-              className="service-card group relative w-[85vw] max-w-[320px] md:max-w-[450px] md:w-[450px] shrink-0 p-6 md:p-10 rounded-[2rem] bg-neve-card/60 backdrop-blur-xl border border-white/5 cursor-pointer will-change-[transform,filter,opacity]"
+              className="service-card group relative w-[85vw] max-w-[320px] md:max-w-[450px] md:w-[450px] shrink-0 p-6 md:p-10 rounded-[2rem] bg-gray-50 border border-gray-200 cursor-pointer will-change-[transform,filter,opacity]"
             >
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8 text-neve-blue text-xl md:text-2xl transition-all duration-500 group-hover:bg-neve-blue group-hover:text-white">
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-white shadow-sm rounded-2xl flex items-center justify-center mb-8 text-neve-blue text-xl md:text-2xl transition-all duration-500 group-hover:bg-neve-blue group-hover:text-white">
                 <i className={srv.icon}></i>
               </div>
-              <h4 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-white tracking-wide group-hover:text-neve-blue transition-colors whitespace-normal break-words">{srv.title}</h4>
-              <p className="text-gray-400 text-sm md:text-base leading-relaxed font-light whitespace-normal break-words">{srv.desc}</p>
+              <h4 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-gray-900 tracking-wide group-hover:text-neve-blue transition-colors whitespace-normal break-words">{srv.title}</h4>
+              <p className="text-gray-600 text-sm md:text-base leading-relaxed font-light whitespace-normal break-words">{srv.desc}</p>
               
-              <div className="absolute top-6 right-6 md:top-8 md:right-8 text-white/10 text-4xl md:text-5xl font-bold font-heading group-hover:text-white/20 transition-colors">
+              <div className="absolute top-6 right-6 md:top-8 md:right-8 text-gray-200 text-4xl md:text-5xl font-bold font-heading group-hover:text-gray-300 transition-colors">
                 0{idx + 1}
               </div>
             </div>

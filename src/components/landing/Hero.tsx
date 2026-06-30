@@ -21,7 +21,7 @@ export function Hero() {
             trigger: containerRef.current,
             start: "top top",
             end: "bottom top",
-            scrub: 1, // Smooth scrubbing tied exclusively to scroll
+            scrub: 1.5, // Smooth scrubbing tied exclusively to scroll
             pin: true,  
           }
         });
@@ -59,28 +59,19 @@ export function Hero() {
   };
 
   return (
-    <section ref={containerRef} className="relative h-screen bg-neve-dark overflow-hidden">
+    <section ref={containerRef} className="relative h-screen bg-black overflow-hidden">
       
-      {/* Background Image Layer */}
-      <div className="absolute inset-0 z-0 w-full h-full">
-        <img 
-          src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
-          alt="Estética Automotiva Premium"
-          className="w-full h-full object-cover opacity-30"
-        />
-      </div>
-
-      {/* Video Scrub Layer (Overlays the image) */}
+      {/* Video Scrub Background */}
       <div className="absolute inset-0 z-0 w-full h-full">
         <video 
           ref={videoRef}
           src="https://assets.mixkit.co/videos/preview/mixkit-car-washing-in-a-dark-garage-41006-large.mp4" 
-          className="w-full h-full object-cover opacity-60 mix-blend-overlay will-change-[transform,filter,opacity]"
+          className="w-full h-full object-cover opacity-60 will-change-[transform,filter,opacity]"
           muted 
           playsInline
           preload="auto"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-neve-dark via-neve-dark/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-neve-dark via-neve-dark/60 to-transparent"></div>
       </div>
 
       {/* Content Layer */}

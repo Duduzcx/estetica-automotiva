@@ -24,6 +24,8 @@ export function Scheduling() {
       setTimeout(() => {
         setStep(step + 1);
         setIsTransitioning(false);
+        const el = document.getElementById('agendamento');
+        if (el) window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
       }, 150);
     }
   };
@@ -33,6 +35,8 @@ export function Scheduling() {
       setTimeout(() => {
         setStep(step - 1);
         setIsTransitioning(false);
+        const el = document.getElementById('agendamento');
+        if (el) window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
       }, 150);
     }
   };
@@ -72,7 +76,7 @@ export function Scheduling() {
             </div>
           </div>
 
-          <div className={`transition-opacity duration-150 ease-in-out ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+          <div className={`transition-opacity duration-150 ease-in-out min-h-[500px] md:min-h-[400px] ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
             
             {/* Step 1: Services */}
             {step === 1 && (
