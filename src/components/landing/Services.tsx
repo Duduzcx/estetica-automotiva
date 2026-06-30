@@ -29,8 +29,8 @@ export function Services() {
       scrollTrigger: {
         trigger: sectionRef.current,
         pin: true,
-        scrub: 1,
-        end: () => "+=" + getTotalWidth(),
+        scrub: 1.5,
+        end: () => "+=" + (getTotalWidth() * 2), // Dobro da distância para um scroll mais lento e suave
         invalidateOnRefresh: true
       }
     });
@@ -44,13 +44,13 @@ export function Services() {
         scale: 1.05,
         opacity: 1,
         filter: "blur(0px)",
-        ease: "power1.inOut",
+        ease: "power2.out",
         scrollTrigger: {
           trigger: card,
           containerAnimation: scrollTween,
-          start: "left center+=300",
+          start: "left center+=400", // Fica nítido mais cedo
           end: "center center",
-          scrub: true,
+          scrub: 1.5,
         }
       });
 
@@ -59,13 +59,13 @@ export function Services() {
         scale: 0.9,
         opacity: 0.4,
         filter: "blur(4px)",
-        ease: "power1.inOut",
+        ease: "power2.in",
         scrollTrigger: {
           trigger: card,
           containerAnimation: scrollTween,
-          start: "center center",
-          end: "right center-=300",
-          scrub: true,
+          start: "center center-=400", // Só começa a embaçar quando já está bem à esquerda
+          end: "right center-=500",
+          scrub: 1.5,
         }
       });
     });

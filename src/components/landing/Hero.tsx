@@ -61,17 +61,21 @@ export function Hero() {
   return (
     <section ref={containerRef} className="relative h-screen bg-black overflow-hidden">
       
+      {/* Glow Effects */}
+      <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-neve-blue/20 blur-[150px] pointer-events-none z-0"></div>
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-900/20 blur-[150px] pointer-events-none z-0"></div>
+
       {/* Video Scrub Background */}
       <div className="absolute inset-0 z-0 w-full h-full">
         <video 
           ref={videoRef}
-          src="https://assets.mixkit.co/videos/preview/mixkit-car-washing-in-a-dark-garage-41006-large.mp4" 
+          src="https://cdn.pixabay.com/video/2021/08/21/85848-591741548_large.mp4" 
           className="w-full h-full object-cover opacity-60 will-change-[transform,filter,opacity]"
           muted 
           playsInline
           preload="auto"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-neve-dark via-neve-dark/60 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-neve-dark via-neve-dark/40 to-transparent"></div>
       </div>
 
       {/* Content Layer */}
