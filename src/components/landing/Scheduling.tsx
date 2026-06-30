@@ -14,8 +14,24 @@ export function Scheduling() {
   const timeSlotsConfig = ["08:00", "09:00", "10:00", "11:30", "13:30", "15:00", "16:30", "18:00"];
   const todayDateStr = new Date().toISOString().split('T')[0];
 
-  const handleNext = () => setStep(prev => prev + 1);
-  const handlePrev = () => setStep(prev => prev - 1);
+  const handleNext = () => {
+    if (step < 4) {
+      setStep(step + 1);
+      setTimeout(() => {
+        const el = document.getElementById('agendamento');
+        if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
+      }, 50);
+    }
+  };
+  const handlePrev = () => {
+    if (step > 1) {
+      setStep(step - 1);
+      setTimeout(() => {
+        const el = document.getElementById('agendamento');
+        if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
+      }, 50);
+    }
+  };
 
   const generateTimeSlots = (dateStr: string) => {
     const charSum = dateStr.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);

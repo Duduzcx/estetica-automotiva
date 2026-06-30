@@ -35,7 +35,8 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <WhatsAppFAB />
+      {/* Exibe o FAB do WhatsApp apenas na Landing Page */}
+      {currentView === 'landing' && <WhatsAppFAB />}
     </div>
   );
 }

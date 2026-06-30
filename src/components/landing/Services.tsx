@@ -8,7 +8,6 @@ export function Services() {
   });
 
   // Moves the content container left. The 'vw' calculation ensures we don't scroll past the content end on various screens.
-  // Assuming 8 cards of ~320px/450px + gaps.
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "calc(-100% + 100vw)"]);
 
   const servicesData = [
@@ -23,7 +22,7 @@ export function Services() {
   ];
 
   return (
-    <section ref={targetRef} id="servicos" className="relative h-[300vh] bg-neve-dark">
+    <section ref={targetRef} id="servicos" className="relative h-[350vh] bg-neve-dark">
       <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden pt-20">
         
         <div className="px-6 lg:px-16 mb-12 shrink-0">
@@ -48,9 +47,13 @@ export function Services() {
 
         <motion.div style={{ x }} className="flex gap-6 md:gap-8 px-6 lg:px-16 pb-12 w-max">
           {servicesData.map((srv, idx) => (
-            <div 
+            <motion.div 
               key={idx}
-              className="group relative w-[85vw] max-w-[320px] md:max-w-[450px] md:w-[450px] p-6 md:p-10 rounded-[2rem] bg-neve-card/60 backdrop-blur-xl border border-white/5 cursor-pointer transition-all duration-500 hover:shadow-[0_0_40px_rgba(30,144,255,0.15)] hover:bg-white/5"
+              initial={{ scale: 0.8, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ root: targetRef, margin: "0px 100px 0px 0px" }}
+              transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
+              className="group relative w-[85vw] max-w-[320px] md:max-w-[450px] md:w-[450px] p-6 md:p-10 rounded-[2rem] bg-neve-card/60 backdrop-blur-xl border border-white/5 cursor-pointer hover:shadow-[0_0_40px_rgba(30,144,255,0.15)] hover:bg-white/5 hover:scale-[1.02] transition-transform"
             >
               <div className="w-14 h-14 md:w-16 md:h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8 text-neve-blue text-xl md:text-2xl transition-all duration-500 group-hover:bg-neve-blue group-hover:text-white">
                 <i className={srv.icon}></i>
@@ -61,7 +64,7 @@ export function Services() {
               <div className="absolute top-6 right-6 md:top-8 md:right-8 text-white/10 text-4xl md:text-5xl font-bold font-heading group-hover:text-white/20 transition-colors">
                 0{idx + 1}
               </div>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
         
