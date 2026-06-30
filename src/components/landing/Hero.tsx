@@ -10,17 +10,14 @@ export function Hero() {
     offset: ["start start", "end start"]
   });
 
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 300]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (videoRef.current && videoRef.current.duration) {
-      // Scrub video to max duration * scrollYProgress
-      // Multiplier limits scrub range so it doesn't just hit the end too fast
-      const targetTime = latest * videoRef.current.duration;
-      // using requestAnimationFrame for smoother performance in scrub
+      const targetTime = (latest * 1.5) * videoRef.current.duration;
       requestAnimationFrame(() => {
-        if(videoRef.current) {
+        if(videoRef.current && targetTime <= videoRef.current.duration) {
             videoRef.current.currentTime = targetTime;
         }
       });
@@ -37,15 +34,15 @@ export function Hero() {
   };
 
   return (
-    <section ref={containerRef} className="relative h-[200vh] bg-black">
+    <section ref={containerRef} className="relative h-[150vh] bg-neve-dark">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
         
         {/* Video Scrub Layer */}
         <motion.div style={{ opacity: heroOpacity }} className="absolute inset-0 z-0 w-full h-full">
           <video 
             ref={videoRef}
-            src="https://www.w3schools.com/html/mov_bbb.mp4" 
-            className="w-full h-full object-cover opacity-60"
+            src="https://assets.mixkit.co/videos/preview/mixkit-car-washing-in-a-dark-garage-41006-large.mp4" 
+            className="w-full h-full object-cover opacity-50"
             muted 
             playsInline
             preload="auto"
@@ -66,14 +63,14 @@ export function Hero() {
           </motion.div>
           
           <motion.div variants={revealVariants} className="overflow-hidden mb-8">
-            <h1 className="text-5xl md:text-7xl lg:text-[6.5rem] font-bold text-white leading-[1.05] tracking-tight">
+            <h1 className="text-5xl md:text-7xl lg:text-[6.5rem] font-bold text-white leading-[1.05] tracking-tight whitespace-normal break-words">
               Sua nave <br className="hidden md:block" /> 
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-neve-blue to-white">impecável.</span>
             </h1>
           </motion.div>
 
           <motion.div variants={revealVariants} className="overflow-hidden mb-12 max-w-2xl mx-auto">
-            <p className="text-lg md:text-xl text-gray-300 font-light leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-300 font-light leading-relaxed whitespace-normal break-words">
               Estética automotiva premium. Proteção, limpeza profunda e vitrificação. Brilho extremo e cuidado em cada detalhe.
             </p>
           </motion.div>

@@ -66,17 +66,17 @@ export function OrderManagement() {
               </div>
 
               {order.status === 'pendente' ? (
-                <div className="flex space-x-3 w-full md:w-auto">
-                  <button onClick={() => updateStatus(order, 'confirmado')} className="flex-1 md:flex-none flex items-center justify-center bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500 hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all">
+                <div className="flex flex-col md:flex-row w-full md:w-auto gap-2 mt-4 md:mt-0">
+                  <button onClick={() => updateStatus(order, 'confirmado')} className="w-full md:w-auto flex items-center justify-center bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500 hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all">
                     <CheckCircle2 className="w-4 h-4 mr-2" /> Aprovar
                   </button>
-                  <button onClick={() => updateStatus(order, 'recusado')} className="flex-1 md:flex-none flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all">
+                  <button onClick={() => updateStatus(order, 'recusado')} className="w-full md:w-auto flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all">
                     <XCircle className="w-4 h-4 mr-2" /> Reprovar
                   </button>
                 </div>
               ) : (
-                <div className={`px-4 py-2 rounded-lg font-bold text-sm uppercase tracking-wider flex items-center ${
-                  order.status === 'confirmado' ? 'text-green-400' : 'text-red-400'
+                <div className={`mt-4 md:mt-0 px-4 py-2 rounded-lg font-bold text-sm uppercase tracking-wider flex items-center w-full md:w-auto justify-center md:justify-start ${
+                  order.status === 'confirmado' ? 'text-green-400 bg-green-500/10' : 'text-red-400 bg-red-500/10'
                 }`}>
                   {order.status === 'confirmado' ? <CheckCircle2 className="w-5 h-5 mr-2" /> : <XCircle className="w-5 h-5 mr-2" />}
                   {order.status}
