@@ -12,27 +12,27 @@ export function Hero() {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    // Check if video exists and is loaded
     const video = videoRef.current;
     
     if (video) {
-      // Ensure video data is loaded before setting up scroll trigger
       const setupScrollTrigger = () => {
         let tl = gsap.timeline({
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top top",
             end: "bottom top",
-            scrub: 1.5, // Smooth scrubbing
-            pin: true,  // Pin the hero section while scrubbing
+            scrub: 1, // Smooth scrubbing tied exclusively to scroll
+            pin: true,  
           }
         });
 
+        // The video scrubbing timeline
         tl.to(video, {
-          currentTime: video.duration || 5, // fallback duration if not fully loaded
+          currentTime: video.duration || 5,
           ease: "none"
         }, 0);
 
+        // Fade out content as user scrolls down
         tl.to(contentRef.current, {
           y: 200,
           opacity: 0,
@@ -61,15 +61,24 @@ export function Hero() {
   return (
     <section ref={containerRef} className="relative h-screen bg-neve-dark overflow-hidden">
       
-      {/* Video Scrub Layer */}
+      {/* Background Image Layer */}
+      <div className="absolute inset-0 z-0 w-full h-full">
+        <img 
+          src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+          alt="Estética Automotiva Premium"
+          className="w-full h-full object-cover opacity-30"
+        />
+      </div>
+
+      {/* Video Scrub Layer (Overlays the image) */}
       <div className="absolute inset-0 z-0 w-full h-full">
         <video 
           ref={videoRef}
           src="https://assets.mixkit.co/videos/preview/mixkit-car-washing-in-a-dark-garage-41006-large.mp4" 
-          className="w-full h-full object-cover opacity-50"
+          className="w-full h-full object-cover opacity-60 mix-blend-overlay will-change-[transform,filter,opacity]"
           muted 
           playsInline
-          preload="metadata"
+          preload="auto"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-neve-dark via-neve-dark/40 to-transparent"></div>
       </div>
@@ -80,7 +89,7 @@ export function Hero() {
         variants={revealVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 text-center max-w-5xl mx-auto px-6 h-full flex flex-col justify-center items-center"
+        className="relative z-10 text-center max-w-5xl mx-auto px-6 h-full flex flex-col justify-center items-center will-change-[transform,opacity]"
       >
         <motion.div variants={revealVariants} className="overflow-hidden mb-6">
           <p className="text-neve-blue font-bold tracking-[0.3em] uppercase text-xs md:text-sm font-heading">A excelência em cada milímetro</p>
@@ -106,7 +115,7 @@ export function Hero() {
         </motion.div>
       </motion.div>
 
-      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/30 animate-pulse z-20">
+      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/30 animate-pulse z-20 pointer-events-none">
           <p className="text-xs uppercase tracking-[0.3em] mb-4 text-center">Scroll para Imersão</p>
           <div className="w-[1px] h-24 bg-gradient-to-b from-white/50 to-transparent mx-auto"></div>
       </div>

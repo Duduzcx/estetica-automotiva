@@ -19,8 +19,7 @@ export function Services() {
       cards.forEach((card: any) => {
         width += card.offsetWidth;
       });
-      // Add gap (8 * 24px = 192px) approximately
-      width += (cards.length - 1) * 24;
+      width += (cards.length - 1) * 24; // gap
       return width;
     };
 
@@ -36,23 +35,39 @@ export function Services() {
       }
     });
 
-    // Zoom effect on cards as they come into the center of the screen
+    // Focus & Blur effect on cards as they come into the center of the screen
     cards.forEach((card: any) => {
-      gsap.fromTo(card, 
-        { scale: 0.8, opacity: 0.5 },
-        {
-          scale: 1,
-          opacity: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: card,
-            containerAnimation: scrollTween,
-            start: "left center+=300",
-            end: "center center",
-            scrub: true,
-          }
+      // Set initial inactive state
+      gsap.set(card, { opacity: 0.4, scale: 0.9, filter: "blur(4px)" });
+      
+      gsap.to(card, {
+        scale: 1.05,
+        opacity: 1,
+        filter: "blur(0px)",
+        ease: "power1.inOut",
+        scrollTrigger: {
+          trigger: card,
+          containerAnimation: scrollTween,
+          start: "left center+=300",
+          end: "center center",
+          scrub: true,
         }
-      );
+      });
+
+      // Fade out and blur again when leaving the center
+      gsap.to(card, {
+        scale: 0.9,
+        opacity: 0.4,
+        filter: "blur(4px)",
+        ease: "power1.inOut",
+        scrollTrigger: {
+          trigger: card,
+          containerAnimation: scrollTween,
+          start: "center center",
+          end: "right center-=300",
+          scrub: true,
+        }
+      });
     });
   }, { scope: sectionRef });
 
@@ -85,7 +100,7 @@ export function Services() {
           {servicesData.map((srv, idx) => (
             <div 
               key={idx}
-              className="service-card group relative w-[85vw] max-w-[320px] md:max-w-[450px] md:w-[450px] shrink-0 p-6 md:p-10 rounded-[2rem] bg-neve-card/60 backdrop-blur-xl border border-white/5 cursor-pointer hover:shadow-[0_0_40px_rgba(30,144,255,0.15)] hover:bg-white/5 transition-colors"
+              className="service-card group relative w-[85vw] max-w-[320px] md:max-w-[450px] md:w-[450px] shrink-0 p-6 md:p-10 rounded-[2rem] bg-neve-card/60 backdrop-blur-xl border border-white/5 cursor-pointer will-change-[transform,filter,opacity]"
             >
               <div className="w-14 h-14 md:w-16 md:h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8 text-neve-blue text-xl md:text-2xl transition-all duration-500 group-hover:bg-neve-blue group-hover:text-white">
                 <i className={srv.icon}></i>
