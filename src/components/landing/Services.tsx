@@ -1,22 +1,14 @@
-import { motion } from 'framer-motion';
-
-const containerVariants: any = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.1 }
-  }
-};
-
-const itemVariants: any = {
-  hidden: { opacity: 0, y: 50, scale: 0.95 },
-  visible: { 
-    opacity: 1, y: 0, scale: 1,
-    transition: { type: "spring", stiffness: 80, damping: 20 }
-  }
-};
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 export function Services() {
+  const targetRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+  });
+
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-70%"]);
+
   const servicesData = [
     { title: "Vitrificação Cerâmica", icon: "fa-solid fa-shield-halved", desc: "Proteção de até 5 anos com dureza 9H. Brilho espelhado e repelência extrema." },
     { title: "Polimento Técnico", icon: "fa-solid fa-wand-magic-sparkles", desc: "Correção de verniz em multiníveis. Remoção de riscos, hologramas e marcas." },
@@ -29,36 +21,48 @@ export function Services() {
   ];
 
   return (
-    <section id="servicos" className="py-16 md:py-32 relative z-10">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <motion.div 
-          initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          className="text-center mb-16 md:mb-24"
-        >
-          <motion.h2 variants={itemVariants} className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Nosso Portfólio</motion.h2>
-          <motion.h3 variants={itemVariants} className="text-4xl md:text-6xl font-bold tracking-tight text-white">Serviços Premium</motion.h3>
-        </motion.div>
+    <section ref={targetRef} id="servicos" className="relative h-[300vh] bg-neve-dark">
+      <div className="sticky top-0 h-screen flex flex-col items-start justify-center overflow-hidden pt-20">
+        
+        <div className="px-6 lg:px-16 mb-12">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading"
+          >
+            Nosso Portfólio
+          </motion.h2>
+          <motion.h3 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-5xl md:text-7xl font-bold tracking-tight text-white whitespace-nowrap"
+          >
+            Serviços Premium
+          </motion.h3>
+        </div>
 
-        <motion.div 
-          initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}
-          variants={containerVariants}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10"
-        >
+        <motion.div style={{ x }} className="flex gap-8 px-6 lg:px-16 pb-12 w-max">
           {servicesData.map((srv, idx) => (
-            <motion.div 
+            <div 
               key={idx}
-              variants={itemVariants}
-              className="group relative p-8 rounded-[2rem] bg-neve-card/60 backdrop-blur-xl border border-white/5 cursor-pointer transition-all duration-500 hover:shadow-[0_0_40px_rgba(255,0,255,0.15)] hover:border-neve-gradient1/50 hover:-translate-y-2"
+              className="group relative w-[320px] md:w-[450px] p-8 md:p-10 rounded-[2rem] bg-neve-card/60 backdrop-blur-xl border border-white/5 cursor-pointer transition-all duration-500 hover:shadow-[0_0_40px_rgba(30,144,255,0.15)] hover:bg-white/5"
             >
-              <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8 text-neve-blue text-2xl transition-all duration-500 group-hover:scale-110 group-hover:bg-neve-blue group-hover:text-white group-hover:shadow-[0_0_20px_rgba(30,144,255,0.4)]">
+              <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-10 text-neve-blue text-2xl transition-all duration-500 group-hover:bg-neve-blue group-hover:text-white">
                 <i className={srv.icon}></i>
               </div>
-              <h4 className="text-xl font-bold mb-4 text-white tracking-wide group-hover:text-neve-blue transition-colors">{srv.title}</h4>
-              <p className="text-gray-400 text-sm leading-relaxed font-light">{srv.desc}</p>
-            </motion.div>
+              <h4 className="text-2xl font-bold mb-4 text-white tracking-wide group-hover:text-neve-blue transition-colors">{srv.title}</h4>
+              <p className="text-gray-400 text-base leading-relaxed font-light">{srv.desc}</p>
+              
+              <div className="absolute top-8 right-8 text-white/10 text-5xl font-bold font-heading group-hover:text-white/20 transition-colors">
+                0{idx + 1}
+              </div>
+            </div>
           ))}
         </motion.div>
+        
       </div>
     </section>
   );

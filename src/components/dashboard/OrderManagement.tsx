@@ -7,6 +7,7 @@ type OrderStatus = 'pendente' | 'confirmado' | 'recusado';
 interface Order {
   id: string;
   client: string;
+  phone: string;
   service: string;
   vehicle: string;
   date: string;
@@ -15,17 +16,31 @@ interface Order {
 
 export function OrderManagement() {
   const [orders, setOrders] = useState<Order[]>([
-    { id: '1', client: 'Eduardo Silva', service: 'Vitrificação Cerâmica', vehicle: 'Porsche 911 Carrera', date: 'Hoje, 14:00', status: 'pendente' },
-    { id: '2', client: 'Marcos Almeida', service: 'Lavagem Detalhada', vehicle: 'BMW X6', date: 'Hoje, 16:30', status: 'pendente' },
-    { id: '3', client: 'Juliana Costa', service: 'Higienização Interna', vehicle: 'Audi Q5', date: 'Amanhã, 09:00', status: 'confirmado' },
+    { id: '1', client: 'Eduardo Silva', phone: '5511999999999', service: 'Vitrificação Cerâmica', vehicle: 'Porsche 911 Carrera', date: 'Hoje, 14:00', status: 'pendente' },
+    { id: '2', client: 'Marcos Almeida', phone: '5511999999999', service: 'Lavagem Detalhada', vehicle: 'BMW X6', date: 'Hoje, 16:30', status: 'pendente' },
+    { id: '3', client: 'Juliana Costa', phone: '5511999999999', service: 'Higienização Interna', vehicle: 'Audi Q5', date: 'Amanhã, 09:00', status: 'confirmado' },
   ]);
 
-  const updateStatus = (id: string, newStatus: OrderStatus) => {
-    setOrders(orders.map(order => order.id === id ? { ...order, status: newStatus } : order));
+  const updateStatus = (order: Order, newStatus: OrderStatus) => {
+    // 1. Update internal state
+    setOrders(orders.map(o => o.id === order.id ? { ...o, status: newStatus } : o));
+
+    // 2. Trigger WhatsApp API redirect with pre-filled message
+    let message = "";
+    if (newStatus === 'confirmado') {
+      message = `Olá ${order.client}, seu agendamento para o serviço de *${order.service}* no dia *${order.date.split(',')[0]} às ${order.date.split(', ')[1]}* foi CONFIRMADO! Te esperamos na Neve na Nave.`;
+    } else if (newStatus === 'recusado') {
+      message = `Olá ${order.client}, infelizmente não temos disponibilidade para o serviço de ${order.service} neste horário. Podemos reagendar?`;
+    }
+
+    if (message) {
+      const url = `https://wa.me/${order.phone}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    }
   };
 
   return (
-    <div className="bg-neve-dark/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+    <div className="bg-neve-dark/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl h-full">
       <h3 className="text-xl font-bold mb-6 text-white flex items-center">
         <Clock className="w-5 h-5 mr-3 text-neve-blue" /> Agendamentos Recentes
       </h3>
@@ -52,17 +67,18 @@ export function OrderManagement() {
 
               {order.status === 'pendente' ? (
                 <div className="flex space-x-3 w-full md:w-auto">
-                  <button onClick={() => updateStatus(order.id, 'confirmado')} className="flex-1 md:flex-none flex items-center justify-center bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500 hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all">
+                  <button onClick={() => updateStatus(order, 'confirmado')} className="flex-1 md:flex-none flex items-center justify-center bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500 hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all">
                     <CheckCircle2 className="w-4 h-4 mr-2" /> Aprovar
                   </button>
-                  <button onClick={() => updateStatus(order.id, 'recusado')} className="flex-1 md:flex-none flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all">
-                    <XCircle className="w-4 h-4 mr-2" /> Recusar
+                  <button onClick={() => updateStatus(order, 'recusado')} className="flex-1 md:flex-none flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all">
+                    <XCircle className="w-4 h-4 mr-2" /> Reprovar
                   </button>
                 </div>
               ) : (
-                <div className={`px-4 py-2 rounded-lg font-bold text-sm uppercase tracking-wider ${
+                <div className={`px-4 py-2 rounded-lg font-bold text-sm uppercase tracking-wider flex items-center ${
                   order.status === 'confirmado' ? 'text-green-400' : 'text-red-400'
                 }`}>
+                  {order.status === 'confirmado' ? <CheckCircle2 className="w-5 h-5 mr-2" /> : <XCircle className="w-5 h-5 mr-2" />}
                   {order.status}
                 </div>
               )}
