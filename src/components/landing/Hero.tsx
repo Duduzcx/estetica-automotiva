@@ -69,13 +69,13 @@ export function Hero() {
       <div className="absolute inset-0 z-0 w-full h-full">
         <video 
           ref={videoRef}
-          src="https://cdn.pixabay.com/video/2021/08/21/85848-591741548_large.mp4" 
+          src="https://res.cloudinary.com/demo/video/upload/v1689363065/docs/cars.mp4" 
           className="w-full h-full object-cover opacity-60 will-change-[transform,filter,opacity]"
           muted 
           playsInline
           preload="auto"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-neve-dark via-neve-dark/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent"></div>
       </div>
 
       {/* Content Layer */}

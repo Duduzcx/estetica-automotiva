@@ -29,8 +29,8 @@ export function Services() {
       scrollTrigger: {
         trigger: sectionRef.current,
         pin: true,
-        scrub: 1.5,
-        end: () => "+=" + (getTotalWidth() * 2), // Dobro da distância para um scroll mais lento e suave
+        scrub: 0.5,
+        end: () => "+=" + (getTotalWidth() * 1.2), // Mais rápido e responsivo
         invalidateOnRefresh: true
       }
     });
@@ -50,7 +50,7 @@ export function Services() {
           containerAnimation: scrollTween,
           start: "left center+=400", // Fica nítido mais cedo
           end: "center center",
-          scrub: 1.5,
+          scrub: 0.5,
         }
       });
 
@@ -65,7 +65,7 @@ export function Services() {
           containerAnimation: scrollTween,
           start: "center center-=400", // Só começa a embaçar quando já está bem à esquerda
           end: "right center-=500",
-          scrub: 1.5,
+          scrub: 0.5,
         }
       });
     });
@@ -84,6 +84,9 @@ export function Services() {
 
   return (
     <section ref={sectionRef} id="servicos" className="relative bg-white overflow-hidden">
+      {/* Top Glassmorphism Divider */}
+      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black to-transparent z-20 border-t border-white/10 backdrop-blur-sm pointer-events-none"></div>
+
       <div ref={wrapperRef} className="h-screen flex flex-col justify-center pt-20">
         
         <div className="px-6 lg:px-16 mb-12 shrink-0">
@@ -116,6 +119,9 @@ export function Services() {
         </div>
         
       </div>
+      
+      {/* Bottom Glassmorphism Divider */}
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-neve-dark to-transparent z-20 border-b border-white/5 backdrop-blur-sm pointer-events-none"></div>
     </section>
   );
 }
