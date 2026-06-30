@@ -256,7 +256,7 @@ export default function App() {
             <p className="text-gray-400 text-base md:text-xl font-light">Configure sua reserva com exclusividade em poucos cliques.</p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-neve-card/90 backdrop-blur-2xl border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-14 shadow-[0_20px_40px_rgba(0,0,0,0.5)] w-full max-w-[95%] md:max-w-none mx-auto min-h-[680px] md:min-h-[750px]">
+          <motion.div layout initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-neve-card/90 backdrop-blur-2xl border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-14 shadow-[0_20px_40px_rgba(0,0,0,0.5)] w-full max-w-[95%] md:max-w-none mx-auto">
             
             {/* Progress Indicator */}
             <div className="flex items-center justify-between mb-10 md:mb-16 relative px-2">
@@ -270,7 +270,7 @@ export default function App() {
               ))}
             </div>
 
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout">
               {/* Step 1 */}
               {step === 1 && (
                 <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="step-container active w-full">
