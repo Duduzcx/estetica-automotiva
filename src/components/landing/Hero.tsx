@@ -6,6 +6,11 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Coloque seu vídeo de detalhamento em /public/videos/hero-detalhamento.mp4
+const VIDEO_LOCAL = '/videos/hero-detalhamento.mp4';
+// Fallback para o site nunca quebrar enquanto o vídeo local não existe
+const VIDEO_FALLBACK = 'https://res.cloudinary.com/demo/video/upload/v1689363065/docs/cars.mp4';
+
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -13,65 +18,90 @@ export function Hero() {
 
   useGSAP(() => {
     const video = videoRef.current;
-    
-    if (video) {
-      const setupScrollTrigger = () => {
-        let tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.5, // Smooth scrubbing tied exclusively to scroll
-            pin: true,  
-          }
-        });
+    if (!video) return;
 
-        // The video scrubbing timeline
-        tl.to(video, {
-          currentTime: video.duration || 5,
-          ease: "none"
-        }, 0);
+    // Mobile (iOS/Android): destrava o vídeo no primeiro toque,
+    // senão o navegador bloqueia o seek do currentTime
+    const unlock = () => {
+      video.play().then(() => video.pause()).catch(() => {});
+    };
+    window.addEventListener('touchstart', unlock, { once: true });
 
-        // Fade out content as user scrolls down
-        tl.to(contentRef.current, {
-          y: 200,
-          opacity: 0,
-          ease: "power1.inOut"
-        }, 0);
-      };
+    const setup = () => {
+      const duration = video.duration || 5;
+      // Proxy + lerp: em vez de setar currentTime direto (que engasga),
+      // animamos um objeto e sincronizamos o vídeo suavemente
+      const proxy = { time: 0 };
 
-      if (video.readyState >= 1) {
-        setupScrollTrigger();
-      } else {
-        video.addEventListener('loadedmetadata', setupScrollTrigger);
-        return () => video.removeEventListener('loadedmetadata', setupScrollTrigger);
-      }
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: '+=200%', // 2 telas de scroll dedicadas ao scrubbing
+          scrub: 0.8,
+          pin: true,
+          anticipatePin: 1,
+        },
+      });
+
+      tl.to(
+        proxy,
+        {
+          time: duration,
+          ease: 'none',
+          duration: 1,
+          onUpdate: () => {
+            if (Math.abs(video.currentTime - proxy.time) > 0.01) {
+              video.currentTime = proxy.time;
+            }
+          },
+        },
+        0
+      );
+
+      // Conteúdo desce e some enquanto o vídeo avança
+      tl.to(
+        contentRef.current,
+        { y: 200, opacity: 0, ease: 'power1.inOut', duration: 0.45 },
+        0
+      );
+    };
+
+    if (video.readyState >= 1) {
+      setup();
+    } else {
+      video.addEventListener('loadedmetadata', setup, { once: true });
     }
+
+    return () => window.removeEventListener('touchstart', unlock);
   }, { scope: containerRef });
 
   const revealVariants: any = {
-    hidden: { clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)", y: 20 },
-    visible: { 
-      clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", 
+    hidden: { clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)', y: 20 },
+    visible: {
+      clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
       y: 0,
-      transition: { duration: 1.2, ease: [0.77, 0, 0.175, 1], staggerChildren: 0.2 }
-    }
+      transition: { duration: 1.2, ease: [0.77, 0, 0.175, 1], staggerChildren: 0.2 },
+    },
   };
 
   return (
     <section ref={containerRef} className="relative h-screen bg-black overflow-hidden">
-      
       {/* Glow Effects */}
       <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-neve-blue/20 blur-[150px] pointer-events-none z-0"></div>
       <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-900/20 blur-[150px] pointer-events-none z-0"></div>
 
       {/* Video Scrub Background */}
       <div className="absolute inset-0 z-0 w-full h-full">
-        <video 
+        <video
           ref={videoRef}
-          src="https://res.cloudinary.com/demo/video/upload/v1689363065/docs/cars.mp4" 
+          src={VIDEO_LOCAL}
+          onError={(e) => {
+            const v = e.currentTarget;
+            if (!v.src.includes('cloudinary')) v.src = VIDEO_FALLBACK;
+          }}
           className="w-full h-full object-cover opacity-60 will-change-[transform,filter,opacity]"
-          muted 
+          muted
           playsInline
           preload="auto"
         />
@@ -79,7 +109,7 @@ export function Hero() {
       </div>
 
       {/* Content Layer */}
-      <motion.div 
+      <motion.div
         ref={contentRef}
         variants={revealVariants}
         initial="hidden"
@@ -89,10 +119,10 @@ export function Hero() {
         <motion.div variants={revealVariants} className="overflow-hidden mb-6">
           <p className="text-neve-blue font-bold tracking-[0.3em] uppercase text-xs md:text-sm font-heading">A excelência em cada milímetro</p>
         </motion.div>
-        
+
         <motion.div variants={revealVariants} className="overflow-hidden mb-8">
           <h1 className="text-5xl md:text-7xl lg:text-[6.5rem] font-bold text-white leading-[1.05] tracking-tight whitespace-normal break-words">
-            Sua nave <br className="hidden md:block" /> 
+            Sua nave <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-neve-blue to-white">impecável.</span>
           </h1>
         </motion.div>
@@ -111,10 +141,9 @@ export function Hero() {
       </motion.div>
 
       <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/30 animate-pulse z-20 pointer-events-none">
-          <p className="text-xs uppercase tracking-[0.3em] mb-4 text-center">Scroll para Imersão</p>
-          <div className="w-[1px] h-24 bg-gradient-to-b from-white/50 to-transparent mx-auto"></div>
+        <p className="text-xs uppercase tracking-[0.3em] mb-4 text-center">Scroll para Imersão</p>
+        <div className="w-[1px] h-24 bg-gradient-to-b from-white/50 to-transparent mx-auto"></div>
       </div>
-      
     </section>
   );
 }

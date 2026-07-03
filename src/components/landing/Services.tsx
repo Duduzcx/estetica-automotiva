@@ -2,126 +2,202 @@ import { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import {
+  Shield, Sparkles, Car, Droplets, Layers, Lightbulb, Settings, Disc,
+  ArrowRight,
+} from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const servicesData = [
+  { title: 'Vitrificação Cerâmica', Icon: Shield, desc: 'Proteção de até 5 anos com dureza 9H. Brilho espelhado e repelência extrema.' },
+  { title: 'Polimento Técnico', Icon: Sparkles, desc: 'Correção de verniz em multiníveis. Remoção de riscos, hologramas e marcas.' },
+  { title: 'Higienização Interna', Icon: Car, desc: 'Limpeza detalhada, hidratação de couro e oxi-sanitização para eliminar odores.' },
+  { title: 'Lavagem Detalhada', Icon: Droplets, desc: 'Processo artesanal com snow foam, pincéis de detalhamento e ceras premium.' },
+  { title: 'Aplicação de PPF', Icon: Layers, desc: 'A armadura transparente definitiva contra pedras, riscos e desgastes externos.' },
+  { title: 'Restauração de Faróis', Icon: Lightbulb, desc: 'Devolvemos a transparência original e aplicamos proteção UV prolongada.' },
+  { title: 'Detalhamento de Motor', Icon: Settings, desc: 'Limpeza a seco meticulosa e condicionamento de borrachas para proteção.' },
+  { title: 'Proteção de Rodas', Icon: Disc, desc: 'Coating cerâmico para rodas, evitando impregnação de pó de freio e sujeira pesada.' },
+];
+
 export function Services() {
   const sectionRef = useRef<HTMLElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    const cards = gsap.utils.toArray('.service-card');
-    
-    // Calculate total width needed to scroll
+    const section = sectionRef.current;
+    if (!section) return;
+
+    // ── 1. Transição suave de cor: o fundo "clareia" do preto ao branco
+    // conforme a seção entra na tela (mata a quebra seca preto → branco)
+    gsap.fromTo(
+      section,
+      { backgroundColor: '#050505' },
+      {
+        backgroundColor: '#ffffff',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 90%',
+          end: 'top top',
+          scrub: true,
+        },
+      }
+    );
+
+    // Títulos acompanham: nascem brancos no fundo escuro e escurecem junto
+    gsap.fromTo(
+      '.services-title',
+      { color: '#ffffff' },
+      {
+        color: '#111827',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 70%',
+          end: 'top top',
+          scrub: true,
+        },
+      }
+    );
+
+    // ── 2. Scroll horizontal com pinning
+    const cards = gsap.utils.toArray<HTMLElement>('.service-card');
+
     const getTotalWidth = () => {
       let width = 0;
-      cards.forEach((card: any) => {
-        width += card.offsetWidth;
-      });
+      cards.forEach((card) => (width += card.offsetWidth));
       width += (cards.length - 1) * 24; // gap
       return width;
     };
 
-    let scrollTween = gsap.to(containerRef.current, {
+    const scrollTween = gsap.to(containerRef.current, {
       x: () => -(getTotalWidth() - window.innerWidth + 200),
-      ease: "none",
+      ease: 'none',
       scrollTrigger: {
-        trigger: sectionRef.current,
+        trigger: section,
         pin: true,
         scrub: 0.5,
-        end: () => "+=" + (getTotalWidth() * 1.2), // Mais rápido e responsivo
-        invalidateOnRefresh: true
-      }
+        end: () => '+=' + getTotalWidth() * 1.2,
+        invalidateOnRefresh: true,
+      },
     });
 
-    // Focus & Blur effect on cards as they come into the center of the screen
-    cards.forEach((card: any) => {
-      // Set initial inactive state
-      gsap.set(card, { opacity: 0.4, scale: 0.9, filter: "blur(4px)" });
-      
+    // Barra de progresso do carrossel
+    gsap.fromTo(
+      '.services-progress',
+      { scaleX: 0 },
+      {
+        scaleX: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => '+=' + getTotalWidth() * 1.2,
+          scrub: 0.3,
+        },
+      }
+    );
+
+    // ── 3. Foco e desfoque dos cards no centro da tela
+    cards.forEach((card) => {
+      gsap.set(card, { opacity: 0.45, scale: 0.94, filter: 'blur(3px)' });
+
       gsap.to(card, {
-        scale: 1.05,
+        scale: 1.03,
         opacity: 1,
-        filter: "blur(0px)",
-        ease: "power2.out",
+        filter: 'blur(0px)',
+        ease: 'power2.out',
         scrollTrigger: {
           trigger: card,
           containerAnimation: scrollTween,
-          start: "left center+=400", // Fica nítido mais cedo
-          end: "center center",
+          start: 'left center+=400',
+          end: 'center center',
           scrub: 0.5,
-        }
+        },
       });
 
-      // Fade out and blur again when leaving the center
       gsap.to(card, {
-        scale: 0.9,
-        opacity: 0.4,
-        filter: "blur(4px)",
-        ease: "power2.in",
+        scale: 0.94,
+        opacity: 0.45,
+        filter: 'blur(3px)',
+        ease: 'power2.in',
         scrollTrigger: {
           trigger: card,
           containerAnimation: scrollTween,
-          start: "center center-=400", // Só começa a embaçar quando já está bem à esquerda
-          end: "right center-=500",
+          start: 'center center-=400',
+          end: 'right center-=500',
           scrub: 0.5,
-        }
+        },
       });
     });
   }, { scope: sectionRef });
 
-  const servicesData = [
-    { title: "Vitrificação Cerâmica", icon: "fa-solid fa-shield-halved", desc: "Proteção de até 5 anos com dureza 9H. Brilho espelhado e repelência extrema." },
-    { title: "Polimento Técnico", icon: "fa-solid fa-wand-magic-sparkles", desc: "Correção de verniz em multiníveis. Remoção de riscos, hologramas e marcas." },
-    { title: "Higienização Interna", icon: "fa-solid fa-car-side", desc: "Limpeza detalhada, hidratação de couro e oxi-sanitização para eliminar odores." },
-    { title: "Lavagem Detalhada", icon: "fa-solid fa-droplet", desc: "Processo artesanal com snow foam, pincéis de detalhamento e ceras premium." },
-    { title: "Aplicação de PPF", icon: "fa-solid fa-layer-group", desc: "A armadura transparente definitiva contra pedras, riscos e desgastes externos." },
-    { title: "Restauração de Faróis", icon: "fa-regular fa-lightbulb", desc: "Devolvemos a transparência original e aplicamos proteção UV prolongada." },
-    { title: "Detalhamento de Motor", icon: "fa-solid fa-gears", desc: "Limpeza a seco meticulosa e condicionamento de borrachas para proteção." },
-    { title: "Proteção de Rodas", icon: "fa-solid fa-ring", desc: "Coating cerâmico para rodas, evitando impregnação de pó de freio e sujeira pesada." }
-  ];
-
   return (
-    <section ref={sectionRef} id="servicos" className="relative bg-white overflow-hidden">
-      {/* Top Glassmorphism Divider */}
-      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black to-transparent z-20 border-t border-white/10 backdrop-blur-sm pointer-events-none"></div>
+    <section ref={sectionRef} id="servicos" className="relative overflow-hidden" style={{ backgroundColor: '#050505' }}>
+      <div className="h-screen flex flex-col justify-center pt-20">
 
-      <div ref={wrapperRef} className="h-screen flex flex-col justify-center pt-20">
-        
-        <div className="px-6 lg:px-16 mb-12 shrink-0">
-          <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">
-            Nosso Portfólio
-          </h2>
-          <h3 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 whitespace-normal break-words max-w-4xl">
-            Serviços Premium
-          </h3>
+        <div className="px-6 lg:px-16 mb-10 shrink-0 flex items-end justify-between gap-8">
+          <div>
+            <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">
+              Nosso Portfólio
+            </h2>
+            <h3 className="services-title text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight whitespace-normal break-words max-w-4xl" style={{ color: '#ffffff' }}>
+              Serviços Premium
+            </h3>
+          </div>
+
+          {/* Barra de progresso do carrossel */}
+          <div className="hidden md:block w-48 shrink-0 mb-3">
+            <p className="text-[10px] uppercase tracking-[0.25em] text-gray-400 mb-2 text-right">Deslize</p>
+            <div className="h-[3px] w-full bg-gray-200/40 rounded-full overflow-hidden">
+              <div className="services-progress h-full w-full bg-neve-blue rounded-full origin-left" style={{ transform: 'scaleX(0)' }}></div>
+            </div>
+          </div>
         </div>
 
-        {/* This container will slide left */}
-        <div ref={containerRef} className="flex gap-6 px-6 lg:px-16 pb-12 w-max">
-          {servicesData.map((srv, idx) => (
-            <div 
+        {/* Container que desliza horizontalmente */}
+        <div ref={containerRef} className="flex gap-6 px-6 lg:px-16 pb-14 w-max items-stretch">
+          {servicesData.map(({ title, desc, Icon }, idx) => (
+            <div
               key={idx}
-              className="service-card group relative w-[85vw] max-w-[320px] md:max-w-[450px] md:w-[450px] shrink-0 p-6 md:p-10 rounded-[2rem] bg-gray-50 border border-gray-200 cursor-pointer will-change-[transform,filter,opacity]"
+              className="service-card group relative w-[85vw] max-w-[320px] md:max-w-[440px] md:w-[440px] shrink-0 p-7 md:p-10 rounded-[2rem] bg-white border border-gray-100 shadow-[0_20px_60px_-20px_rgba(15,40,80,0.12)] cursor-pointer overflow-hidden will-change-[transform,filter,opacity] transition-shadow duration-500 hover:shadow-[0_30px_80px_-20px_rgba(30,144,255,0.25)]"
             >
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-white shadow-sm rounded-2xl flex items-center justify-center mb-8 text-neve-blue text-xl md:text-2xl transition-all duration-500 group-hover:bg-neve-blue group-hover:text-white">
-                <i className={srv.icon}></i>
+              {/* Brilho sutil no topo do card */}
+              <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-neve-blue/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+
+              {/* Número marca d'água */}
+              <div className="absolute top-6 right-7 md:top-8 md:right-9 text-5xl md:text-6xl font-bold font-heading text-transparent bg-clip-text bg-gradient-to-b from-gray-200 to-gray-100 group-hover:from-neve-blue/30 group-hover:to-transparent transition-all duration-500 select-none">
+                {String(idx + 1).padStart(2, '0')}
               </div>
-              <h4 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-gray-900 tracking-wide group-hover:text-neve-blue transition-colors whitespace-normal break-words">{srv.title}</h4>
-              <p className="text-gray-600 text-sm md:text-base leading-relaxed font-light whitespace-normal break-words">{srv.desc}</p>
-              
-              <div className="absolute top-6 right-6 md:top-8 md:right-8 text-gray-200 text-4xl md:text-5xl font-bold font-heading group-hover:text-gray-300 transition-colors">
-                0{idx + 1}
+
+              {/* Ícone */}
+              <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center mb-8 bg-gradient-to-br from-neve-blue to-blue-400 text-white shadow-lg shadow-blue-500/25 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6">
+                <Icon className="w-6 h-6 md:w-7 md:h-7" />
               </div>
+
+              <h4 className="text-xl md:text-2xl font-bold mb-3 text-gray-900 tracking-wide group-hover:text-neve-blue transition-colors whitespace-normal break-words">
+                {title}
+              </h4>
+              <p className="text-gray-600 text-sm md:text-base leading-relaxed font-light whitespace-normal break-words mb-8">
+                {desc}
+              </p>
+
+              {/* CTA discreto */}
+              <a href="#agendamento" className="inline-flex items-center gap-2 text-sm font-bold text-gray-400 group-hover:text-neve-blue transition-colors">
+                Agendar este serviço
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+
+              {/* Linha de acento que cresce no hover */}
+              <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-gradient-to-r from-neve-blue to-blue-300 group-hover:w-full transition-all duration-700 ease-organic"></div>
             </div>
           ))}
         </div>
-        
       </div>
-      
-      {/* Bottom Glassmorphism Divider */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-neve-dark to-transparent z-20 border-b border-white/5 backdrop-blur-sm pointer-events-none"></div>
+
+      {/* Saída suave para a próxima seção escura (gradiente alto, sem borda dura) */}
+      <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-neve-dark via-neve-dark/40 to-transparent z-20 pointer-events-none"></div>
     </section>
   );
 }

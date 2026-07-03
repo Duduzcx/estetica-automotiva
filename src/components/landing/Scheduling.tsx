@@ -18,14 +18,25 @@ export function Scheduling() {
   const timeSlotsConfig = ["08:00", "09:00", "10:00", "11:30", "13:30", "15:00", "16:30", "18:00"];
   const todayDateStr = new Date().toISOString().split('T')[0];
 
+  // Só reposiciona a tela se o topo do cartão saiu da área visível.
+  // Usa getBoundingClientRect (posição real na tela) em vez de offsetTop,
+  // que fica errado por causa dos pin-spacers do GSAP nas seções acima.
+  const scrollToCardIfNeeded = () => {
+    const el = document.getElementById('agendamento-card');
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top < 0) {
+      window.scrollTo({ top: window.scrollY + rect.top - 90, behavior: 'smooth' });
+    }
+  };
+
   const handleNext = () => {
     if (step < 4) {
       setIsTransitioning(true);
       setTimeout(() => {
         setStep(step + 1);
         setIsTransitioning(false);
-        const el = document.getElementById('agendamento');
-        if (el) window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+        scrollToCardIfNeeded();
       }, 150);
     }
   };
@@ -35,8 +46,7 @@ export function Scheduling() {
       setTimeout(() => {
         setStep(step - 1);
         setIsTransitioning(false);
-        const el = document.getElementById('agendamento');
-        if (el) window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+        scrollToCardIfNeeded();
       }, 150);
     }
   };
@@ -57,7 +67,7 @@ export function Scheduling() {
           <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">Agende sua Avaliação</h3>
         </div>
 
-        <div className="bg-neve-dark/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
+        <div id="agendamento-card" className="bg-neve-dark/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
           
           {/* Progress Bar */}
           <div className="flex justify-between items-center mb-12 relative z-10">
