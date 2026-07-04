@@ -98,12 +98,12 @@ export function Hero() {
               const v = e.currentTarget;
               if (!v.src.includes('cloudinary')) v.src = VIDEO_FALLBACK;
             }}
-            className="w-full h-full object-cover opacity-60"
+            className="w-full h-full object-cover opacity-90"
             muted
             playsInline
             preload="auto"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30"></div>
         </div>
 
         {/* Content Layer — GSAP só mexe na opacidade desta camada externa */}

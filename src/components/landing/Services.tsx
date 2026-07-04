@@ -26,56 +26,6 @@ export function Services() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    // ── 1. Transição suave de cor: o fundo "clareia" do preto ao branco
-    // conforme a seção entra na tela (mata a quebra seca preto → branco)
-    gsap.fromTo(
-      section,
-      { backgroundColor: '#050505' },
-      {
-        backgroundColor: '#ffffff',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 85%',
-          end: 'top -10%',
-          scrub: true,
-        },
-      }
-    );
-
-    // Títulos acompanham: nascem brancos no fundo escuro e escurecem junto
-    gsap.fromTo(
-      '.services-title',
-      { color: '#ffffff' },
-      {
-        color: '#111827',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: pinWrapRef.current,
-          start: 'top 90%',
-          end: 'top 30%',
-          scrub: true,
-        },
-      }
-    );
-
-    // Entrada suave: o carrossel sobe e aparece antes de prender
-    gsap.from(pinWrapRef.current, {
-      y: 80,
-      opacity: 0,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: pinWrapRef.current,
-        start: 'top 95%',
-        end: 'top 35%',
-        scrub: true,
-      },
-    });
-
-    // ── 2. Scroll horizontal com pinning
     const cards = gsap.utils.toArray<HTMLElement>('.service-card');
 
     const getTotalWidth = () => {
@@ -85,8 +35,9 @@ export function Services() {
       return width;
     };
 
+    // Scroll horizontal com pinning (sem tranco: anticipatePin)
     const scrollTween = gsap.to(containerRef.current, {
-      x: () => -(getTotalWidth() - window.innerWidth + 200),
+      x: () => -(getTotalWidth() - window.innerWidth + 100),
       ease: 'none',
       scrollTrigger: {
         trigger: pinWrapRef.current,
@@ -115,56 +66,58 @@ export function Services() {
       }
     );
 
-    // ── 3. Foco e desfoque dos cards no centro da tela
+    // Foco nos cards: apenas opacidade + escala (SEM blur —
+    // filtros no scrub travam e causam artefatos em celular)
     cards.forEach((card) => {
-      gsap.set(card, { opacity: 0.45, scale: 0.94, filter: 'blur(3px)' });
+      gsap.set(card, { opacity: 0.55, scale: 0.95 });
 
       gsap.to(card, {
-        scale: 1.03,
+        scale: 1,
         opacity: 1,
-        filter: 'blur(0px)',
         ease: 'power2.out',
         scrollTrigger: {
           trigger: card,
           containerAnimation: scrollTween,
-          start: 'left center+=400',
+          start: 'left center+=350',
           end: 'center center',
-          scrub: 0.5,
+          scrub: 0.4,
         },
       });
 
       gsap.to(card, {
-        scale: 0.94,
-        opacity: 0.45,
-        filter: 'blur(3px)',
+        scale: 0.95,
+        opacity: 0.55,
         ease: 'power2.in',
         scrollTrigger: {
           trigger: card,
           containerAnimation: scrollTween,
-          start: 'center center-=400',
-          end: 'right center-=500',
-          scrub: 0.5,
+          start: 'center center-=350',
+          end: 'right center-=450',
+          scrub: 0.4,
         },
       });
     });
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} id="servicos" className="relative" style={{ backgroundColor: '#050505' }}>
-
-      {/* Transição mínima: só a linha, enquanto o fundo clareia */}
-      <div className="py-12 md:py-14 flex items-center justify-center">
-        <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-neve-blue to-transparent"></div>
+    <section
+      ref={sectionRef}
+      id="servicos"
+      className="relative z-10 bg-white rounded-t-[2.5rem] -mt-10 overflow-hidden"
+    >
+      {/* Alça decorativa no topo da "folha" branca */}
+      <div className="pt-5 pb-0 flex justify-center">
+        <div className="w-12 h-1.5 rounded-full bg-gray-200"></div>
       </div>
 
-      <div ref={pinWrapRef} className="h-screen flex flex-col justify-center pt-20 overflow-hidden">
+      <div ref={pinWrapRef} className="h-screen flex flex-col justify-center pt-16">
 
         <div className="px-6 lg:px-16 mb-10 shrink-0 flex items-end justify-between gap-8">
           <div>
             <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">
               Nosso Portfólio
             </h2>
-            <h3 className="services-title text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight whitespace-normal break-words max-w-4xl" style={{ color: '#ffffff' }}>
+            <h3 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 whitespace-normal break-words max-w-4xl">
               Serviços Premium
             </h3>
           </div>
@@ -172,7 +125,7 @@ export function Services() {
           {/* Barra de progresso do carrossel */}
           <div className="hidden md:block w-48 shrink-0 mb-3">
             <p className="text-[10px] uppercase tracking-[0.25em] text-gray-400 mb-2 text-right">Deslize</p>
-            <div className="h-[3px] w-full bg-gray-200/40 rounded-full overflow-hidden">
+            <div className="h-[3px] w-full bg-gray-200 rounded-full overflow-hidden">
               <div className="services-progress h-full w-full bg-neve-blue rounded-full origin-left" style={{ transform: 'scaleX(0)' }}></div>
             </div>
           </div>
@@ -183,18 +136,13 @@ export function Services() {
           {servicesData.map(({ title, desc, Icon }, idx) => (
             <div
               key={idx}
-              className="service-card group relative w-[85vw] max-w-[320px] md:max-w-[440px] md:w-[440px] shrink-0 p-7 md:p-10 rounded-[2rem] bg-white border border-gray-100 shadow-[0_20px_60px_-20px_rgba(15,40,80,0.12)] cursor-pointer overflow-hidden will-change-[transform,filter,opacity] transition-shadow duration-500 hover:shadow-[0_30px_80px_-20px_rgba(30,144,255,0.25)]"
+              className="service-card group relative w-[82vw] max-w-[320px] md:max-w-[440px] md:w-[440px] shrink-0 p-7 md:p-10 rounded-[2rem] bg-white border border-gray-100 shadow-[0_20px_60px_-20px_rgba(15,40,80,0.12)] cursor-pointer overflow-hidden transition-shadow duration-500 hover:shadow-[0_30px_80px_-20px_rgba(30,144,255,0.25)]"
             >
-              {/* Brilho sutil no topo do card */}
-              <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-neve-blue/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-
-              {/* Número marca d'água */}
-              <div className="absolute top-6 right-7 md:top-8 md:right-9 text-5xl md:text-6xl font-bold font-heading text-transparent bg-clip-text bg-gradient-to-b from-gray-200 to-gray-100 group-hover:from-neve-blue/30 group-hover:to-transparent transition-all duration-500 select-none">
+              <div className="absolute top-6 right-7 md:top-8 md:right-9 text-5xl md:text-6xl font-bold font-heading text-gray-100 group-hover:text-neve-blue/20 transition-colors duration-500 select-none">
                 {String(idx + 1).padStart(2, '0')}
               </div>
 
-              {/* Ícone */}
-              <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center mb-8 bg-gradient-to-br from-neve-blue to-blue-400 text-white shadow-lg shadow-blue-500/25 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6">
+              <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center mb-8 bg-gradient-to-br from-neve-blue to-blue-400 text-white shadow-lg shadow-blue-500/25 transition-transform duration-500 group-hover:scale-110">
                 <Icon className="w-6 h-6 md:w-7 md:h-7" />
               </div>
 
@@ -205,21 +153,16 @@ export function Services() {
                 {desc}
               </p>
 
-              {/* CTA discreto */}
               <a href="#agendamento" className="inline-flex items-center gap-2 text-sm font-bold text-gray-400 group-hover:text-neve-blue transition-colors">
                 Agendar este serviço
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
 
-              {/* Linha de acento que cresce no hover */}
               <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-gradient-to-r from-neve-blue to-blue-300 group-hover:w-full transition-all duration-700 ease-organic"></div>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Saída suave para a próxima seção escura (gradiente alto, sem borda dura) */}
-      <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-neve-dark via-neve-dark/40 to-transparent z-20 pointer-events-none"></div>
     </section>
   );
 }
