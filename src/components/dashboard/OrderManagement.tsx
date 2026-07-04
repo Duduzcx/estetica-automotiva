@@ -87,13 +87,13 @@ export function OrderManagement({ agendamentos, loading, updateStatus }: Props) 
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.97 }}
-                className={`p-5 rounded-xl border transition-all ${
+                className={`p-5 rounded-xl border overflow-hidden transition-all ${
                   a.status === 'pendente' ? 'border-yellow-500/30 bg-yellow-500/5' :
                   a.status === 'confirmado' ? 'border-green-500/30 bg-green-500/5' :
                   'border-red-500/30 bg-red-500/5'
                 }`}
               >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 min-w-0">
                   <div className="min-w-0">
                     <div className="flex items-center gap-3 flex-wrap">
                       <h4 className="font-bold text-white text-lg">{a.nome}</h4>
@@ -113,20 +113,20 @@ export function OrderManagement({ agendamentos, loading, updateStatus }: Props) 
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 w-full md:w-auto md:flex-nowrap">
+                  <div className={`grid gap-2 w-full md:flex md:w-auto ${a.status === 'pendente' ? 'grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)]' : 'grid-cols-[auto_minmax(0,1fr)]'}`}>
                     <button onClick={() => chamar(a)} title="Chamar no WhatsApp"
                       className="shrink-0 p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-[#25D366] hover:text-white transition-all">
                       <MessageCircle className="w-5 h-5" />
                     </button>
                     {a.status !== 'confirmado' && (
                       <button onClick={() => aprovar(a)}
-                        className="flex-1 min-w-[110px] md:flex-none flex items-center justify-center px-3 md:px-4 py-3 rounded-xl bg-green-500/15 text-green-400 hover:bg-green-500 hover:text-white font-bold text-sm whitespace-nowrap transition-all">
+                        className="w-full md:w-auto flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-green-500/15 text-green-400 hover:bg-green-500 hover:text-white font-bold text-sm transition-all">
                         <CheckCircle2 className="w-4 h-4 mr-1.5" /> Aprovar
                       </button>
                     )}
                     {a.status !== 'recusado' && (
                       <button onClick={() => recusar(a)}
-                        className="flex-1 min-w-[110px] md:flex-none flex items-center justify-center px-3 md:px-4 py-3 rounded-xl bg-red-500/15 text-red-400 hover:bg-red-500 hover:text-white font-bold text-sm whitespace-nowrap transition-all">
+                        className="w-full md:w-auto flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-red-500/15 text-red-400 hover:bg-red-500 hover:text-white font-bold text-sm transition-all">
                         <XCircle className="w-4 h-4 mr-1.5" /> Recusar
                       </button>
                     )}
