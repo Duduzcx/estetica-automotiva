@@ -10,13 +10,12 @@ export function Gallery() {
   const sectionRef = useRef<HTMLElement>(null);
 
   const portfolioItems = [
-    { type: 'image', src: 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 md:col-span-1 row-span-1' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80', span: 'col-span-1 md:col-span-2 row-span-2', isFeatured: true },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 md:col-span-2 row-span-1' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-2' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1600&q=80', span: 'col-span-1 md:col-span-2 row-span-2' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: '/gallery/interior-mercedes.jpg', alt: 'Higienização interna Mercedes AMG', span: 'col-span-1 md:col-span-1 row-span-1' },
+    { type: 'image', src: '/gallery/fachada.jpg', alt: 'Fachada da Neve na Nave com Golf detalhado', span: 'col-span-1 md:col-span-2 row-span-2', isFeatured: true },
+    { type: 'image', src: '/gallery/interior-porsche.jpg', alt: 'Interior vinho de Porsche 911 Carrera detalhado', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: '/gallery/estudio-bmw.jpg', alt: 'BMW e moto no estúdio Neve na Nave', span: 'col-span-1 md:col-span-2 row-span-1' },
+    { type: 'image', src: '/gallery/classico-vw.jpg', alt: 'VW clássico detalhado no estúdio', span: 'col-span-1 md:col-span-2 row-span-2' },
+    { type: 'image', src: '/gallery/nivus.jpg', alt: 'VW Nivus preto após detalhamento', span: 'col-span-1 md:col-span-2 row-span-2' },
   ];
 
   useGSAP(() => {
@@ -85,7 +84,7 @@ export function Gallery() {
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-700 z-10 pointer-events-none"></div>
               
               <div className="w-full h-full pointer-events-none">
-                <img src={item.src} alt={`Portfólio ${idx + 1}`} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
+                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
               </div>
             </div>
           ))}
@@ -105,7 +104,7 @@ export function Gallery() {
             >
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-700 z-10 pointer-events-none"></div>
               <div className="w-full h-full pointer-events-none">
-                <img src={item.src} alt={`Portfólio ${idx + 5}`} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
+                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
               </div>
             </div>
           ))}
