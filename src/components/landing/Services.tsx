@@ -26,10 +26,6 @@ export function Services() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    const mm = gsap.matchMedia();
-
-    // Desktop: pin + scroll horizontal cinematográfico
-    mm.add('(min-width: 768px)', () => {
     const cards = gsap.utils.toArray<HTMLElement>('.service-card');
 
     const getTotalWidth = () => {
@@ -48,7 +44,7 @@ export function Services() {
         pin: pinWrapRef.current,
         start: 'top top',
         scrub: 0.4,
-        end: () => '+=' + getTotalWidth(),
+        end: () => '+=' + getTotalWidth() * 0.85,
         invalidateOnRefresh: true,
         anticipatePin: 1,
       },
@@ -64,7 +60,7 @@ export function Services() {
         scrollTrigger: {
           trigger: pinWrapRef.current,
           start: 'top top',
-          end: () => '+=' + getTotalWidth(),
+          end: () => '+=' + getTotalWidth() * 0.85,
           scrub: 0.3,
         },
       }
@@ -101,8 +97,6 @@ export function Services() {
         },
       });
     });
-    });
-    // Celular: sem pin nenhum — o carrossel é nativo (arrastar com o dedo)
   }, { scope: sectionRef });
 
   return (
@@ -116,7 +110,7 @@ export function Services() {
         <div className="w-12 h-1.5 rounded-full bg-gray-200"></div>
       </div>
 
-      <div ref={pinWrapRef} className="py-16 md:py-0 md:h-screen flex flex-col justify-center md:pt-16">
+      <div ref={pinWrapRef} className="h-screen flex flex-col justify-center pt-16">
 
         <div className="px-6 lg:px-16 mb-10 shrink-0 flex items-end justify-between gap-8">
           <div>
@@ -138,11 +132,11 @@ export function Services() {
         </div>
 
         {/* Container que desliza horizontalmente */}
-        <div ref={containerRef} className="flex gap-6 px-6 lg:px-16 pb-14 items-stretch overflow-x-auto snap-x snap-mandatory md:overflow-visible md:w-max [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div ref={containerRef} className="flex gap-6 px-6 lg:px-16 pb-14 w-max items-stretch">
           {servicesData.map(({ title, desc, Icon }, idx) => (
             <div
               key={idx}
-              className="service-card snap-center group relative w-[82vw] max-w-[320px] md:max-w-[440px] md:w-[440px] shrink-0 p-7 md:p-10 rounded-[2rem] bg-white border border-gray-100 shadow-[0_20px_60px_-20px_rgba(15,40,80,0.12)] cursor-pointer overflow-hidden transition-shadow duration-500 hover:shadow-[0_30px_80px_-20px_rgba(30,144,255,0.25)]"
+              className="service-card group relative w-[82vw] max-w-[320px] md:max-w-[440px] md:w-[440px] shrink-0 p-7 md:p-10 rounded-[2rem] bg-white border border-gray-100 shadow-[0_20px_60px_-20px_rgba(15,40,80,0.12)] cursor-pointer overflow-hidden transition-shadow duration-500 hover:shadow-[0_30px_80px_-20px_rgba(30,144,255,0.25)]"
             >
               <div className="absolute top-6 right-7 md:top-8 md:right-9 text-5xl md:text-6xl font-bold font-heading text-gray-100 group-hover:text-neve-blue/20 transition-colors duration-500 select-none">
                 {String(idx + 1).padStart(2, '0')}
