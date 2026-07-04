@@ -85,6 +85,7 @@ export function GalleryShowcase() {
   }, { scope: wrapRef });
 
   return (
+    <div>
     <div ref={wrapRef} className="relative h-screen my-8 md:my-14">
       <div
         ref={frameRef}
@@ -98,6 +99,7 @@ export function GalleryShowcase() {
           <p className="text-white text-2xl md:text-4xl font-bold max-w-md leading-tight">Brilho de showroom, feito em Jaguari.</p>
         </div>
       </div>
+    </div>
     </div>
   );
 }

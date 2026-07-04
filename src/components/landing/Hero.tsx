@@ -88,6 +88,9 @@ export function Hero() {
   };
 
   return (
+    // Invólucro estável: o pin do GSAP reparenta a section AQUI DENTRO,
+    // sem mexer nos vizinhos que o React usa como referência (fix do insertBefore)
+    <div>
     <section id="inicio" ref={containerRef} className="relative h-screen bg-black">
       <div className="sticky top-0 h-screen overflow-hidden">
 
@@ -133,5 +136,6 @@ export function Hero() {
         </div>
       </div>
     </section>
+    </div>
   );
 }
