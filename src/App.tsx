@@ -13,15 +13,20 @@ gsap.registerPlugin(ScrollTrigger);
 type ViewState = 'landing' | 'dashboard';
 
 // Rede de segurança: um erro em qualquer componente não derruba mais o site inteiro
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  state = { hasError: false };
-  static getDerivedStateFromError() { return { hasError: true }; }
+class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; msg: string }> {
+  state = { hasError: false, msg: '' };
+  static getDerivedStateFromError(e: any) {
+    return { hasError: true, msg: String(e?.message || e).slice(0, 300) };
+  }
   render() {
     if (this.state.hasError) {
       return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24, textAlign: 'center' }}>
           <img src="/logo-mark.png" alt="Neve na Nave" style={{ height: 80 }} />
           <p style={{ color: '#fff', fontWeight: 700 }}>Ops, algo deu errado por aqui.</p>
+          <p style={{ color: '#fca5a5', fontSize: 12, maxWidth: 420, wordBreak: 'break-word', fontFamily: 'monospace' }}>
+            [DIAGNÓSTICO] {this.state.msg}
+          </p>
           <button onClick={() => window.location.reload()} style={{ backgroundColor: '#1E90FF', color: '#fff', fontWeight: 700, borderRadius: 12, padding: '12px 28px' }}>
             Recarregar o site
           </button>
