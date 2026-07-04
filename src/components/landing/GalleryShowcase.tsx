@@ -17,7 +17,7 @@ export function GalleryShowcase() {
   useGSAP(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     const images: HTMLImageElement[] = [];
@@ -35,8 +35,9 @@ export function GalleryShowcase() {
     };
 
     const resize = () => {
-      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
       draw();
     };
     resize();

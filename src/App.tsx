@@ -11,6 +11,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// A barra de endereço do celular aparecendo/sumindo dispara um recálculo
+// completo de todas as animações no meio do scroll = engasgo. Desligado:
+ScrollTrigger.config({ ignoreMobileResize: true });
+
 type ViewState = 'landing' | 'dashboard';
 
 // Rede de segurança: um erro em qualquer componente não derruba mais o site inteiro

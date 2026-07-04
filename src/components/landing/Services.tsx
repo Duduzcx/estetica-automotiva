@@ -149,7 +149,7 @@ export function Services() {
           {servicesData.map(({ title, desc, Icon, preco }, idx) => (
             <div
               key={idx}
-              className="service-card group relative w-[76vw] max-w-[300px] md:max-w-[440px] md:w-[440px] shrink-0 p-7 md:p-10 rounded-[2rem] bg-white border border-gray-100 shadow-[0_20px_60px_-20px_rgba(15,40,80,0.12)] cursor-pointer overflow-hidden transition-shadow duration-500 hover:shadow-[0_30px_80px_-20px_rgba(30,144,255,0.25)]"
+              className="service-card will-change-[transform,opacity] group relative w-[76vw] max-w-[300px] md:max-w-[440px] md:w-[440px] shrink-0 p-7 md:p-10 rounded-[2rem] bg-white border border-gray-100 shadow-[0_20px_60px_-20px_rgba(15,40,80,0.12)] cursor-pointer overflow-hidden transition-shadow duration-500 hover:shadow-[0_30px_80px_-20px_rgba(30,144,255,0.25)]"
             >
               <div className="absolute top-6 right-7 md:top-8 md:right-9 text-5xl md:text-6xl font-bold font-heading text-gray-100 group-hover:text-neve-blue/20 transition-colors duration-500 select-none">
                 {String(idx + 1).padStart(2, '0')}

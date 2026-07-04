@@ -18,7 +18,8 @@ export function Hero() {
   useGSAP(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    // alpha:false = compositing mais barato (o fundo é sempre opaco)
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     const images: HTMLImageElement[] = [];
@@ -37,8 +38,11 @@ export function Hero() {
     };
 
     const resize = () => {
-      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      // Teto de resolução: os frames têm 478px de largura, desenhar o canvas
+      // em retina 3x só queima GPU sem ganhar nitidez nenhuma
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
       draw();
     };
     resize();
@@ -53,22 +57,21 @@ export function Hero() {
     }
 
     // Trava curta: prende meia tela enquanto os frames passam.
-    // O tween interno dá a inércia (o frame "corre atrás" do dedo, suave)
+    // quickTo: UM tween reciclado pra vida toda, em vez de criar e
+    // destruir um tween novo a cada pixel de scroll (era o desperdício)
+    const irParaFrame = gsap.quickTo(proxy, 'frame', {
+      duration: 0.4,
+      ease: 'power1.out',
+      onUpdate: draw,
+    });
+
     ScrollTrigger.create({
       trigger: containerRef.current,
       start: 'top top',
       end: '+=50%',
       pin: true,
       anticipatePin: 1,
-      onUpdate: (self) => {
-        gsap.to(proxy, {
-          frame: self.progress * (FRAME_COUNT - 1),
-          duration: 0.4,
-          ease: 'power1.out',
-          overwrite: true,
-          onUpdate: draw,
-        });
-      },
+      onUpdate: (self) => irParaFrame(self.progress * (FRAME_COUNT - 1)),
     });
 
     return () => window.removeEventListener('resize', resize);
