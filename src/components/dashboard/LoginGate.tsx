@@ -27,16 +27,11 @@ export function LoginGate({ onLogin }: Props) {
     setErro('');
     setEntrando(true);
 
-    // 1) Autenticação real (Supabase Auth). Aceita e-mail completo ou só o usuário
+    // Autenticação real (Supabase Auth). Aceita e-mail completo ou só o usuário
     if (supabase) {
       const email = usuario.includes('@') ? usuario.trim() : `${usuario.trim().toLowerCase()}@nevenanave.com`;
       const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
       if (!error) { setEntrando(false); concluir(); return; }
-    }
-
-    // 2) Fallback provisório (até o usuário oficial ser criado no Supabase)
-    if (usuario.trim().toLowerCase() === 'nevenanave' && senha === 'garagem537') {
-      setEntrando(false); concluir(); return;
     }
 
     setEntrando(false);
