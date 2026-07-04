@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { MessageCircle } from 'lucide-react';
 
 export function WhatsAppFAB() {
-  const whatsappNumber = "5511937696256";
+  const whatsappNumber = "5511950467014";
   const message = "Olá! Gostaria de mais informações sobre os serviços de estética automotiva.";
   const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 

@@ -26,8 +26,8 @@ export function Footer() {
           <div>
             <h4 className="text-white font-bold mb-8 tracking-[0.1em] uppercase text-xs font-heading">Contato</h4>
             <ul className="text-gray-400 text-sm space-y-5 font-light">
-              <li className="flex items-center"><MapPin className="w-5 h-5 text-neve-blue mr-3" /> 📍 Santana de Parnaíba - SP</li>
-              <li className="flex items-center"><Phone className="w-5 h-5 text-neve-blue mr-3" /> (11) 99999-9999</li>
+              <li className="flex items-center"><MapPin className="w-5 h-5 text-neve-blue mr-3" /> Rua Delta, 537 - Jaguari, Santana de Parnaíba - SP</li>
+              <li className="flex items-center"><Phone className="w-5 h-5 text-neve-blue mr-3" /> (11) 95046-7014</li>
               <li className="flex items-center"><Mail className="w-5 h-5 text-neve-blue mr-3" /> contato@nevenanave.com</li>
             </ul>
           </div>
