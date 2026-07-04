@@ -28,34 +28,32 @@ export function Hero() {
       const duration = video.duration || 5;
       const proxy = { time: 0 };
 
-      // Trava CURTA no vídeo: prende ~70% de uma tela e solta.
-      // Scrub baixo = resposta quase imediata ao dedo (leve)
-      const tl = gsap.timeline({
+      // Trava curta da página (segura só um instante e solta)
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: 'top top',
+        end: '+=50%',
+        pin: true,
+        anticipatePin: 1,
+      });
+
+      // Vídeo com suavização própria (scrub alto): em vez de saltar
+      // frame a frame com o dedo, ele desliza com inércia — fluido
+      gsap.to(proxy, {
+        time: Math.min(3, duration),
+        ease: 'none',
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=40%',
-          scrub: 0.3,
-          pin: true,
-          anticipatePin: 1,
+          end: '+=50%',
+          scrub: 1.2,
+        },
+        onUpdate: () => {
+          if (Math.abs(video.currentTime - proxy.time) > 0.01) {
+            video.currentTime = proxy.time;
+          }
         },
       });
-
-      // Vídeo avança conforme a rolagem (só os primeiros ~4s)
-      tl.to(
-        proxy,
-        {
-          time: Math.min(4, duration),
-          ease: 'none',
-          duration: 1,
-          onUpdate: () => {
-            if (Math.abs(video.currentTime - proxy.time) > 0.01) {
-              video.currentTime = proxy.time;
-            }
-          },
-        },
-        0
-      );
 
     };
 

@@ -62,6 +62,19 @@ export function Services() {
       }
     );
 
+    // Entrada suave: o carrossel sobe e aparece antes de prender
+    gsap.from(pinWrapRef.current, {
+      y: 80,
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: pinWrapRef.current,
+        start: 'top 95%',
+        end: 'top 35%',
+        scrub: true,
+      },
+    });
+
     // ── 2. Scroll horizontal com pinning
     const cards = gsap.utils.toArray<HTMLElement>('.service-card');
 
@@ -82,6 +95,7 @@ export function Services() {
         scrub: 0.4,
         end: () => '+=' + getTotalWidth(),
         invalidateOnRefresh: true,
+        anticipatePin: 1,
       },
     });
 
