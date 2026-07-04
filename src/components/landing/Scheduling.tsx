@@ -25,7 +25,8 @@ export function Scheduling() {
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState('');
 
-  const timeSlotsConfig = ["08:00", "09:00", "10:00", "11:30", "13:30", "15:00", "16:30", "18:00"];
+  // Horário de funcionamento: 8h às 18h (de hora em hora)
+  const timeSlotsConfig = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
   const todayDateStr = new Date().toISOString().split('T')[0];
 
   const toggleService = (id: ServicoId) => {
@@ -88,8 +89,16 @@ export function Scheduling() {
     if (supabase) {
       const { error } = await supabase.from('agendamentos').insert(registro);
       if (error) {
-        setSendError('Não foi possível enviar. Tente novamente ou chame no WhatsApp.');
         setSending(false);
+        if (error.code === '23505') {
+          // Outro cliente reservou este horário segundos atrás (trava do banco)
+          setOcupados(prev => [...prev, selectedTime]);
+          setSelectedTime('');
+          setSendError('⏰ Poxa, esse horário acabou de ser reservado por outro cliente! Escolha outro horário, por favor.');
+          goToStep(2);
+        } else {
+          setSendError('Não foi possível enviar. Tente novamente ou chame no WhatsApp.');
+        }
         return;
       }
     }
@@ -185,6 +194,7 @@ export function Scheduling() {
             {step === 2 && (
               <div>
                 <h4 className="text-2xl font-bold text-white mb-6 text-center md:text-left">Escolha o Melhor Momento</h4>
+                {sendError && <p className="text-yellow-400/90 text-sm font-semibold mb-4 -mt-2">{sendError}</p>}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
                     <label className="block text-gray-400 text-sm font-bold mb-3 uppercase tracking-wider">Data Desejada</label>
