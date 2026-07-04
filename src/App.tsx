@@ -92,7 +92,7 @@ export default function App() {
             transition={{ duration: 0.5 }}
           >
             {isAuthed ? (
-              <Dashboard onLogout={handleLogout} />
+              <Dashboard onLogout={handleLogout} onBackToSite={() => setCurrentView('landing')} />
             ) : (
               <LoginGate onLogin={() => setIsAuthed(true)} />
             )}

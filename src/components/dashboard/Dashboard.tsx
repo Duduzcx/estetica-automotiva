@@ -2,7 +2,7 @@ import { Sidebar } from './Sidebar';
 import { Scorecards } from './Scorecards';
 import { OrderManagement } from './OrderManagement';
 import { TopServicesChart } from './TopServicesChart';
-import { Menu, LayoutDashboard, LogOut, X } from 'lucide-react';
+import { Menu, LayoutDashboard, LogOut, X, ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAgendamentos } from '../../hooks/useAgendamentos';
@@ -10,9 +10,10 @@ import { AgendaControl } from './AgendaControl';
 
 interface DashboardProps {
   onLogout: () => void;
+  onBackToSite: () => void;
 }
 
-export function Dashboard({ onLogout }: DashboardProps) {
+export function Dashboard({ onLogout, onBackToSite }: DashboardProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { agendamentos, loading, updateStatus } = useAgendamentos();
 
@@ -20,10 +21,13 @@ export function Dashboard({ onLogout }: DashboardProps) {
     <div className="min-h-screen bg-[#050505] text-white font-sans flex overflow-hidden">
       
       {/* Desktop Sidebar */}
-      <Sidebar onLogout={onLogout} />
+      <Sidebar onLogout={onLogout} onBackToSite={onBackToSite} />
 
       {/* Mobile Topbar */}
       <div className="md:hidden fixed top-0 w-full bg-neve-dark/80 backdrop-blur-md border-b border-white/5 z-40 p-4 flex justify-between items-center">
+        <button onClick={onBackToSite} className="flex items-center gap-1 text-gray-300 hover:text-white text-sm font-bold">
+          <ChevronLeft className="w-5 h-5" /> Site
+        </button>
         <img src="/logo-mark.png" alt="Neve na Nave" className="h-10 w-auto" />
         <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 z-50">
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -39,6 +43,13 @@ export function Dashboard({ onLogout }: DashboardProps) {
             exit={{ opacity: 0, x: -100 }}
             className="md:hidden fixed inset-0 z-30 bg-neve-dark/95 backdrop-blur-xl pt-24 px-6 flex flex-col"
           >
+             <button
+                onClick={onBackToSite}
+                className="w-full flex items-center justify-center px-4 py-4 rounded-xl text-white bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-bold text-lg"
+              >
+                <ChevronLeft className="w-6 h-6 mr-3" />
+                Voltar ao Site
+              </button>
              <button 
                 onClick={onLogout}
                 className="mt-8 w-full flex items-center justify-center px-4 py-4 rounded-xl text-white bg-red-500/20 border border-red-500/50 hover:bg-red-500 transition-all font-bold text-lg"
