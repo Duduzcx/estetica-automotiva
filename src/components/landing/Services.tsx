@@ -138,13 +138,9 @@ export function Services() {
   return (
     <section ref={sectionRef} id="servicos" className="relative" style={{ backgroundColor: '#050505' }}>
 
-      {/* Transição compacta: o fundo clareia enquanto a página desliza livre */}
-      <div className="py-16 md:py-20 flex flex-col items-center justify-center text-center px-6">
-        <div className="w-[1px] h-14 bg-gradient-to-b from-transparent via-neve-blue to-transparent mb-6"></div>
-        <p className="text-neve-blue font-bold tracking-[0.3em] uppercase text-[10px] md:text-xs mb-4 font-heading">Do escuro ao brilho</p>
-        <p className="services-title text-2xl md:text-4xl font-bold max-w-2xl leading-snug" style={{ color: '#ffffff' }}>
-          Cada detalhe do seu carro merece um processo à altura.
-        </p>
+      {/* Transição mínima: só a linha, enquanto o fundo clareia */}
+      <div className="py-12 md:py-14 flex items-center justify-center">
+        <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-neve-blue to-transparent"></div>
       </div>
 
       <div ref={pinWrapRef} className="h-screen flex flex-col justify-center pt-20 overflow-hidden">

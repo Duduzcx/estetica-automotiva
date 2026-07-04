@@ -34,8 +34,8 @@ export function Hero() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=70%',
-          scrub: 0.4,
+          end: '+=40%',
+          scrub: 0.3,
           pin: true,
           anticipatePin: 1,
         },
@@ -57,8 +57,6 @@ export function Hero() {
         0
       );
 
-      // Texto: apenas fade limpo (sem mover, sem brigar com o Framer)
-      tl.to(contentRef.current, { opacity: 0, ease: 'none', duration: 0.45 }, 0);
     };
 
     if (video.readyState >= 1) {
