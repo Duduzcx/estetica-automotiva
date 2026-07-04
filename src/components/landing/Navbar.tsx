@@ -31,7 +31,7 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
 
   return (
     <>
-      <nav className="fixed w-full z-50 transition-all duration-300 backdrop-blur-md bg-neve-dark/30 border-b border-white/5" id="navbar">
+      <nav style={{ zIndex: 70 }} className="fixed w-full transition-all duration-300 bg-[#04070d] md:bg-neve-dark/30 md:backdrop-blur-md border-b border-white/5" id="navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
@@ -70,11 +70,9 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
       {/* Menu Mobile */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            style={{ backgroundColor: '#04070d' }} className="fixed inset-0 z-[45] pt-24 px-6 md:hidden flex flex-col select-none"
+          <div
+            style={{ backgroundColor: '#04070d', zIndex: 60, position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }}
+            className="pt-24 px-6 md:hidden flex flex-col select-none"
           >
             <div className="flex flex-col gap-2">
               {LINKS.map((l) => (
@@ -105,7 +103,7 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
                 <Shield className="w-5 h-5 mr-2" /> Área Restrita
               </button>
             </div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </>
