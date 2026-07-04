@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Component, type ReactNode } from 'react';
 import { LandingPage } from './components/landing/LandingPage';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { LoginGate } from './components/dashboard/LoginGate';
@@ -11,6 +11,26 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 type ViewState = 'landing' | 'dashboard';
+
+// Rede de segurança: um erro em qualquer componente não derruba mais o site inteiro
+class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24, textAlign: 'center' }}>
+          <img src="/logo-mark.png" alt="Neve na Nave" style={{ height: 80 }} />
+          <p style={{ color: '#fff', fontWeight: 700 }}>Ops, algo deu errado por aqui.</p>
+          <button onClick={() => window.location.reload()} style={{ backgroundColor: '#1E90FF', color: '#fff', fontWeight: 700, borderRadius: 12, padding: '12px 28px' }}>
+            Recarregar o site
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>('landing');
@@ -44,6 +64,7 @@ export default function App() {
   }, [currentView]);
 
   return (
+    <ErrorBoundary>
     <div className="antialiased selection:bg-neve-blue selection:text-white font-sans bg-neve-dark text-white min-h-screen relative overflow-hidden">
       <AnimatePresence mode="wait">
         {currentView === 'landing' ? (
@@ -76,5 +97,6 @@ export default function App() {
       {/* Exibe o FAB do WhatsApp apenas na Landing Page */}
       {currentView === 'landing' && <WhatsAppFAB />}
     </div>
+    </ErrorBoundary>
   );
 }

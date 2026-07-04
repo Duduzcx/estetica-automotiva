@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Menu, X, Shield, Home, Sparkles, Image, CalendarCheck, MapPin } from 'lucide-react';
+import { Menu, X, Shield, Car, Sparkles, Droplets, Calendar, MapPin } from 'lucide-react';
 
 interface NavbarProps {
   onDashboardClick: () => void;
 }
 
 const LINKS = [
-  { label: 'Início', href: '#inicio', Icon: Home },
+  { label: 'Início', href: '#inicio', Icon: Car },
   { label: 'Serviços', href: '#servicos', Icon: Sparkles },
-  { label: 'Galeria', href: '#galeria', Icon: Image },
-  { label: 'Agendamento', href: '#agendamento', Icon: CalendarCheck },
+  { label: 'Galeria', href: '#galeria', Icon: Droplets },
+  { label: 'Agendamento', href: '#agendamento', Icon: Calendar },
   { label: 'Localização', href: '#localizacao', Icon: MapPin },
 ];
 
