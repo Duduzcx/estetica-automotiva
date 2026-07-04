@@ -23,14 +23,15 @@ export function useAgendamentos() {
   }, []);
 
   useEffect(() => {
-    if (!supabase) return;
+    const sb = supabase;
+    if (!sb) return;
     fetchAll();
     // Tempo real: qualquer novo agendamento aparece sozinho no painel
-    const channel = supabase
+    const channel = sb
       .channel('agendamentos-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'agendamentos' }, fetchAll)
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => { sb.removeChannel(channel); };
   }, [fetchAll]);
 
   const updateStatus = useCallback(async (id: string, status: Agendamento['status']) => {
