@@ -25,6 +25,15 @@
 }
 
 @layer utilities {
+  .whatsapp-fab {
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  body.fab-oculto .whatsapp-fab {
+    opacity: 0;
+    transform: scale(0.6) translateY(20px);
+    pointer-events: none;
+  }
+
   /* Letras no estilo da logo: azul brilhante com contorno escuro */
   .brand-text {
     font-family: 'Luckiest Guy', cursive;

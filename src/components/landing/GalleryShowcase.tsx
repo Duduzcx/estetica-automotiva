@@ -58,6 +58,9 @@ export function GalleryShowcase() {
         pin: true,
         scrub: 1,
         anticipatePin: 1,
+        // Esconde o botão do WhatsApp enquanto o vídeo está em cena
+        // (ele cobria a legenda) e traz de volta ao soltar
+        onToggle: (self) => document.body.classList.toggle('fab-oculto', self.isActive),
       },
     });
 
