@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Calendar, Clock, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets, X, CalendarCheck2 } from 'lucide-react';
-import { SERVICOS, formatBRL, type ServicoId } from '../../lib/servicos';
+import { Calendar, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets, X, CalendarCheck2, Layers, Lightbulb, Settings, Disc } from 'lucide-react';
+import { SERVICOS, formatBRL, precoLabel, type ServicoId } from '../../lib/servicos';
 import { supabase } from '../../lib/supabase';
 
 const ICONES: Record<ServicoId, React.ReactNode> = {
-  vitrificacao: <Shield className="w-6 h-6" />,
-  polimento: <Sparkles className="w-6 h-6" />,
+  polimento_tecnico: <Sparkles className="w-6 h-6" />,
+  polimento_comercial: <Sparkles className="w-6 h-6" />,
+  restauracao_farois: <Lightbulb className="w-6 h-6" />,
   higienizacao: <Car className="w-6 h-6" />,
-  lavagem: <Droplets className="w-6 h-6" />,
+  descont_vidros: <Droplets className="w-6 h-6" />,
+  descont_pintura: <Layers className="w-6 h-6" />,
+  cristalizacao: <Shield className="w-6 h-6" />,
+  limpeza_motor: <Settings className="w-6 h-6" />,
+  revit_plasticos: <Disc className="w-6 h-6" />,
+  coating: <Shield className="w-6 h-6" />,
+  planos: <Sparkles className="w-6 h-6" />,
+  lavagem_detalhada: <Droplets className="w-6 h-6" />,
+  lavagem_entrada: <Droplets className="w-6 h-6" />,
 };
 
 export function Scheduling() {
@@ -47,6 +56,8 @@ export function Scheduling() {
     setSelectedServices(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
   const precoTotal = selectedServices.reduce((acc, id) => acc + SERVICOS[id].preco, 0);
+  const temAPartirDe = selectedServices.some(id => (SERVICOS[id] as any).aPartirDe);
+  const totalLabel = `${temAPartirDe ? 'a partir de ' : ''}${formatBRL(precoTotal)}`;
   const nomesServicos = selectedServices.map(id => SERVICOS[id].nome).join(' + ');
 
   // Consulta horários ocupados e dias fechados no banco
@@ -157,19 +168,30 @@ export function Scheduling() {
     </section>
 
     {modalOpen && createPortal(
-      <div style={{ position: 'fixed', inset: 0, zIndex: 90 }} className="flex items-center justify-center p-3 md:p-6">
+      <div style={{ position: 'fixed', inset: 0, zIndex: 90 }} className="md:flex md:items-center md:justify-center md:p-6">
         {/* Fundo travado */}
-        <div onClick={fecharModal} style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.75)' }} />
+        <div onClick={fecharModal} style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.8)' }} />
 
-        {/* Card do agendamento */}
-        <div className="relative w-full max-w-2xl max-h-[92dvh] overflow-y-auto overscroll-contain bg-[#0b1320] border border-white/10 rounded-3xl p-5 md:p-8 shadow-2xl">
-          <button
-            onClick={fecharModal}
-            aria-label="Fechar"
-            className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+        {/* Card: tela cheia no celular, janela centrada no desktop */}
+        <div className="relative w-full h-[100dvh] md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-[#0b1320] md:border md:border-white/10 md:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+
+          {/* Cabeçalho fixo do card */}
+          <div className="shrink-0 flex items-center justify-between px-5 md:px-8 py-4 border-b border-white/10 bg-[#0b1320]">
+            <div className="flex items-center gap-3">
+              <img src="/logo-mark.png" alt="" className="h-8 w-auto" />
+              <span className="text-white font-bold">Agendar Avaliação</span>
+            </div>
+            <button
+              onClick={fecharModal}
+              aria-label="Fechar"
+              className="w-10 h-10 flex items-center justify-center rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Corpo rolável */}
+          <div className="flex-1 overflow-y-auto overscroll-contain p-5 md:p-8">
 
           {/* Progress Bar */}
           <div className="flex justify-between items-center mb-8 relative z-10">
@@ -213,17 +235,14 @@ export function Scheduling() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <h5 className="text-base md:text-lg font-bold text-white mb-0.5">{SERVICOS[id].nome}</h5>
-                        <p className="text-gray-500 text-xs md:text-sm flex items-center"><Clock className="w-3.5 h-3.5 mr-1 shrink-0" /> {SERVICOS[id].tempo}</p>
+                        <p className={`text-xs md:text-sm font-semibold ${ativo ? 'text-neve-blue' : 'text-gray-500'}`}>{precoLabel(id)}</p>
                       </div>
-                      <span className={`shrink-0 text-sm md:text-base font-bold ${ativo ? 'text-neve-blue' : 'text-gray-400'}`}>
-                        {formatBRL(SERVICOS[id].preco)}
-                      </span>
                     </div>
                   );})}
                 </div>
                 {selectedServices.length > 0 && (
                   <div className="mt-5 text-center md:text-right text-sm text-gray-300">
-                    {selectedServices.length} serviço{selectedServices.length > 1 ? 's' : ''} • Total: <span className="text-neve-blue font-bold text-base">{formatBRL(precoTotal)}</span>
+                    {selectedServices.length} serviço{selectedServices.length > 1 ? 's' : ''} • Total: <span className="text-neve-blue font-bold text-base">{totalLabel}</span>
                   </div>
                 )}
               </div>
@@ -307,7 +326,7 @@ export function Scheduling() {
                   <div className="mt-6 p-4 rounded-xl bg-neve-blue/5 border border-neve-blue/20 flex flex-wrap gap-x-6 gap-y-1 text-sm">
                     <span className="text-gray-300"><b className="text-white">{nomesServicos}</b></span>
                     <span className="text-gray-400">{dataFormatada} às {selectedTime}</span>
-                    <span className="text-neve-blue font-bold">{formatBRL(precoTotal)}</span>
+                    <span className="text-neve-blue font-bold">{totalLabel}</span>
                   </div>
                 )}
                 {sendError && <p className="text-red-400 text-sm mt-4">{sendError}</p>}
@@ -368,6 +387,7 @@ export function Scheduling() {
             </div>
           )}
 
+          </div>
         </div>
       </div>,
       document.body

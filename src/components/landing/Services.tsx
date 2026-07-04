@@ -6,19 +6,32 @@ import {
   Shield, Sparkles, Car, Droplets, Layers, Lightbulb, Settings, Disc,
   ArrowRight,
 } from 'lucide-react';
+import { SERVICOS, precoLabel, type ServicoId } from '../../lib/servicos';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const servicesData = [
-  { title: 'Vitrificação Cerâmica', Icon: Shield, desc: 'Proteção de até 5 anos com dureza 9H. Brilho espelhado e repelência extrema.' },
-  { title: 'Polimento Técnico', Icon: Sparkles, desc: 'Correção de verniz em multiníveis. Remoção de riscos, hologramas e marcas.' },
-  { title: 'Higienização Interna', Icon: Car, desc: 'Limpeza detalhada, hidratação de couro e oxi-sanitização para eliminar odores.' },
-  { title: 'Lavagem Detalhada', Icon: Droplets, desc: 'Processo artesanal com snow foam, pincéis de detalhamento e ceras premium.' },
-  { title: 'Aplicação de PPF', Icon: Layers, desc: 'A armadura transparente definitiva contra pedras, riscos e desgastes externos.' },
-  { title: 'Restauração de Faróis', Icon: Lightbulb, desc: 'Devolvemos a transparência original e aplicamos proteção UV prolongada.' },
-  { title: 'Detalhamento de Motor', Icon: Settings, desc: 'Limpeza a seco meticulosa e condicionamento de borrachas para proteção.' },
-  { title: 'Proteção de Rodas', Icon: Disc, desc: 'Coating cerâmico para rodas, evitando impregnação de pó de freio e sujeira pesada.' },
-];
+const DESC: Record<ServicoId, { Icon: any; desc: string }> = {
+  polimento_tecnico:   { Icon: Sparkles,  desc: 'Correção de verniz em multiníveis. Remove riscos, hologramas e marcas profundas.' },
+  polimento_comercial: { Icon: Sparkles,  desc: 'Renovação rápida de brilho para realçar a pintura no dia a dia.' },
+  restauracao_farois:  { Icon: Lightbulb, desc: 'Transparência original de volta, com proteção UV prolongada.' },
+  higienizacao:        { Icon: Car,       desc: 'Limpeza interna profunda, hidratação e eliminação de odores.' },
+  descont_vidros:      { Icon: Droplets,  desc: 'Remove chuva ácida, minerais e manchas — visão cristalina.' },
+  descont_pintura:     { Icon: Layers,    desc: 'Elimina partículas cravadas que a lavagem comum não tira.' },
+  cristalizacao:       { Icon: Shield,    desc: 'Repelência de água nos vidros: muito mais segurança na chuva.' },
+  limpeza_motor:       { Icon: Settings,  desc: 'Cofre do motor limpo e conservado, com produtos seguros.' },
+  revit_plasticos:     { Icon: Disc,      desc: 'Plásticos externos com cor e viço de carro novo.' },
+  coating:             { Icon: Shield,    desc: 'Camada de proteção cerâmica com brilho intenso e duradouro.' },
+  planos:              { Icon: Sparkles,  desc: 'Sua nave sempre impecável com cuidados recorrentes.' },
+  lavagem_detalhada:   { Icon: Droplets,  desc: 'Processo artesanal completo, cantinho por cantinho.' },
+  lavagem_entrada:     { Icon: Droplets,  desc: 'Lavagem cuidadosa e caprichada para o dia a dia.' },
+};
+
+const servicesData = (Object.keys(SERVICOS) as ServicoId[]).map(id => ({
+  title: SERVICOS[id].nome,
+  Icon: DESC[id].Icon,
+  desc: DESC[id].desc,
+  preco: precoLabel(id),
+}));
 
 export function Services() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -133,7 +146,7 @@ export function Services() {
 
         {/* Container que desliza horizontalmente */}
         <div ref={containerRef} className="flex gap-6 px-6 lg:px-16 pb-14 w-max items-stretch">
-          {servicesData.map(({ title, desc, Icon }, idx) => (
+          {servicesData.map(({ title, desc, Icon, preco }, idx) => (
             <div
               key={idx}
               className="service-card group relative w-[82vw] max-w-[320px] md:max-w-[440px] md:w-[440px] shrink-0 p-7 md:p-10 rounded-[2rem] bg-white border border-gray-100 shadow-[0_20px_60px_-20px_rgba(15,40,80,0.12)] cursor-pointer overflow-hidden transition-shadow duration-500 hover:shadow-[0_30px_80px_-20px_rgba(30,144,255,0.25)]"
@@ -149,9 +162,10 @@ export function Services() {
               <h4 className="text-xl md:text-2xl font-bold mb-3 text-gray-900 tracking-wide group-hover:text-neve-blue transition-colors whitespace-normal break-words">
                 {title}
               </h4>
-              <p className="text-gray-600 text-sm md:text-base leading-relaxed font-light whitespace-normal break-words mb-8">
+              <p className="text-gray-600 text-sm md:text-base leading-relaxed font-light whitespace-normal break-words mb-4">
                 {desc}
               </p>
+              <p className="text-neve-blue font-bold text-base md:text-lg mb-6">{preco}</p>
 
               <a href="#agendamento" className="inline-flex items-center gap-2 text-sm font-bold text-gray-400 group-hover:text-neve-blue transition-colors">
                 Agendar este serviço

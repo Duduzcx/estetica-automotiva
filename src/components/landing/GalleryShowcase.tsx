@@ -89,7 +89,7 @@ export function GalleryShowcase() {
 
   return (
     <div>
-    <div ref={wrapRef} className="relative h-screen my-8 md:my-14">
+    <div ref={wrapRef} className="relative h-[100svh] my-8 md:my-14">
       <div
         ref={frameRef}
         className="w-full h-full overflow-hidden will-change-transform relative"
@@ -97,7 +97,7 @@ export function GalleryShowcase() {
       >
         <canvas ref={canvasRef} className="w-full h-full block will-change-transform" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
-        <div className="showcase-caption absolute bottom-8 left-6 md:bottom-12 md:left-12 z-10">
+        <div className="showcase-caption absolute bottom-20 left-6 md:bottom-14 md:left-12 z-10">
           <p className="text-neve-blue font-bold tracking-[0.25em] uppercase text-[10px] md:text-xs mb-2 font-heading">Em ação</p>
           <p className="text-white text-2xl md:text-4xl font-bold max-w-md leading-tight">Brilho de showroom, feito em Jaguari.</p>
         </div>
