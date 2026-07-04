@@ -15,7 +15,21 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
-              <span className="text-2xl md:text-3xl font-bold tracking-tighter text-white uppercase font-heading">Neve<span className="text-neve-blue">na Nave</span></span>
+              <a href="#" className="flex items-center gap-3">
+                <img src="/logo.png" alt="Neve na Nave" className="h-10 w-10 md:h-12 md:w-12 rounded-full shadow-[0_0_18px_rgba(30,144,255,0.35)]" />
+                <span className="relative inline-block pt-[0.35em]">
+                  <svg aria-hidden="true" className="absolute -top-[0.55em] left-0 w-full h-[0.75em] z-10 pointer-events-none" viewBox="0 0 120 22" fill="none" preserveAspectRatio="none">
+                  <ellipse cx="12" cy="16" rx="13" ry="7" fill="#eef2f7"/>
+                  <ellipse cx="33" cy="11" rx="15" ry="9" fill="#ffffff"/>
+                  <ellipse cx="58" cy="14" rx="16" ry="9" fill="#f8fafc"/>
+                  <ellipse cx="83" cy="10" rx="14" ry="9" fill="#ffffff"/>
+                  <ellipse cx="106" cy="15" rx="13" ry="7" fill="#eef2f7"/>
+                  <circle cx="117" cy="5" r="2.2" fill="#ffffff"/>
+                  <circle cx="3.5" cy="6" r="1.8" fill="#eef2f7"/>
+                </svg>
+                  <span className="brand-text text-xl md:text-2xl relative">Neve na Nave</span>
+                </span>
+              </a>
             </motion.div>
             
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="hidden md:flex items-center space-x-6">

@@ -6,7 +6,21 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mb-20">
           <div className="flex flex-col">
-            <span className="text-2xl md:text-3xl font-bold tracking-tighter text-white uppercase mb-6 font-heading">Neve<span className="text-neve-blue">na Nave</span></span>
+            <div className="flex items-center gap-4 mb-6">
+              <img src="/logo.png" alt="Neve na Nave" className="h-14 w-14 rounded-full shadow-[0_0_18px_rgba(30,144,255,0.35)]" />
+              <span className="relative inline-block pt-[0.35em]">
+                <svg aria-hidden="true" className="absolute -top-[0.55em] left-0 w-full h-[0.75em] z-10 pointer-events-none" viewBox="0 0 120 22" fill="none" preserveAspectRatio="none">
+                  <ellipse cx="12" cy="16" rx="13" ry="7" fill="#eef2f7"/>
+                  <ellipse cx="33" cy="11" rx="15" ry="9" fill="#ffffff"/>
+                  <ellipse cx="58" cy="14" rx="16" ry="9" fill="#f8fafc"/>
+                  <ellipse cx="83" cy="10" rx="14" ry="9" fill="#ffffff"/>
+                  <ellipse cx="106" cy="15" rx="13" ry="7" fill="#eef2f7"/>
+                  <circle cx="117" cy="5" r="2.2" fill="#ffffff"/>
+                  <circle cx="3.5" cy="6" r="1.8" fill="#eef2f7"/>
+                </svg>
+                <span className="brand-text text-2xl relative">Neve na Nave</span>
+              </span>
+            </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs font-light">A referência definitiva em estética automotiva de alto padrão. Tratamos seu veículo como uma obra de arte.</p>
           </div>
           <div>

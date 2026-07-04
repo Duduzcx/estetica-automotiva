@@ -24,6 +24,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         heading: ['Nunito', 'sans-serif'],
+        logo: ['"Luckiest Guy"', 'cursive'],
       },
       transitionTimingFunction: {
         'organic': 'cubic-bezier(0.23, 1, 0.32, 1)',
