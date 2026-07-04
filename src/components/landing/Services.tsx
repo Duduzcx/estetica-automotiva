@@ -43,7 +43,7 @@ export function Services() {
         trigger: pinWrapRef.current,
         pin: pinWrapRef.current,
         start: 'top top',
-        scrub: 0.4,
+        scrub: 1,
         end: () => '+=' + getTotalWidth() * 0.85,
         invalidateOnRefresh: true,
         anticipatePin: 1,
@@ -69,7 +69,7 @@ export function Services() {
     // Foco nos cards: apenas opacidade + escala (SEM blur —
     // filtros no scrub travam e causam artefatos em celular)
     cards.forEach((card) => {
-      gsap.set(card, { opacity: 0.55, scale: 0.95 });
+      gsap.set(card, { opacity: 0.6, scale: 0.96 });
 
       gsap.to(card, {
         scale: 1,
@@ -85,8 +85,8 @@ export function Services() {
       });
 
       gsap.to(card, {
-        scale: 0.95,
-        opacity: 0.55,
+        scale: 0.96,
+        opacity: 0.6,
         ease: 'power2.in',
         scrollTrigger: {
           trigger: card,

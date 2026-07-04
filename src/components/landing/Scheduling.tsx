@@ -59,18 +59,18 @@ export function Scheduling() {
   const availableTimeSlots = selectedDate ? generateTimeSlots(selectedDate) : [];
 
   return (
-    <section id="agendamento" className="py-24 md:py-32 bg-[#050505] relative z-10">
+    <section id="agendamento" className="py-16 md:py-24 bg-[#050505] relative z-10">
       <div className="max-w-4xl mx-auto px-6">
         
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Reserva Exclusiva</h2>
           <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">Agende sua Avaliação</h3>
         </div>
 
-        <div id="agendamento-card" className="bg-neve-dark/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
+        <div id="agendamento-card" className="bg-neve-dark/50 backdrop-blur-xl border border-white/5 rounded-3xl p-5 md:p-10 shadow-2xl relative overflow-hidden">
           
           {/* Progress Bar */}
-          <div className="flex justify-between items-center mb-12 relative z-10">
+          <div className="flex justify-between items-center mb-8 relative z-10">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="flex flex-col items-center relative z-10">
                 <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold font-heading text-sm transition-colors duration-500 ${step >= i ? 'bg-neve-blue text-white shadow-[0_0_20px_rgba(30,144,255,0.4)]' : 'bg-white/5 text-gray-500 border border-white/10'}`}>
@@ -86,7 +86,7 @@ export function Scheduling() {
             </div>
           </div>
 
-          <div className={`transition-opacity duration-150 ease-in-out min-h-[500px] md:min-h-[400px] ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+          <div className={`transition-opacity duration-150 ease-in-out min-h-[300px] ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
             
             {/* Step 1: Services */}
             {step === 1 && (
@@ -97,17 +97,19 @@ export function Scheduling() {
                     <div 
                       key={srv.id}
                       onClick={() => setSelectedService(srv.id)}
-                      className={`p-6 rounded-2xl border cursor-pointer transition-all duration-300 ${
+                      className={`p-4 md:p-5 rounded-2xl border cursor-pointer transition-all duration-300 flex items-center gap-4 ${
                         selectedService === srv.id 
                           ? 'border-neve-blue bg-neve-blue/10 shadow-[0_0_30px_rgba(30,144,255,0.15)]' 
                           : 'border-white/10 bg-black/20 hover:border-white/30 hover:bg-white/5'
                       }`}
                     >
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${selectedService === srv.id ? 'bg-neve-blue text-white' : 'bg-white/5 text-gray-400'}`}>
+                      <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center ${selectedService === srv.id ? 'bg-neve-blue text-white' : 'bg-white/5 text-gray-400'}`}>
                         {srv.icon}
                       </div>
-                      <h5 className="text-lg font-bold text-white mb-1">{srv.name}</h5>
-                      <p className="text-gray-500 text-sm flex items-center"><Clock className="w-4 h-4 mr-1" /> Tempo médio: {srv.time}</p>
+                      <div className="min-w-0">
+                        <h5 className="text-base md:text-lg font-bold text-white mb-0.5">{srv.name}</h5>
+                        <p className="text-gray-500 text-xs md:text-sm flex items-center"><Clock className="w-3.5 h-3.5 mr-1 shrink-0" /> Tempo médio: {srv.time}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -207,7 +209,7 @@ export function Scheduling() {
 
           {/* Navigation Buttons */}
           {step < 4 && (
-            <div className="mt-12 flex justify-between border-t border-white/10 pt-8">
+            <div className="mt-8 flex justify-between border-t border-white/10 pt-6">
               <button 
                 onClick={handlePrev}
                 className={`flex items-center px-6 py-4 rounded-xl font-bold transition-all ${step === 1 ? 'opacity-0 pointer-events-none' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}

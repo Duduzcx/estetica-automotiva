@@ -7,16 +7,15 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function Gallery() {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const portfolioItems = [
-    { type: 'image', src: 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 md:col-span-1 row-span-1' },
-    { type: 'video', src: 'https://res.cloudinary.com/demo/video/upload/v1689363065/docs/cars.mp4', span: 'col-span-1 md:col-span-2 row-span-2', isFeatured: true },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 md:col-span-2 row-span-1' },
-    { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', span: 'col-span-1 row-span-2' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1619682817481-e994891cd1f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 md:col-span-2 row-span-2' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 md:col-span-1 row-span-1' },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80', span: 'col-span-1 md:col-span-2 row-span-2', isFeatured: true },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 md:col-span-2 row-span-1' },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-2' },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1600&q=80', span: 'col-span-1 md:col-span-2 row-span-2' },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
   ];
 
   useGSAP(() => {
@@ -59,28 +58,6 @@ export function Gallery() {
       }
     });
 
-    // Scrubbing for ALL videos
-    videoRefs.current.forEach((video) => {
-      if (!video) return;
-      
-      const setupVideoScrub = () => {
-        let tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: video,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          }
-        });
-        tl.to(video, { currentTime: video.duration || 5, ease: "none" });
-      };
-
-      if (video.readyState >= 1) {
-        setupVideoScrub();
-      } else {
-        video.addEventListener('loadedmetadata', setupVideoScrub);
-      }
-    });
   }, { scope: sectionRef });
 
   return (
@@ -107,18 +84,7 @@ export function Gallery() {
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-700 z-10 pointer-events-none"></div>
               
               <div className="w-full h-full pointer-events-none">
-                {item.type === 'image' ? (
-                  <img src={item.src} alt={`Portfólio ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
-                ) : (
-                  <video 
-                    ref={el => { videoRefs.current[idx] = el; }}
-                    src={item.src} 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90 will-change-[transform,opacity]" 
-                    muted 
-                    playsInline 
-                    preload="auto"
-                  />
-                )}
+                <img src={item.src} alt={`Portfólio ${idx + 1}`} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
               </div>
             </div>
           ))}
