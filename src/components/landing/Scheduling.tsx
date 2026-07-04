@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Clock, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Calendar, Clock, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets, X, CalendarCheck2 } from 'lucide-react';
 import { SERVICOS, formatBRL, type ServicoId } from '../../lib/servicos';
 import { supabase } from '../../lib/supabase';
 
@@ -23,9 +24,22 @@ export function Scheduling() {
   const [veiculo, setVeiculo] = useState('');
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [sending, setSending] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [sendError, setSendError] = useState('');
 
   // Horário de funcionamento: 8h às 18h (de hora em hora)
+  // Página travada enquanto o card está aberto
+  useEffect(() => {
+    document.body.style.overflow = modalOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [modalOpen]);
+
+  const fecharModal = () => {
+    setModalOpen(false);
+    if (step === 4) resetForm();
+    setSendError('');
+  };
+
   const timeSlotsConfig = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
   const todayDateStr = new Date().toISOString().split('T')[0];
 
@@ -122,15 +136,40 @@ export function Scheduling() {
   const dataFormatada = selectedDate ? selectedDate.split('-').reverse().join('/') : '';
 
   return (
+    <>
     <section id="agendamento" className="py-16 md:py-24 bg-[#050505] relative z-10">
-      <div className="max-w-4xl mx-auto px-6">
+      <div className="max-w-4xl mx-auto px-6 text-center">
 
-        <div className="text-center mb-10">
+        <div className="mb-8">
           <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Reserva Exclusiva</h2>
-          <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">Agende sua Avaliação</h3>
+          <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">Agende sua Avaliação</h3>
+          <p className="text-gray-400 max-w-xl mx-auto">Escolha os serviços, o dia e o horário — em menos de 1 minuto sua nave está na agenda.</p>
         </div>
 
-        <div id="agendamento-card" className="bg-neve-dark/50 backdrop-blur-xl border border-white/5 rounded-3xl p-5 md:p-10 shadow-2xl relative overflow-hidden">
+        <button
+          onClick={() => setModalOpen(true)}
+          className="inline-flex items-center gap-3 bg-neve-blue hover:bg-blue-600 text-white text-lg font-bold px-10 py-5 rounded-2xl shadow-[0_0_30px_rgba(30,144,255,0.35)] hover:shadow-[0_0_45px_rgba(30,144,255,0.55)] hover:-translate-y-1 transition-all"
+        >
+          <CalendarCheck2 className="w-6 h-6" /> Agendar Horário
+        </button>
+        <p className="text-gray-600 text-xs mt-4">Seg a Sáb • 8h às 18h • Rua Delta, 537 - Jaguari</p>
+      </div>
+    </section>
+
+    {modalOpen && createPortal(
+      <div style={{ position: 'fixed', inset: 0, zIndex: 90 }} className="flex items-center justify-center p-3 md:p-6">
+        {/* Fundo travado */}
+        <div onClick={fecharModal} style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.75)' }} />
+
+        {/* Card do agendamento */}
+        <div className="relative w-full max-w-2xl max-h-[92dvh] overflow-y-auto overscroll-contain bg-[#0b1320] border border-white/10 rounded-3xl p-5 md:p-8 shadow-2xl">
+          <button
+            onClick={fecharModal}
+            aria-label="Fechar"
+            className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
           {/* Progress Bar */}
           <div className="flex justify-between items-center mb-8 relative z-10">
@@ -285,12 +324,20 @@ export function Scheduling() {
                 <p className="text-gray-400 max-w-md mx-auto mb-8">
                   Seu pedido já chegou no painel da Neve na Nave. Nossa equipe vai analisar e te confirmar pelo WhatsApp em breve!
                 </p>
-                <button
-                  onClick={resetForm}
-                  className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold transition-colors"
-                >
-                  Fazer Novo Agendamento
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    onClick={fecharModal}
+                    className="bg-neve-blue hover:bg-blue-600 text-white px-8 py-4 rounded-xl font-bold transition-colors"
+                  >
+                    Concluir
+                  </button>
+                  <button
+                    onClick={resetForm}
+                    className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold transition-colors"
+                  >
+                    Fazer Novo Agendamento
+                  </button>
+                </div>
               </div>
             )}
 
@@ -322,7 +369,9 @@ export function Scheduling() {
           )}
 
         </div>
-      </div>
-    </section>
+      </div>,
+      document.body
+    )}
+    </>
   );
 }
