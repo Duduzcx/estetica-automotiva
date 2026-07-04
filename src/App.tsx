@@ -1,13 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LandingPage } from './components/landing/LandingPage';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { WhatsAppFAB } from './components/shared/WhatsAppFAB';
 import { AnimatePresence, motion } from 'framer-motion';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 type ViewState = 'landing' | 'dashboard';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>('landing');
+
+  // Scroll suave global (Lenis) sincronizado com o GSAP
+  useEffect(() => {
+    if (currentView !== 'landing') return;
+
+    const lenis = new Lenis({
+      lerp: 0.09,          // inércia: menor = mais "manteiga"
+      smoothWheel: true,
+      syncTouch: true,      // suaviza também o toque no celular
+      touchMultiplier: 1.4,
+    });
+
+    lenis.on('scroll', ScrollTrigger.update);
+    const raf = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(raf);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(raf);
+      lenis.destroy();
+    };
+  }, [currentView]);
 
   return (
     <div className="antialiased selection:bg-neve-blue selection:text-white font-sans bg-neve-dark text-white min-h-screen relative overflow-hidden">
