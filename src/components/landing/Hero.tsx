@@ -33,24 +33,24 @@ export function Hero() {
       // animamos um objeto e sincronizamos o vídeo suavemente
       const proxy = { time: 0 };
 
+      // Sem pin: a página desce normalmente e o vídeo avança
+      // durante essa descida natural (leve, sem travar o scroll)
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=140%', // pin mais curto: menos sensação de "travado"
-          scrub: 0.8,
-          pin: true,
-          anticipatePin: 1,
+          end: 'bottom top',
+          scrub: 0.6,
         },
       });
 
-      // Fase 1 (0 → 80%): o vídeo avança com o scroll
+      // O vídeo avança conforme a seção sai da tela
       tl.to(
         proxy,
         {
           time: duration,
           ease: 'none',
-          duration: 0.8,
+          duration: 1,
           onUpdate: () => {
             if (Math.abs(video.currentTime - proxy.time) > 0.01) {
               video.currentTime = proxy.time;
@@ -60,25 +60,11 @@ export function Hero() {
         0
       );
 
-      // Conteúdo desce e some logo no início
+      // Conteúdo sobe um pouco mais devagar que a página (parallax leve) e some
       tl.to(
         contentRef.current,
-        { y: 160, opacity: 0, ease: 'power1.inOut', duration: 0.35 },
+        { y: 120, opacity: 0, ease: 'power1.in', duration: 0.6 },
         0
-      );
-
-      // Fase 2 (80% → 100%): saída cinematográfica — o vídeo afasta,
-      // escurece e some, entregando a tela suavemente pros Serviços
-      tl.to(
-        video,
-        {
-          scale: 0.92,
-          opacity: 0,
-          filter: 'brightness(0.3)',
-          ease: 'power2.inOut',
-          duration: 0.2,
-        },
-        0.8
       );
     };
 

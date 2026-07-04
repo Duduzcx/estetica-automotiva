@@ -19,10 +19,9 @@ export default function App() {
     if (currentView !== 'landing') return;
 
     const lenis = new Lenis({
-      lerp: 0.09,          // inércia: menor = mais "manteiga"
+      lerp: 0.11,          // inércia suave no desktop
       smoothWheel: true,
-      syncTouch: true,      // suaviza também o toque no celular
-      touchMultiplier: 1.4,
+      syncTouch: false,     // celular usa o scroll nativo (mais leve e natural)
     });
 
     lenis.on('scroll', ScrollTrigger.update);
