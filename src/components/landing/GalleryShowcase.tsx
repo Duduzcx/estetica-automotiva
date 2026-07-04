@@ -5,8 +5,8 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Quando chegar o vídeo real: gerar os frames e atualizar FRAME_COUNT
-const FRAME_COUNT = 1;
+// 43 frames extraídos do vídeo de polimento (10fps, ~4.3s)
+const FRAME_COUNT = 43;
 const framePath = (i: number) => `/videos/gallery-seq/frame_${String(i + 1).padStart(3, '0')}.jpg`;
 
 export function GalleryShowcase() {
