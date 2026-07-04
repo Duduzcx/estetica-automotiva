@@ -1,8 +1,8 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-// Preenchido automaticamente quando o projeto Supabase for criado
-const SUPABASE_URL = 'PENDENTE';
-const SUPABASE_KEY = 'PENDENTE';
+// Projeto Supabase da Neve na Nave (chave publishable: segura pra ficar no site)
+const SUPABASE_URL = 'https://rqvhtnbarlbhlyhyoimq.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_35uAuKNTYUQHWEIKWQj8lQ_nzd52EuQ';
 
 export const isSupabaseConfigured = SUPABASE_URL.startsWith('https://');
 
