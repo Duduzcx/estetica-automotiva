@@ -138,9 +138,10 @@ export function Services() {
   return (
     <section ref={sectionRef} id="servicos" className="relative" style={{ backgroundColor: '#050505' }}>
 
-      {/* Faixa de respiro: rolagem 100% livre enquanto o fundo clareia */}
-      <div className="min-h-[55vh] flex flex-col items-center justify-center text-center px-6">
-        <p className="text-neve-blue font-bold tracking-[0.3em] uppercase text-xs mb-5 font-heading">Do escuro ao brilho</p>
+      {/* Transição compacta: o fundo clareia enquanto a página desliza livre */}
+      <div className="py-16 md:py-20 flex flex-col items-center justify-center text-center px-6">
+        <div className="w-[1px] h-14 bg-gradient-to-b from-transparent via-neve-blue to-transparent mb-6"></div>
+        <p className="text-neve-blue font-bold tracking-[0.3em] uppercase text-[10px] md:text-xs mb-4 font-heading">Do escuro ao brilho</p>
         <p className="services-title text-2xl md:text-4xl font-bold max-w-2xl leading-snug" style={{ color: '#ffffff' }}>
           Cada detalhe do seu carro merece um processo à altura.
         </p>

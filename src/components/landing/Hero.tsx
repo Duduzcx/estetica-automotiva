@@ -28,14 +28,16 @@ export function Hero() {
       const duration = video.duration || 5;
       const proxy = { time: 0 };
 
-      // SEM pin do GSAP: o "sticky" nativo do navegador segura o vídeo
-      // na tela enquanto a página rola livre — zero travamento
+      // Trava CURTA no vídeo: prende ~70% de uma tela e solta.
+      // Scrub baixo = resposta quase imediata ao dedo (leve)
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: 'bottom bottom',
-          scrub: 0.5,
+          end: '+=70%',
+          scrub: 0.4,
+          pin: true,
+          anticipatePin: 1,
         },
       });
 
@@ -83,7 +85,7 @@ export function Hero() {
   };
 
   return (
-    <section ref={containerRef} className="relative h-[150vh] bg-black">
+    <section ref={containerRef} className="relative h-screen bg-black">
       {/* Viewport grudado: o navegador segura isso na tela (liso, nativo) */}
       <div className="sticky top-0 h-screen overflow-hidden">
 
