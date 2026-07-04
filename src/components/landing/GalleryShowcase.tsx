@@ -6,7 +6,7 @@ import { useGSAP } from '@gsap/react';
 gsap.registerPlugin(ScrollTrigger);
 
 // 50 frames do vídeo real da Mercedes CLA 45 AMG no estúdio
-const FRAME_COUNT = 50;
+const FRAME_COUNT = 30;
 const framePath = (i: number) => `/videos/gallery-seq/frame_${String(i + 1).padStart(3, '0')}.jpg`;
 
 export function GalleryShowcase() {
@@ -52,6 +52,7 @@ export function GalleryShowcase() {
         const img = new Image();
         img.src = framePath(i);
         if (i === 0) img.onload = draw;
+        img.decode?.().catch(() => {});
         images.push(img);
       }
     };
@@ -66,9 +67,9 @@ export function GalleryShowcase() {
       scrollTrigger: {
         trigger: wrapRef.current,
         start: 'top top',
-        end: '+=160%',
+        end: '+=100%',
         pin: true,
-        scrub: 1,
+        scrub: 0.6,
         anticipatePin: 1,
         // Esconde o botão do WhatsApp enquanto o vídeo está em cena
         // (ele cobria a legenda) e traz de volta ao soltar
@@ -92,9 +93,6 @@ export function GalleryShowcase() {
         0.08
       );
     }
-
-    // Zoom interno lento (dá vida mesmo antes do vídeo real chegar)
-    tl.fromTo(canvas, { scale: 1.18 }, { scale: 1, ease: 'none', duration: 1 }, 0);
 
     return () => { window.removeEventListener('resize', resize); observer.disconnect(); };
   }, { scope: wrapRef });

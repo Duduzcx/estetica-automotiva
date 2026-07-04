@@ -46,6 +46,17 @@ export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>('landing');
   const [isAuthed, setIsAuthed] = useState(() => localStorage.getItem('nn_auth_device') === '1' || sessionStorage.getItem('nn_auth') === '1');
 
+  // A porta do painel obedece à sessão REAL do Supabase (é ela que o banco
+  // respeita). O supabase-js guarda e renova essa sessão sozinho no aparelho.
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_ev, session) => {
+      setIsAuthed(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
   const handleLogout = () => {
     supabase?.auth.signOut();
     sessionStorage.removeItem('nn_auth');

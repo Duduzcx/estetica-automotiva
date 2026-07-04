@@ -53,6 +53,7 @@ export function Hero() {
       const img = new Image();
       img.src = framePath(i);
       if (i === 0) img.onload = draw;
+      img.decode?.().catch(() => {});
       images.push(img);
     }
 

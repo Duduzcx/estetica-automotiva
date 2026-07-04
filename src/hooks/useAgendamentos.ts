@@ -31,7 +31,9 @@ export function useAgendamentos() {
       .channel('agendamentos-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'agendamentos' }, fetchAll)
       .subscribe();
-    return () => { sb.removeChannel(channel); };
+    // Rede de segurança: mesmo se o tempo real falhar, nada passa despercebido
+    const intervalo = setInterval(fetchAll, 15000);
+    return () => { sb.removeChannel(channel); clearInterval(intervalo); };
   }, [fetchAll]);
 
   const updateStatus = useCallback(async (id: string, status: Agendamento['status']) => {
