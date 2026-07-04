@@ -94,7 +94,7 @@ export function Hero() {
         {/* Frames do detalhamento desenhados em canvas */}
         <div className="absolute inset-0 z-0 w-full h-full">
           <canvas ref={canvasRef} className="w-full h-full" />
-          <div className="absolute inset-0 bg-black/45"></div>
+          <div className="absolute inset-0 bg-black/60"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/40"></div>
         </div>
 
