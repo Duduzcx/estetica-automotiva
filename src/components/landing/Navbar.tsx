@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createPortal } from 'react-dom';
 import { Menu, X, Shield, Car, Sparkles, Droplets, Calendar, MapPin } from 'lucide-react';
 
 interface NavbarProps {
@@ -67,8 +68,9 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
         </div>
       </nav>
 
-      {/* Menu Mobile: drawer lateral animado */}
-      <AnimatePresence>
+      {/* Menu Mobile: drawer lateral animado (portal: renderiza direto no body,
+          imune a overflow/transform de qualquer seção da página) */}
+      {createPortal(<AnimatePresence>
         {isMobileMenuOpen && (
           <>
             {/* Fundo escurecido (fecha ao tocar) */}
@@ -139,7 +141,7 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
             </motion.aside>
           </>
         )}
-      </AnimatePresence>
+      </AnimatePresence>, document.body)}
 
     </>
   );

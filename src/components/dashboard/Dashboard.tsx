@@ -6,6 +6,7 @@ import { Menu, LayoutDashboard, LogOut, X } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAgendamentos } from '../../hooks/useAgendamentos';
+import { AgendaControl } from './AgendaControl';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -77,6 +78,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
             </div>
             <div>
               <TopServicesChart agendamentos={agendamentos} />
+              <AgendaControl />
             </div>
           </div>
           

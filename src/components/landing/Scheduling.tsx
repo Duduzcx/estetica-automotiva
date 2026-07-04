@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, Clock, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets } from 'lucide-react';
 import { SERVICOS, formatBRL, type ServicoId } from '../../lib/servicos';
 import { supabase } from '../../lib/supabase';
@@ -12,7 +12,10 @@ const ICONES: Record<ServicoId, React.ReactNode> = {
 
 export function Scheduling() {
   const [step, setStep] = useState(1);
-  const [selectedService, setSelectedService] = useState<ServicoId | ''>('');
+  const [selectedServices, setSelectedServices] = useState<ServicoId[]>([]);
+  const [ocupados, setOcupados] = useState<string[]>([]);
+  const [diaFechado, setDiaFechado] = useState(false);
+  const [loadingSlots, setLoadingSlots] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [nome, setNome] = useState('');
@@ -24,6 +27,30 @@ export function Scheduling() {
 
   const timeSlotsConfig = ["08:00", "09:00", "10:00", "11:30", "13:30", "15:00", "16:30", "18:00"];
   const todayDateStr = new Date().toISOString().split('T')[0];
+
+  const toggleService = (id: ServicoId) => {
+    setSelectedServices(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  };
+  const precoTotal = selectedServices.reduce((acc, id) => acc + SERVICOS[id].preco, 0);
+  const nomesServicos = selectedServices.map(id => SERVICOS[id].nome).join(' + ');
+
+  // Consulta horários ocupados e dias fechados no banco
+  useEffect(() => {
+    if (!selectedDate || !supabase) return;
+    let ativo = true;
+    setLoadingSlots(true);
+    (async () => {
+      const [ags, fech] = await Promise.all([
+        supabase.from('agendamentos').select('horario').eq('data', selectedDate).in('status', ['pendente', 'confirmado']),
+        supabase.from('dias_fechados').select('data').eq('data', selectedDate),
+      ]);
+      if (!ativo) return;
+      setOcupados(ags.data ? ags.data.map((r: any) => r.horario) : []);
+      setDiaFechado(!!(fech.data && fech.data.length > 0));
+      setLoadingSlots(false);
+    })();
+    return () => { ativo = false; };
+  }, [selectedDate]);
 
   const scrollToCardIfNeeded = () => {
     const el = document.getElementById('agendamento-card');
@@ -44,15 +71,15 @@ export function Scheduling() {
   };
 
   const handleSubmit = async () => {
-    if (!selectedService) return;
+    if (selectedServices.length === 0) return;
     setSending(true);
     setSendError('');
     const registro = {
       nome: nome.trim(),
       whatsapp: whatsapp.replace(/\D/g, ''),
       veiculo: veiculo.trim(),
-      servico: SERVICOS[selectedService].nome,
-      preco: SERVICOS[selectedService].preco,
+      servico: nomesServicos,
+      preco: precoTotal,
       data: selectedDate,
       horario: selectedTime,
       status: 'pendente',
@@ -77,17 +104,12 @@ export function Scheduling() {
   const handlePrev = () => { if (step > 1) goToStep(step - 1); };
 
   const resetForm = () => {
-    setSelectedService(''); setSelectedDate(''); setSelectedTime('');
+    setSelectedServices([]); setSelectedDate(''); setSelectedTime('');
     setNome(''); setWhatsapp(''); setVeiculo('');
     setStep(1);
   };
 
-  const generateTimeSlots = (dateStr: string) => {
-    const charSum = dateStr.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return timeSlotsConfig.filter((_, index) => (charSum + index) % 3 !== 0);
-  };
-
-  const availableTimeSlots = selectedDate ? generateTimeSlots(selectedDate) : [];
+  const availableTimeSlots = selectedDate ? timeSlotsConfig.filter(t => !ocupados.includes(t)) : [];
   const dataFormatada = selectedDate ? selectedDate.split('-').reverse().join('/') : '';
 
   return (
@@ -123,31 +145,39 @@ export function Scheduling() {
             {/* Step 1: Services */}
             {step === 1 && (
               <div>
-                <h4 className="text-2xl font-bold text-white mb-6 text-center md:text-left">Selecione o Serviço Principal</h4>
+                <h4 className="text-2xl font-bold text-white mb-2 text-center md:text-left">Selecione os Serviços</h4>
+                <p className="text-gray-500 text-sm mb-6 text-center md:text-left">Pode escolher mais de um! ✨</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {(Object.keys(SERVICOS) as ServicoId[]).map((id) => (
+                  {(Object.keys(SERVICOS) as ServicoId[]).map((id) => {
+                    const ativo = selectedServices.includes(id);
+                    return (
                     <div
                       key={id}
-                      onClick={() => setSelectedService(id)}
+                      onClick={() => toggleService(id)}
                       className={`p-4 md:p-5 rounded-2xl border cursor-pointer transition-all duration-300 flex items-center gap-4 ${
-                        selectedService === id
+                        ativo
                           ? 'border-neve-blue bg-neve-blue/10 shadow-[0_0_30px_rgba(30,144,255,0.15)]'
                           : 'border-white/10 bg-black/20 hover:border-white/30 hover:bg-white/5'
                       }`}
                     >
-                      <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center ${selectedService === id ? 'bg-neve-blue text-white' : 'bg-white/5 text-gray-400'}`}>
-                        {ICONES[id]}
+                      <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center ${ativo ? 'bg-neve-blue text-white' : 'bg-white/5 text-gray-400'}`}>
+                        {ativo ? <CheckCircle2 className="w-6 h-6" /> : ICONES[id]}
                       </div>
                       <div className="min-w-0 flex-1">
                         <h5 className="text-base md:text-lg font-bold text-white mb-0.5">{SERVICOS[id].nome}</h5>
                         <p className="text-gray-500 text-xs md:text-sm flex items-center"><Clock className="w-3.5 h-3.5 mr-1 shrink-0" /> {SERVICOS[id].tempo}</p>
                       </div>
-                      <span className={`shrink-0 text-sm md:text-base font-bold ${selectedService === id ? 'text-neve-blue' : 'text-gray-400'}`}>
+                      <span className={`shrink-0 text-sm md:text-base font-bold ${ativo ? 'text-neve-blue' : 'text-gray-400'}`}>
                         {formatBRL(SERVICOS[id].preco)}
                       </span>
                     </div>
-                  ))}
+                  );})}
                 </div>
+                {selectedServices.length > 0 && (
+                  <div className="mt-5 text-center md:text-right text-sm text-gray-300">
+                    {selectedServices.length} serviço{selectedServices.length > 1 ? 's' : ''} • Total: <span className="text-neve-blue font-bold text-base">{formatBRL(precoTotal)}</span>
+                  </div>
+                )}
               </div>
             )}
 
@@ -174,7 +204,11 @@ export function Scheduling() {
                     <label className="block text-gray-400 text-sm font-bold mb-3 uppercase tracking-wider">Horários Disponíveis</label>
                     <div className="grid grid-cols-3 gap-3">
                       {selectedDate ? (
-                        availableTimeSlots.length > 0 ? (
+                        loadingSlots ? (
+                          <div className="col-span-3 text-center py-4 text-gray-500 text-sm">Verificando disponibilidade...</div>
+                        ) : diaFechado ? (
+                          <div className="col-span-3 text-center py-4 text-yellow-400/90 text-sm font-semibold">😴 Estamos fechados nesta data. Escolha outro dia!</div>
+                        ) : availableTimeSlots.length > 0 ? (
                           availableTimeSlots.map((time) => (
                             <button
                               key={time}
@@ -189,7 +223,7 @@ export function Scheduling() {
                             </button>
                           ))
                         ) : (
-                          <div className="col-span-3 text-center py-4 text-gray-500 text-sm">Sem horários nesta data.</div>
+                          <div className="col-span-3 text-center py-4 text-gray-500 text-sm">Todos os horários desta data já foram reservados. 🙈</div>
                         )
                       ) : (
                         <div className="col-span-3 text-center py-4 text-gray-600 text-sm italic">Aguardando data...</div>
@@ -220,11 +254,11 @@ export function Scheduling() {
                 </div>
 
                 {/* Resumo do pedido */}
-                {selectedService && (
+                {selectedServices.length > 0 && (
                   <div className="mt-6 p-4 rounded-xl bg-neve-blue/5 border border-neve-blue/20 flex flex-wrap gap-x-6 gap-y-1 text-sm">
-                    <span className="text-gray-300"><b className="text-white">{SERVICOS[selectedService].nome}</b></span>
+                    <span className="text-gray-300"><b className="text-white">{nomesServicos}</b></span>
                     <span className="text-gray-400">{dataFormatada} às {selectedTime}</span>
-                    <span className="text-neve-blue font-bold">{formatBRL(SERVICOS[selectedService].preco)}</span>
+                    <span className="text-neve-blue font-bold">{formatBRL(precoTotal)}</span>
                   </div>
                 )}
                 {sendError && <p className="text-red-400 text-sm mt-4">{sendError}</p>}
@@ -266,8 +300,8 @@ export function Scheduling() {
                 onClick={handleNext}
                 disabled={
                   sending ||
-                  (step === 1 && !selectedService) ||
-                  (step === 2 && (!selectedDate || !selectedTime)) ||
+                  (step === 1 && selectedServices.length === 0) ||
+                  (step === 2 && (!selectedDate || !selectedTime || diaFechado)) ||
                   (step === 3 && (!nome.trim() || whatsapp.replace(/\D/g, '').length < 10 || !veiculo.trim()))
                 }
                 className="flex items-center justify-center bg-neve-blue text-white px-5 md:px-8 py-4 rounded-xl font-bold text-sm md:text-base whitespace-nowrap hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(30,144,255,0.3)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)]"

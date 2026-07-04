@@ -8,10 +8,16 @@ export function LoginGate({ onLogin }: Props) {
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
 
+  const [erro, setErro] = useState('');
+
   const entrar = (e?: React.FormEvent) => {
     e?.preventDefault();
-    // POR ENQUANTO: acesso liberado (sem validação), conforme combinado.
-    // Quando definir as credenciais, a validação entra aqui (ou Supabase Auth).
+    const userOk = usuario.trim().toLowerCase() === 'nevenanave';
+    const senhaOk = senha === 'garagem537';
+    if (!userOk || !senhaOk) {
+      setErro('Usuário ou senha incorretos. ❄️');
+      return;
+    }
     sessionStorage.setItem('nn_auth', '1');
     onLogin();
   };
@@ -49,6 +55,7 @@ export function LoginGate({ onLogin }: Props) {
               className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors"
             />
           </div>
+          {erro && <p className="text-red-400 text-sm text-center font-semibold">{erro}</p>}
           <button
             onClick={() => entrar()}
             className="w-full flex items-center justify-center bg-neve-blue hover:bg-blue-600 text-white py-4 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(30,144,255,0.3)]"

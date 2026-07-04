@@ -29,16 +29,38 @@ export function OrderManagement({ agendamentos, loading, updateStatus }: Props) 
 
   const aprovar = (a: Agendamento) => {
     updateStatus(a.id, 'confirmado');
-    abrirWhats(a, `Olá ${a.nome}! ✅ Seu agendamento de *${a.servico}* (${formatBRL(a.preco)}) para *${fmtData(a)}* está CONFIRMADO! Te esperamos na Neve na Nave — Rua Delta, 537, Jaguari, Santana de Parnaíba. 🚗✨`);
+    abrirWhats(a, [
+      `Olá, ${a.nome}! ❄️🚗`,
+      ``,
+      `✅ *SEU AGENDAMENTO ESTÁ CONFIRMADO!*`,
+      ``,
+      `🧽 *Serviço:* ${a.servico}`,
+      `💰 *Valor:* ${formatBRL(a.preco)}`,
+      `📅 *Data:* ${fmtData(a)}`,
+      `📍 *Endereço:* Rua Delta, 537 - Jaguari, Santana de Parnaíba`,
+      ``,
+      `Sua nave vai sair daqui impecável! ✨`,
+      ``,
+      `_Equipe Neve na Nave_ ☃️💙`,
+    ].join('\n'));
   };
 
   const recusar = (a: Agendamento) => {
     updateStatus(a.id, 'recusado');
-    abrirWhats(a, `Olá ${a.nome}! Infelizmente não temos disponibilidade para *${a.servico}* no dia ${fmtData(a)}. 😔 Mas vamos achar um novo horário pra você — qual outro dia fica bom?`);
+    abrirWhats(a, [
+      `Olá, ${a.nome}! ❄️`,
+      ``,
+      `Poxa, infelizmente *não temos disponibilidade* para *${fmtData(a)}*. 😔`,
+      ``,
+      `Mas queremos muito cuidar da sua nave! 🚗💙`,
+      `Me fala outro dia e horário que fica bom pra você, que a gente encaixa. 🗓️`,
+      ``,
+      `_Equipe Neve na Nave_ ☃️`,
+    ].join('\n'));
   };
 
   const chamar = (a: Agendamento) => {
-    abrirWhats(a, `Olá ${a.nome}! Aqui é da Neve na Nave, sobre seu agendamento de ${a.servico}.`);
+    abrirWhats(a, `Olá, ${a.nome}! ❄️ Aqui é da *Neve na Nave*, sobre seu agendamento de *${a.servico}*. 🚗✨`);
   };
 
   return (

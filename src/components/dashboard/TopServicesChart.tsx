@@ -11,8 +11,13 @@ export function TopServicesChart({ agendamentos }: Props) {
   const base = agendamentos.filter(a => a.data?.startsWith(mesAtual) && a.status !== 'recusado');
 
   const contagem = new Map<string, number>();
-  base.forEach(a => contagem.set(a.servico, (contagem.get(a.servico) || 0) + 1));
-  const total = base.length;
+  let total = 0;
+  base.forEach(a => {
+    a.servico.split(' + ').forEach(nome => {
+      contagem.set(nome, (contagem.get(nome) || 0) + 1);
+      total += 1;
+    });
+  });
 
   const services = [...contagem.entries()]
     .sort((a, b) => b[1] - a[1])
