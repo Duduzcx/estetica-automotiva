@@ -33,22 +33,24 @@ export function Hero() {
       // animamos um objeto e sincronizamos o vídeo suavemente
       const proxy = { time: 0 };
 
-      // Sem pin: a página desce normalmente e o vídeo avança
-      // durante essa descida natural (leve, sem travar o scroll)
+      // Vídeo travado na tela: o scroll avança o vídeo (só os primeiros ~4s)
+      // e depois libera a página para as próximas seções
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: 'bottom bottom', // percorre a altura extra do hero (sticky)
+          end: '+=120%', // trava curta: ~1 tela de scroll dedicada ao vídeo
           scrub: 1,
+          pin: true,
+          anticipatePin: 1,
         },
       });
 
-      // O vídeo avança conforme a seção sai da tela
+      // O vídeo avança conforme o usuário rola (limitado a 4 segundos)
       tl.to(
         proxy,
         {
-          time: duration,
+          time: Math.min(4, duration),
           ease: 'none',
           duration: 1,
           onUpdate: () => {
@@ -87,7 +89,7 @@ export function Hero() {
   };
 
   return (
-    <section ref={containerRef} className="relative h-[200vh] bg-black">
+    <section ref={containerRef} className="relative h-screen bg-black">
       {/* Viewport grudado: fica na tela enquanto a seção alta rola por trás */}
       <div className="sticky top-0 h-screen overflow-hidden">
       {/* Glow Effects */}
