@@ -6,67 +6,74 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const VIDEO_LOCAL = '/videos/hero-detalhamento.mp4';
-const VIDEO_FALLBACK = 'https://res.cloudinary.com/demo/video/upload/v1689363065/docs/cars.mp4';
+// Sequência de frames (técnica de canvas: funciona em QUALQUER aparelho,
+// diferente do seek de <video> que falha no Chrome mobile)
+const FRAME_COUNT = 40;
+const framePath = (i: number) => `/videos/seq/frame_${String(i + 1).padStart(3, '0')}.jpg`;
 
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useGSAP(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    // Mobile: destrava o seek do vídeo no primeiro toque
-    const unlock = () => {
-      video.play().then(() => video.pause()).catch(() => {});
-    };
-    window.addEventListener('touchstart', unlock, { once: true });
+    const images: HTMLImageElement[] = [];
+    const proxy = { frame: 0 };
 
-    const setup = () => {
-      const duration = video.duration || 5;
-      const proxy = { time: 0 };
-
-      // Trava curta da página (segura só um instante e solta)
-      ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: 'top top',
-        end: '+=50%',
-        pin: true,
-        anticipatePin: 1,
-      });
-
-      // Vídeo com suavização própria (scrub alto): em vez de saltar
-      // frame a frame com o dedo, ele desliza com inércia — fluido
-      gsap.to(proxy, {
-        time: Math.min(3, duration),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top top',
-          end: '+=50%',
-          scrub: 1.2,
-        },
-        onUpdate: () => {
-          if (Math.abs(video.currentTime - proxy.time) > 0.01) {
-            video.currentTime = proxy.time;
-          }
-        },
-      });
-
+    // Desenha cobrindo a tela toda (equivalente ao object-cover)
+    const draw = () => {
+      const img = images[Math.round(proxy.frame)];
+      if (!img || !img.complete || img.naturalWidth === 0) return;
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+      const w = img.naturalWidth * scale;
+      const h = img.naturalHeight * scale;
+      ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
     };
 
-    if (video.readyState >= 1) {
-      setup();
-    } else {
-      video.addEventListener('loadedmetadata', setup, { once: true });
+    const resize = () => {
+      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      draw();
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Pré-carrega os frames; o primeiro desenha assim que chegar
+    for (let i = 0; i < FRAME_COUNT; i++) {
+      const img = new Image();
+      img.src = framePath(i);
+      if (i === 0) img.onload = draw;
+      images.push(img);
     }
 
-    return () => window.removeEventListener('touchstart', unlock);
+    // Trava curta: prende meia tela enquanto os frames passam.
+    // O tween interno dá a inércia (o frame "corre atrás" do dedo, suave)
+    ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: 'top top',
+      end: '+=50%',
+      pin: true,
+      anticipatePin: 1,
+      onUpdate: (self) => {
+        gsap.to(proxy, {
+          frame: self.progress * (FRAME_COUNT - 1),
+          duration: 0.4,
+          ease: 'power1.out',
+          overwrite: true,
+          onUpdate: draw,
+        });
+      },
+    });
+
+    return () => window.removeEventListener('resize', resize);
   }, { scope: containerRef });
 
-  // Entrada dos textos (Framer): reveal de baixo pra cima, escalonado
   const revealVariants: any = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -82,32 +89,16 @@ export function Hero() {
 
   return (
     <section ref={containerRef} className="relative h-screen bg-black">
-      {/* Viewport grudado: o navegador segura isso na tela (liso, nativo) */}
       <div className="sticky top-0 h-screen overflow-hidden">
 
-        {/* Glow Effects */}
-        <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-neve-blue/20 blur-[150px] pointer-events-none z-0"></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-900/20 blur-[150px] pointer-events-none z-0"></div>
-
-        {/* Video Scrub Background */}
+        {/* Frames do detalhamento desenhados em canvas */}
         <div className="absolute inset-0 z-0 w-full h-full">
-          <video
-            ref={videoRef}
-            src={VIDEO_LOCAL}
-            onError={(e) => {
-              const v = e.currentTarget;
-              if (!v.src.includes('cloudinary')) v.src = VIDEO_FALLBACK;
-            }}
-            className="w-full h-full object-cover opacity-90"
-            muted
-            playsInline
-            preload="auto"
-          />
+          <canvas ref={canvasRef} className="w-full h-full" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30"></div>
         </div>
 
-        {/* Content Layer — GSAP só mexe na opacidade desta camada externa */}
-        <div ref={contentRef} className="relative z-10 h-full will-change-[opacity]">
+        {/* Content Layer */}
+        <div className="relative z-10 h-full">
           <motion.div
             variants={containerVariants}
             initial="hidden"
