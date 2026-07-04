@@ -22,6 +22,7 @@ const servicesData = [
 
 export function Services() {
   const sectionRef = useRef<HTMLElement>(null);
+  const pinWrapRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
@@ -38,8 +39,8 @@ export function Services() {
         ease: 'none',
         scrollTrigger: {
           trigger: section,
-          start: 'top 90%',
-          end: 'top top',
+          start: 'top 85%',
+          end: 'top -10%',
           scrub: true,
         },
       }
@@ -53,9 +54,9 @@ export function Services() {
         color: '#111827',
         ease: 'none',
         scrollTrigger: {
-          trigger: section,
-          start: 'top 70%',
-          end: 'top top',
+          trigger: pinWrapRef.current,
+          start: 'top 90%',
+          end: 'top 30%',
           scrub: true,
         },
       }
@@ -75,10 +76,11 @@ export function Services() {
       x: () => -(getTotalWidth() - window.innerWidth + 200),
       ease: 'none',
       scrollTrigger: {
-        trigger: section,
-        pin: true,
-        scrub: 0.5,
-        end: () => '+=' + getTotalWidth() * 1.2,
+        trigger: pinWrapRef.current,
+        pin: pinWrapRef.current,
+        start: 'top top',
+        scrub: 0.4,
+        end: () => '+=' + getTotalWidth(),
         invalidateOnRefresh: true,
       },
     });
@@ -91,9 +93,9 @@ export function Services() {
         scaleX: 1,
         ease: 'none',
         scrollTrigger: {
-          trigger: section,
+          trigger: pinWrapRef.current,
           start: 'top top',
-          end: () => '+=' + getTotalWidth() * 1.2,
+          end: () => '+=' + getTotalWidth(),
           scrub: 0.3,
         },
       }
@@ -134,8 +136,17 @@ export function Services() {
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} id="servicos" className="relative overflow-hidden" style={{ backgroundColor: '#050505' }}>
-      <div className="h-screen flex flex-col justify-center pt-20">
+    <section ref={sectionRef} id="servicos" className="relative" style={{ backgroundColor: '#050505' }}>
+
+      {/* Faixa de respiro: rolagem 100% livre enquanto o fundo clareia */}
+      <div className="min-h-[55vh] flex flex-col items-center justify-center text-center px-6">
+        <p className="text-neve-blue font-bold tracking-[0.3em] uppercase text-xs mb-5 font-heading">Do escuro ao brilho</p>
+        <p className="services-title text-2xl md:text-4xl font-bold max-w-2xl leading-snug" style={{ color: '#ffffff' }}>
+          Cada detalhe do seu carro merece um processo à altura.
+        </p>
+      </div>
+
+      <div ref={pinWrapRef} className="h-screen flex flex-col justify-center pt-20 overflow-hidden">
 
         <div className="px-6 lg:px-16 mb-10 shrink-0 flex items-end justify-between gap-8">
           <div>
