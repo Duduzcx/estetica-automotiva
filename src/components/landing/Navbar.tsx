@@ -38,9 +38,9 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
               <a href="#inicio" className="flex items-center gap-3">
                 <img src="/logo-mark.png" alt="Neve na Nave" className="h-10 w-auto md:h-12 md:w-auto drop-shadow-[0_0_14px_rgba(30,144,255,0.45)]" />
-                <span className="relative inline-block pt-[0.35em]">
+                <span className="relative inline-block pt-[0.3em] translate-y-[0.14em] leading-none">
                   <Foam />
-                  <span className="brand-text text-xl md:text-2xl relative">Neve na Nave</span>
+                  <span className="brand-text text-xl md:text-2xl relative leading-none">Neve na Nave</span>
                 </span>
               </a>
             </motion.div>
@@ -79,7 +79,7 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}
-              style={{ position: 'fixed', inset: 0, zIndex: 55, backgroundColor: 'rgba(0,0,0,0.6)' }}
+              style={{ position: 'fixed', inset: 0, zIndex: 75, backgroundColor: 'rgba(0,0,0,0.6)' }}
               className="md:hidden"
             />
 
@@ -89,7 +89,7 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              style={{ position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 60, width: '80%', maxWidth: 320, backgroundColor: '#0b1320', borderLeft: '1px solid rgba(255,255,255,0.08)', boxShadow: '-20px 0 60px rgba(0,0,0,0.5)' }}
+              style={{ position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 80, width: '80%', maxWidth: 320, backgroundColor: '#0b1320', borderLeft: '1px solid rgba(255,255,255,0.08)', boxShadow: '-20px 0 60px rgba(0,0,0,0.5)' }}
               className="md:hidden flex flex-col"
             >
               <div className="flex items-center justify-between p-5 border-b border-white/10">
