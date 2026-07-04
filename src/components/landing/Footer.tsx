@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mb-20">
           <div className="flex flex-col">
             <div className="flex items-center gap-4 mb-6">
-              <img src="/logo.png" alt="Neve na Nave" className="h-14 w-14 rounded-full shadow-[0_0_18px_rgba(30,144,255,0.35)]" />
+              <img src="/logo-mark.png" alt="Neve na Nave" className="h-14 w-auto drop-shadow-[0_0_14px_rgba(30,144,255,0.45)]" />
               <span className="relative inline-block pt-[0.35em]">
                 <svg aria-hidden="true" className="absolute -top-[0.55em] left-0 w-full h-[0.75em] z-10 pointer-events-none" viewBox="0 0 120 22" fill="none" preserveAspectRatio="none">
                   <ellipse cx="12" cy="16" rx="13" ry="7" fill="#eef2f7"/>

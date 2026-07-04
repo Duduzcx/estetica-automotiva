@@ -36,7 +36,7 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
           <div className="flex items-center justify-between h-16 md:h-20">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
               <a href="#inicio" className="flex items-center gap-3">
-                <img src="/logo.png" alt="Neve na Nave" className="h-10 w-10 md:h-12 md:w-12 rounded-full shadow-[0_0_18px_rgba(30,144,255,0.35)]" />
+                <img src="/logo-mark.png" alt="Neve na Nave" className="h-10 w-auto md:h-12 md:w-auto drop-shadow-[0_0_14px_rgba(30,144,255,0.45)]" />
                 <span className="relative inline-block pt-[0.35em]">
                   <Foam />
                   <span className="brand-text text-xl md:text-2xl relative">Neve na Nave</span>

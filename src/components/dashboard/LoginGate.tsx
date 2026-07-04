@@ -26,7 +26,7 @@ export function LoginGate({ onLogin }: Props) {
         className="w-full max-w-md bg-neve-dark/60 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl relative z-10"
       >
         <div className="flex flex-col items-center mb-8">
-          <img src="/logo.png" alt="Neve na Nave" className="w-20 h-20 rounded-full shadow-[0_0_25px_rgba(30,144,255,0.35)] mb-4" />
+          <img src="/logo.png" alt="Neve na Nave" className="h-32 w-auto drop-shadow-[0_0_25px_rgba(30,144,255,0.4)] mb-4" />
           <h1 className="text-2xl font-bold text-white">Área Restrita</h1>
           <p className="text-gray-400 text-sm mt-1">Painel de operações da Neve na Nave</p>
         </div>
