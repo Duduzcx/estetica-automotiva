@@ -23,7 +23,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
 
       {/* Mobile Topbar */}
       <div className="md:hidden fixed top-0 w-full bg-neve-dark/80 backdrop-blur-md border-b border-white/5 z-40 p-4 flex justify-between items-center">
-        <span className="text-xl font-bold font-heading">Neve<span className="text-neve-blue">na Nave</span></span>
+        <img src="/logo-mark.png" alt="Neve na Nave" className="h-10 w-auto" />
         <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 z-50">
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -59,7 +59,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
                 <LayoutDashboard className="w-6 h-6 mr-3 text-neve-blue hidden md:block" />
                 Painel de Operações
               </h1>
-              <p className="text-gray-400 mt-2 text-sm">Bem-vindo de volta, Eduardo.</p>
+              <p className="text-gray-400 mt-2 text-sm">Bem-vindo de volta à Neve na Nave.</p>
             </div>
             
             <div className="hidden md:flex items-center space-x-4">

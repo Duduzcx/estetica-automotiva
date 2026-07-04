@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Shield, Car, Sparkles, Droplets, Calendar, MapPin } from 'lucide-react';
 
 interface NavbarProps {
@@ -67,81 +67,79 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
         </div>
       </nav>
 
-      {/* Menu Mobile: painel simples, estilos inline (à prova de falha de render) */}
-      {isMobileMenuOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 64,
-            left: 0,
-            right: 0,
-            zIndex: 60,
-            backgroundColor: '#0b1320',
-            borderBottom: '1px solid rgba(255,255,255,0.1)',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
-            padding: '8px 16px 16px',
-          }}
-          className="md:hidden"
-        >
-          {LINKS.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
+      {/* Menu Mobile: drawer lateral animado */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            {/* Fundo escurecido (fecha ao tocar) */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 14,
-                color: '#ffffff',
-                fontSize: 18,
-                fontWeight: 700,
-                padding: '14px 8px',
-                borderBottom: '1px solid rgba(255,255,255,0.06)',
-                textDecoration: 'none',
-              }}
+              style={{ position: 'fixed', inset: 0, zIndex: 55, backgroundColor: 'rgba(0,0,0,0.6)' }}
+              className="md:hidden"
+            />
+
+            {/* Painel lateral */}
+            <motion.aside
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+              style={{ position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 60, width: '80%', maxWidth: 320, backgroundColor: '#0b1320', borderLeft: '1px solid rgba(255,255,255,0.08)', boxShadow: '-20px 0 60px rgba(0,0,0,0.5)' }}
+              className="md:hidden flex flex-col"
             >
-              <l.Icon style={{ width: 20, height: 20, color: '#1E90FF' }} />
-              {l.label}
-            </a>
-          ))}
-          <a
-            href="#agendamento"
-            onClick={() => setIsMobileMenuOpen(false)}
-            style={{
-              display: 'block',
-              textAlign: 'center',
-              backgroundColor: '#1E90FF',
-              color: '#ffffff',
-              fontWeight: 700,
-              borderRadius: 12,
-              padding: '14px 0',
-              marginTop: 14,
-              textDecoration: 'none',
-            }}
-          >
-            Agendar Avaliação
-          </a>
-          <button
-            onClick={() => { setIsMobileMenuOpen(false); onDashboardClick(); }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              width: '100%',
-              backgroundColor: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.12)',
-              color: '#d1d5db',
-              fontWeight: 700,
-              borderRadius: 12,
-              padding: '13px 0',
-              marginTop: 10,
-            }}
-          >
-            <Shield style={{ width: 18, height: 18 }} /> Área Restrita
-          </button>
-        </div>
-      )}
+              <div className="flex items-center justify-between p-5 border-b border-white/10">
+                <img src="/logo-mark.png" alt="Neve na Nave" className="h-12 w-auto drop-shadow-[0_0_14px_rgba(30,144,255,0.45)]" />
+                <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Fechar" className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white rounded-xl hover:bg-white/5">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <nav className="flex-1 px-3 py-4 overflow-y-auto">
+                {LINKS.map((l, i) => (
+                  <motion.a
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    initial={{ opacity: 0, x: 24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.06 * i + 0.1, duration: 0.3 }}
+                    className="flex items-center gap-4 text-white text-lg font-bold py-4 px-4 rounded-xl active:bg-white/10 transition-colors border-b border-white/5"
+                  >
+                    <span className="w-10 h-10 rounded-xl bg-neve-blue/10 flex items-center justify-center">
+                      <l.Icon className="w-5 h-5 text-neve-blue" />
+                    </span>
+                    {l.label}
+                  </motion.a>
+                ))}
+              </nav>
+
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35 }}
+                className="p-4 border-t border-white/10 space-y-3"
+              >
+                <a
+                  href="#agendamento"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block text-center bg-neve-blue text-white font-bold rounded-xl py-4 shadow-[0_0_20px_rgba(30,144,255,0.3)] active:bg-blue-600"
+                >
+                  Agendar Avaliação
+                </a>
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); onDashboardClick(); }}
+                  className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-gray-300 font-bold rounded-xl py-3.5 active:bg-white/10"
+                >
+                  <Shield className="w-4 h-4" /> Área Restrita
+                </button>
+              </motion.div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
     </>
   );

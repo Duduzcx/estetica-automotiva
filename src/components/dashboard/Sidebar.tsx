@@ -17,9 +17,7 @@ export function Sidebar({ onLogout }: SidebarProps) {
   return (
     <div className="w-64 h-screen bg-neve-dark border-r border-white/5 hidden md:flex flex-col sticky top-0">
       <div className="p-8 border-b border-white/5">
-        <span className="text-2xl font-bold tracking-tighter text-white uppercase font-heading">
-          Neve<span className="text-neve-blue">na Nave</span>
-        </span>
+        <img src="/logo-mark.png" alt="Neve na Nave" className="h-14 w-auto drop-shadow-[0_0_14px_rgba(30,144,255,0.45)]" />
       </div>
 
       <nav className="flex-1 py-8 px-4 space-y-2">
