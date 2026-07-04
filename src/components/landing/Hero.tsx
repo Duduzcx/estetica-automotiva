@@ -39,8 +39,8 @@ export function Hero() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=120%', // trava curta: ~1 tela de scroll dedicada ao vídeo
-          scrub: 1,
+          end: '+=100%', // trava bem curta: 1 tela de scroll
+          scrub: 0.5,
           pin: true,
           anticipatePin: 1,
         },
@@ -62,10 +62,10 @@ export function Hero() {
         0
       );
 
-      // Conteúdo sobe um pouco mais devagar que a página (parallax leve) e some
+      // Texto sobe suave e some na primeira metade da trava (sem brigar com o Framer)
       tl.to(
         contentRef.current,
-        { y: 120, opacity: 0, ease: 'power1.in', duration: 0.6 },
+        { y: -60, opacity: 0, ease: 'none', duration: 0.5 },
         0
       );
     };
@@ -113,13 +113,13 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent"></div>
       </div>
 
-      {/* Content Layer */}
+      {/* Content Layer — camada externa (GSAP) separada da interna (Framer) */}
+      <div ref={contentRef} className="relative z-10 h-full will-change-[transform,opacity]">
       <motion.div
-        ref={contentRef}
         variants={revealVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 text-center max-w-5xl mx-auto px-6 h-full flex flex-col justify-center items-center will-change-[transform,opacity]"
+        className="text-center max-w-5xl mx-auto px-6 h-full flex flex-col justify-center items-center"
       >
         <motion.div variants={revealVariants} className="overflow-hidden mb-6">
           <p className="text-neve-blue font-bold tracking-[0.3em] uppercase text-xs md:text-sm font-heading">A excelência em cada milímetro</p>
@@ -144,6 +144,7 @@ export function Hero() {
           </a>
         </motion.div>
       </motion.div>
+      </div>
 
       <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/30 animate-pulse z-20 pointer-events-none">
         <p className="text-xs uppercase tracking-[0.3em] mb-4 text-center">Scroll para Imersão</p>
