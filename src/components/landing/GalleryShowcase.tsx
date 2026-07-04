@@ -5,8 +5,8 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// 43 frames extraídos do vídeo de polimento (10fps, ~4.3s)
-const FRAME_COUNT = 43;
+// 50 frames do vídeo real da Mercedes CLA 45 AMG no estúdio
+const FRAME_COUNT = 50;
 const framePath = (i: number) => `/videos/gallery-seq/frame_${String(i + 1).padStart(3, '0')}.jpg`;
 
 export function GalleryShowcase() {
@@ -95,7 +95,7 @@ export function GalleryShowcase() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
         <div className="absolute bottom-8 left-6 md:bottom-12 md:left-12 z-10">
           <p className="text-neve-blue font-bold tracking-[0.25em] uppercase text-[10px] md:text-xs mb-2 font-heading">Em ação</p>
-          <p className="text-white text-2xl md:text-4xl font-bold max-w-md leading-tight">Polimento técnico em detalhe.</p>
+          <p className="text-white text-2xl md:text-4xl font-bold max-w-md leading-tight">Brilho de showroom, feito em Jaguari.</p>
         </div>
       </div>
     </div>
