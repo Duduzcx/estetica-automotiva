@@ -26,12 +26,20 @@
 
 @layer utilities {
   .whatsapp-fab {
-    transition: opacity 0.35s ease, transform 0.35s ease;
+    transition: opacity 0.35s ease, visibility 0.35s ease !important;
   }
   body.fab-oculto .whatsapp-fab {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  /* Legenda do vídeo: só aparece com a cena travada (nunca meio-cortada) */
+  .showcase-caption {
     opacity: 0;
-    transform: scale(0.6) translateY(20px);
-    pointer-events: none;
+    transition: opacity 0.45s ease;
+  }
+  body.fab-oculto .showcase-caption {
+    opacity: 1;
   }
 
   /* Letras no estilo da logo: azul brilhante com contorno escuro */
