@@ -254,12 +254,12 @@ export function Scheduling() {
 
           {/* Navigation Buttons */}
           {step < 4 && (
-            <div className="mt-8 flex justify-between border-t border-white/10 pt-6">
+            <div className="mt-8 flex items-center justify-between gap-3 border-t border-white/10 pt-6">
               <button
                 onClick={handlePrev}
-                className={`flex items-center px-6 py-4 rounded-xl font-bold transition-all ${step === 1 ? 'opacity-0 pointer-events-none' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+                className={`flex items-center shrink-0 px-4 md:px-6 py-4 rounded-xl font-bold transition-all whitespace-nowrap ${step === 1 ? 'opacity-0 pointer-events-none' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
               >
-                <ChevronLeft className="w-5 h-5 mr-2" /> Voltar
+                <ChevronLeft className="w-5 h-5 mr-1 md:mr-2" /> Voltar
               </button>
 
               <button
@@ -270,9 +270,9 @@ export function Scheduling() {
                   (step === 2 && (!selectedDate || !selectedTime)) ||
                   (step === 3 && (!nome.trim() || whatsapp.replace(/\D/g, '').length < 10 || !veiculo.trim()))
                 }
-                className="flex items-center bg-neve-blue text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(30,144,255,0.3)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)]"
+                className="flex items-center justify-center bg-neve-blue text-white px-5 md:px-8 py-4 rounded-xl font-bold text-sm md:text-base whitespace-nowrap hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(30,144,255,0.3)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)]"
               >
-                {sending ? (<><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Enviando...</>) : step === 3 ? (<>Confirmar Agendamento <CheckCircle2 className="w-5 h-5 ml-2" /></>) : (<>Avançar <ChevronRight className="w-5 h-5 ml-2" /></>)}
+                {sending ? (<><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Enviando...</>) : step === 3 ? (<>Confirmar <CheckCircle2 className="w-5 h-5 ml-2" /></>) : (<>Avançar <ChevronRight className="w-5 h-5 ml-2" /></>)}
               </button>
             </div>
           )}

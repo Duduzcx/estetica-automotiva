@@ -31,7 +31,7 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
 
   return (
     <>
-      <nav className="fixed w-full z-40 transition-all duration-300 backdrop-blur-md bg-neve-dark/30 border-b border-white/5" id="navbar">
+      <nav className="fixed w-full z-50 transition-all duration-300 backdrop-blur-md bg-neve-dark/30 border-b border-white/5" id="navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
@@ -74,22 +74,19 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-30 bg-neve-dark/95 backdrop-blur-xl pt-24 px-6 md:hidden flex flex-col"
+            style={{ backgroundColor: '#04070d' }} className="fixed inset-0 z-[45] pt-24 px-6 md:hidden flex flex-col select-none"
           >
             <div className="flex flex-col gap-2">
-              {LINKS.map((l, i) => (
-                <motion.a
+              {LINKS.map((l) => (
+                <a
                   key={l.href}
                   href={l.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.05 * i }}
                   className="flex items-center gap-4 text-white text-xl font-bold py-4 px-4 rounded-xl hover:bg-white/5 active:bg-white/10 transition-colors"
                 >
                   <l.Icon className="w-5 h-5 text-neve-blue" />
                   {l.label}
-                </motion.a>
+                </a>
               ))}
             </div>
 
