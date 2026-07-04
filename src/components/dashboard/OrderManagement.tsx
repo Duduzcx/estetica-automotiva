@@ -1,91 +1,120 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, MessageCircle, Car, Loader2 } from 'lucide-react';
+import type { Agendamento } from '../../lib/supabase';
+import { formatBRL } from '../../lib/servicos';
 
-type OrderStatus = 'pendente' | 'confirmado' | 'recusado';
-
-interface Order {
-  id: string;
-  client: string;
-  phone: string;
-  service: string;
-  vehicle: string;
-  date: string;
-  status: OrderStatus;
+interface Props {
+  agendamentos: Agendamento[];
+  loading: boolean;
+  updateStatus: (id: string, status: Agendamento['status']) => void;
 }
 
-export function OrderManagement() {
-  const [orders, setOrders] = useState<Order[]>([
-    { id: '1', client: 'Eduardo Silva', phone: '5511999999999', service: 'Vitrificação Cerâmica', vehicle: 'Porsche 911 Carrera', date: 'Hoje, 14:00', status: 'pendente' },
-    { id: '2', client: 'Marcos Almeida', phone: '5511999999999', service: 'Lavagem Detalhada', vehicle: 'BMW X6', date: 'Hoje, 16:30', status: 'pendente' },
-    { id: '3', client: 'Juliana Costa', phone: '5511999999999', service: 'Higienização Interna', vehicle: 'Audi Q5', date: 'Amanhã, 09:00', status: 'confirmado' },
-  ]);
+const foneParaWa = (fone: string) => {
+  const digits = fone.replace(/\D/g, '');
+  return digits.startsWith('55') ? digits : '55' + digits;
+};
 
-  const updateStatus = (order: Order, newStatus: OrderStatus) => {
-    // 1. Update internal state
-    setOrders(orders.map(o => o.id === order.id ? { ...o, status: newStatus } : o));
+const fmtData = (a: Agendamento) => {
+  const hoje = new Date().toISOString().slice(0, 10);
+  const dia = a.data === hoje ? 'Hoje' : a.data.split('-').reverse().slice(0, 2).join('/');
+  return `${dia}, ${a.horario}`;
+};
 
-    // 2. Trigger WhatsApp API redirect with pre-filled message
-    let message = "";
-    if (newStatus === 'confirmado') {
-      message = `Olá ${order.client}, seu agendamento para o serviço de *${order.service}* no dia *${order.date.split(',')[0]} às ${order.date.split(', ')[1]}* foi CONFIRMADO! Te esperamos na Neve na Nave.`;
-    } else if (newStatus === 'recusado') {
-      message = `Olá ${order.client}, infelizmente não temos disponibilidade para o serviço de ${order.service} neste horário. Podemos reagendar?`;
-    }
+export function OrderManagement({ agendamentos, loading, updateStatus }: Props) {
 
-    if (message) {
-      const url = `https://wa.me/${order.phone}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-    }
+  const abrirWhats = (a: Agendamento, mensagem: string) => {
+    const url = `https://wa.me/${foneParaWa(a.whatsapp)}?text=${encodeURIComponent(mensagem)}`;
+    window.open(url, '_blank');
+  };
+
+  const aprovar = (a: Agendamento) => {
+    updateStatus(a.id, 'confirmado');
+    abrirWhats(a, `Olá ${a.nome}! ✅ Seu agendamento de *${a.servico}* (${formatBRL(a.preco)}) para *${fmtData(a)}* está CONFIRMADO! Te esperamos na Neve na Nave — Rua Delta, 537, Jaguari, Santana de Parnaíba. 🚗✨`);
+  };
+
+  const recusar = (a: Agendamento) => {
+    updateStatus(a.id, 'recusado');
+    abrirWhats(a, `Olá ${a.nome}! Infelizmente não temos disponibilidade para *${a.servico}* no dia ${fmtData(a)}. 😔 Mas vamos achar um novo horário pra você — qual outro dia fica bom?`);
+  };
+
+  const chamar = (a: Agendamento) => {
+    abrirWhats(a, `Olá ${a.nome}! Aqui é da Neve na Nave, sobre seu agendamento de ${a.servico}.`);
   };
 
   return (
     <div className="bg-neve-dark/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl h-full">
       <h3 className="text-xl font-bold mb-6 text-white flex items-center">
-        <Clock className="w-5 h-5 mr-3 text-neve-blue" /> Agendamentos Recentes
+        <Clock className="w-5 h-5 mr-3 text-neve-blue" /> Agendamentos
       </h3>
-      <div className="space-y-4">
-        <AnimatePresence>
-          {orders.map((order) => (
-            <motion.div
-              key={order.id}
-              layout
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className={`p-5 rounded-xl border flex flex-col md:flex-row justify-between items-start md:items-center transition-all ${
-                order.status === 'pendente' ? 'border-yellow-500/30 bg-yellow-500/5' :
-                order.status === 'confirmado' ? 'border-green-500/30 bg-green-500/5' :
-                'border-red-500/30 bg-red-500/5'
-              }`}
-            >
-              <div className="mb-4 md:mb-0">
-                <h4 className="text-lg font-bold text-white">{order.client}</h4>
-                <p className="text-gray-400 text-sm">{order.vehicle} • {order.service}</p>
-                <p className="text-gray-500 text-xs mt-1 font-medium bg-black/30 inline-block px-2 py-1 rounded">{order.date}</p>
-              </div>
 
-              {order.status === 'pendente' ? (
-                <div className="flex flex-col md:flex-row w-full md:w-auto gap-2 mt-4 md:mt-0">
-                  <button onClick={() => updateStatus(order, 'confirmado')} className="w-full md:w-auto flex items-center justify-center bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500 hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all">
-                    <CheckCircle2 className="w-4 h-4 mr-2" /> Aprovar
-                  </button>
-                  <button onClick={() => updateStatus(order, 'recusado')} className="w-full md:w-auto flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all">
-                    <XCircle className="w-4 h-4 mr-2" /> Reprovar
-                  </button>
+      {loading ? (
+        <div className="flex items-center justify-center py-16 text-gray-400">
+          <Loader2 className="w-6 h-6 animate-spin mr-3" /> Carregando pedidos...
+        </div>
+      ) : agendamentos.length === 0 ? (
+        <div className="text-center py-16 text-gray-500">
+          Nenhum agendamento ainda. Assim que um cliente preencher o formulário do site, ele aparece aqui na hora.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <AnimatePresence>
+            {agendamentos.map((a) => (
+              <motion.div
+                key={a.id}
+                layout
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                className={`p-5 rounded-xl border transition-all ${
+                  a.status === 'pendente' ? 'border-yellow-500/30 bg-yellow-500/5' :
+                  a.status === 'confirmado' ? 'border-green-500/30 bg-green-500/5' :
+                  'border-red-500/30 bg-red-500/5'
+                }`}
+              >
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <h4 className="font-bold text-white text-lg">{a.nome}</h4>
+                      <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-full ${
+                        a.status === 'pendente' ? 'bg-yellow-500/15 text-yellow-400' :
+                        a.status === 'confirmado' ? 'bg-green-500/15 text-green-400' :
+                        'bg-red-500/15 text-red-400'
+                      }`}>{a.status}</span>
+                    </div>
+                    <p className="text-gray-400 text-sm mt-1 flex items-center gap-1.5">
+                      <Car className="w-4 h-4 shrink-0" /> {a.veiculo}
+                    </p>
+                    <p className="text-sm mt-2">
+                      <span className="text-white font-semibold">{a.servico}</span>
+                      <span className="text-neve-blue font-bold ml-3">{formatBRL(a.preco)}</span>
+                      <span className="text-gray-400 ml-3">{fmtData(a)}</span>
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button onClick={() => chamar(a)} title="Chamar no WhatsApp"
+                      className="p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-[#25D366] hover:text-white transition-all">
+                      <MessageCircle className="w-5 h-5" />
+                    </button>
+                    {a.status !== 'confirmado' && (
+                      <button onClick={() => aprovar(a)}
+                        className="flex items-center px-4 py-3 rounded-xl bg-green-500/15 text-green-400 hover:bg-green-500 hover:text-white font-bold text-sm transition-all">
+                        <CheckCircle2 className="w-4 h-4 mr-2" /> Aprovar
+                      </button>
+                    )}
+                    {a.status !== 'recusado' && (
+                      <button onClick={() => recusar(a)}
+                        className="flex items-center px-4 py-3 rounded-xl bg-red-500/15 text-red-400 hover:bg-red-500 hover:text-white font-bold text-sm transition-all">
+                        <XCircle className="w-4 h-4 mr-2" /> Recusar
+                      </button>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <div className={`mt-4 md:mt-0 px-4 py-2 rounded-lg font-bold text-sm uppercase tracking-wider flex items-center w-full md:w-auto justify-center md:justify-start ${
-                  order.status === 'confirmado' ? 'text-green-400 bg-green-500/10' : 'text-red-400 bg-red-500/10'
-                }`}>
-                  {order.status === 'confirmado' ? <CheckCircle2 className="w-5 h-5 mr-2" /> : <XCircle className="w-5 h-5 mr-2" />}
-                  {order.status}
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 }

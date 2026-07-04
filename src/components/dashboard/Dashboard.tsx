@@ -5,6 +5,7 @@ import { TopServicesChart } from './TopServicesChart';
 import { Menu, LayoutDashboard, LogOut, X } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAgendamentos } from '../../hooks/useAgendamentos';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -12,6 +13,7 @@ interface DashboardProps {
 
 export function Dashboard({ onLogout }: DashboardProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { agendamentos, loading, updateStatus } = useAgendamentos();
 
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans flex overflow-hidden">
@@ -67,14 +69,14 @@ export function Dashboard({ onLogout }: DashboardProps) {
             </div>
           </header>
 
-          <Scorecards />
+          <Scorecards agendamentos={agendamentos} />
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <div className="xl:col-span-2">
-              <OrderManagement />
+              <OrderManagement agendamentos={agendamentos} loading={loading} updateStatus={updateStatus} />
             </div>
             <div>
-              <TopServicesChart />
+              <TopServicesChart agendamentos={agendamentos} />
             </div>
           </div>
           

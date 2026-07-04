@@ -3,7 +3,7 @@ import { MapPin, Navigation } from 'lucide-react';
 
 export function LocationMap() {
   return (
-    <section className="py-16 md:py-32 relative z-10 bg-neve-black">
+    <section id="localizacao" className="py-16 md:py-32 relative z-10 bg-neve-black">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div 

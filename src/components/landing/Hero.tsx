@@ -88,7 +88,7 @@ export function Hero() {
   };
 
   return (
-    <section ref={containerRef} className="relative h-screen bg-black">
+    <section id="inicio" ref={containerRef} className="relative h-screen bg-black">
       <div className="sticky top-0 h-screen overflow-hidden">
 
         {/* Frames do detalhamento desenhados em canvas */}

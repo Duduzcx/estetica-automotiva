@@ -1,26 +1,30 @@
 import { useState } from 'react';
-import { Calendar, Clock, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Calendar, Clock, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets } from 'lucide-react';
+import { SERVICOS, formatBRL, type ServicoId } from '../../lib/servicos';
+import { supabase } from '../../lib/supabase';
+
+const ICONES: Record<ServicoId, React.ReactNode> = {
+  vitrificacao: <Shield className="w-6 h-6" />,
+  polimento: <Sparkles className="w-6 h-6" />,
+  higienizacao: <Car className="w-6 h-6" />,
+  lavagem: <Droplets className="w-6 h-6" />,
+};
 
 export function Scheduling() {
   const [step, setStep] = useState(1);
-  const [selectedService, setSelectedService] = useState('');
+  const [selectedService, setSelectedService] = useState<ServicoId | ''>('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [nome, setNome] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [veiculo, setVeiculo] = useState('');
   const [isTransitioning, setIsTransitioning] = useState(false);
-
-  const services = [
-    { id: 'vitrificacao', name: 'Vitrificação Cerâmica', icon: <Shield className="w-6 h-6" />, time: '2-3 dias' },
-    { id: 'polimento', name: 'Polimento Técnico', icon: <Car className="w-6 h-6" />, time: '1-2 dias' },
-    { id: 'higienizacao', name: 'Higienização Interna', icon: <CheckCircle2 className="w-6 h-6" />, time: '4-6 horas' },
-    { id: 'lavagem', name: 'Lavagem Detalhada', icon: <Clock className="w-6 h-6" />, time: '2-3 horas' },
-  ];
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState('');
 
   const timeSlotsConfig = ["08:00", "09:00", "10:00", "11:30", "13:30", "15:00", "16:30", "18:00"];
   const todayDateStr = new Date().toISOString().split('T')[0];
 
-  // Só reposiciona a tela se o topo do cartão saiu da área visível.
-  // Usa getBoundingClientRect (posição real na tela) em vez de offsetTop,
-  // que fica errado por causa dos pin-spacers do GSAP nas seções acima.
   const scrollToCardIfNeeded = () => {
     const el = document.getElementById('agendamento-card');
     if (!el) return;
@@ -30,25 +34,52 @@ export function Scheduling() {
     }
   };
 
-  const handleNext = () => {
-    if (step < 4) {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setStep(step + 1);
-        setIsTransitioning(false);
-        scrollToCardIfNeeded();
-      }, 150);
-    }
+  const goToStep = (next: number) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setStep(next);
+      setIsTransitioning(false);
+      scrollToCardIfNeeded();
+    }, 150);
   };
-  const handlePrev = () => {
-    if (step > 1) {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setStep(step - 1);
-        setIsTransitioning(false);
-        scrollToCardIfNeeded();
-      }, 150);
+
+  const handleSubmit = async () => {
+    if (!selectedService) return;
+    setSending(true);
+    setSendError('');
+    const registro = {
+      nome: nome.trim(),
+      whatsapp: whatsapp.replace(/\D/g, ''),
+      veiculo: veiculo.trim(),
+      servico: SERVICOS[selectedService].nome,
+      preco: SERVICOS[selectedService].preco,
+      data: selectedDate,
+      horario: selectedTime,
+      status: 'pendente',
+    };
+
+    if (supabase) {
+      const { error } = await supabase.from('agendamentos').insert(registro);
+      if (error) {
+        setSendError('Não foi possível enviar. Tente novamente ou chame no WhatsApp.');
+        setSending(false);
+        return;
+      }
     }
+    setSending(false);
+    goToStep(4);
+  };
+
+  const handleNext = () => {
+    if (step === 3) { handleSubmit(); return; }
+    if (step < 4) goToStep(step + 1);
+  };
+  const handlePrev = () => { if (step > 1) goToStep(step - 1); };
+
+  const resetForm = () => {
+    setSelectedService(''); setSelectedDate(''); setSelectedTime('');
+    setNome(''); setWhatsapp(''); setVeiculo('');
+    setStep(1);
   };
 
   const generateTimeSlots = (dateStr: string) => {
@@ -57,18 +88,19 @@ export function Scheduling() {
   };
 
   const availableTimeSlots = selectedDate ? generateTimeSlots(selectedDate) : [];
+  const dataFormatada = selectedDate ? selectedDate.split('-').reverse().join('/') : '';
 
   return (
     <section id="agendamento" className="py-16 md:py-24 bg-[#050505] relative z-10">
       <div className="max-w-4xl mx-auto px-6">
-        
+
         <div className="text-center mb-10">
           <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Reserva Exclusiva</h2>
           <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">Agende sua Avaliação</h3>
         </div>
 
         <div id="agendamento-card" className="bg-neve-dark/50 backdrop-blur-xl border border-white/5 rounded-3xl p-5 md:p-10 shadow-2xl relative overflow-hidden">
-          
+
           {/* Progress Bar */}
           <div className="flex justify-between items-center mb-8 relative z-10">
             {[1, 2, 3, 4].map((i) => (
@@ -87,29 +119,32 @@ export function Scheduling() {
           </div>
 
           <div className={`transition-opacity duration-150 ease-in-out min-h-[300px] ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
-            
+
             {/* Step 1: Services */}
             {step === 1 && (
               <div>
                 <h4 className="text-2xl font-bold text-white mb-6 text-center md:text-left">Selecione o Serviço Principal</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {services.map((srv) => (
-                    <div 
-                      key={srv.id}
-                      onClick={() => setSelectedService(srv.id)}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {(Object.keys(SERVICOS) as ServicoId[]).map((id) => (
+                    <div
+                      key={id}
+                      onClick={() => setSelectedService(id)}
                       className={`p-4 md:p-5 rounded-2xl border cursor-pointer transition-all duration-300 flex items-center gap-4 ${
-                        selectedService === srv.id 
-                          ? 'border-neve-blue bg-neve-blue/10 shadow-[0_0_30px_rgba(30,144,255,0.15)]' 
+                        selectedService === id
+                          ? 'border-neve-blue bg-neve-blue/10 shadow-[0_0_30px_rgba(30,144,255,0.15)]'
                           : 'border-white/10 bg-black/20 hover:border-white/30 hover:bg-white/5'
                       }`}
                     >
-                      <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center ${selectedService === srv.id ? 'bg-neve-blue text-white' : 'bg-white/5 text-gray-400'}`}>
-                        {srv.icon}
+                      <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center ${selectedService === id ? 'bg-neve-blue text-white' : 'bg-white/5 text-gray-400'}`}>
+                        {ICONES[id]}
                       </div>
-                      <div className="min-w-0">
-                        <h5 className="text-base md:text-lg font-bold text-white mb-0.5">{srv.name}</h5>
-                        <p className="text-gray-500 text-xs md:text-sm flex items-center"><Clock className="w-3.5 h-3.5 mr-1 shrink-0" /> Tempo médio: {srv.time}</p>
+                      <div className="min-w-0 flex-1">
+                        <h5 className="text-base md:text-lg font-bold text-white mb-0.5">{SERVICOS[id].nome}</h5>
+                        <p className="text-gray-500 text-xs md:text-sm flex items-center"><Clock className="w-3.5 h-3.5 mr-1 shrink-0" /> {SERVICOS[id].tempo}</p>
                       </div>
+                      <span className={`shrink-0 text-sm md:text-base font-bold ${selectedService === id ? 'text-neve-blue' : 'text-gray-400'}`}>
+                        {formatBRL(SERVICOS[id].preco)}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -125,8 +160,8 @@ export function Scheduling() {
                     <label className="block text-gray-400 text-sm font-bold mb-3 uppercase tracking-wider">Data Desejada</label>
                     <div className="relative">
                       <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
-                      <input 
-                        type="date" 
+                      <input
+                        type="date"
                         min={todayDateStr}
                         value={selectedDate}
                         onChange={(e) => { setSelectedDate(e.target.value); setSelectedTime(''); }}
@@ -145,8 +180,8 @@ export function Scheduling() {
                               key={time}
                               onClick={() => setSelectedTime(time)}
                               className={`py-3 rounded-xl text-sm font-bold transition-all border ${
-                                selectedTime === time 
-                                  ? 'bg-neve-blue border-neve-blue text-white' 
+                                selectedTime === time
+                                  ? 'bg-neve-blue border-neve-blue text-white'
                                   : 'bg-black/20 border-white/10 text-gray-400 hover:border-white/30 hover:text-white'
                               }`}
                             >
@@ -172,17 +207,27 @@ export function Scheduling() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Nome Completo</label>
-                    <input type="text" placeholder="Ex: João Silva" className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors" />
+                    <input value={nome} onChange={e => setNome(e.target.value)} type="text" placeholder="Ex: João Silva" className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors" />
                   </div>
                   <div>
                     <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">WhatsApp</label>
-                    <input type="tel" placeholder="(11) 99999-9999" className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors" />
+                    <input value={whatsapp} onChange={e => setWhatsapp(e.target.value)} type="tel" placeholder="(11) 99999-9999" className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors" />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Modelo do Veículo</label>
-                    <input type="text" placeholder="Ex: Porsche 911 Carrera S - Preto" className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors" />
+                    <input value={veiculo} onChange={e => setVeiculo(e.target.value)} type="text" placeholder="Ex: Honda Civic Preto 2022" className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors" />
                   </div>
                 </div>
+
+                {/* Resumo do pedido */}
+                {selectedService && (
+                  <div className="mt-6 p-4 rounded-xl bg-neve-blue/5 border border-neve-blue/20 flex flex-wrap gap-x-6 gap-y-1 text-sm">
+                    <span className="text-gray-300"><b className="text-white">{SERVICOS[selectedService].nome}</b></span>
+                    <span className="text-gray-400">{dataFormatada} às {selectedTime}</span>
+                    <span className="text-neve-blue font-bold">{formatBRL(SERVICOS[selectedService].preco)}</span>
+                  </div>
+                )}
+                {sendError && <p className="text-red-400 text-sm mt-4">{sendError}</p>}
               </div>
             )}
 
@@ -194,10 +239,10 @@ export function Scheduling() {
                 </div>
                 <h4 className="text-3xl font-bold text-white mb-4">Solicitação Recebida!</h4>
                 <p className="text-gray-400 max-w-md mx-auto mb-8">
-                  Nossa equipe de especialistas analisará sua solicitação e entrará em contato via WhatsApp em até 15 minutos para confirmar o agendamento.
+                  Seu pedido já chegou no painel da Neve na Nave. Nossa equipe vai analisar e te confirmar pelo WhatsApp em breve!
                 </p>
-                <button 
-                  onClick={() => setStep(1)}
+                <button
+                  onClick={resetForm}
                   className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold transition-colors"
                 >
                   Fazer Novo Agendamento
@@ -210,22 +255,24 @@ export function Scheduling() {
           {/* Navigation Buttons */}
           {step < 4 && (
             <div className="mt-8 flex justify-between border-t border-white/10 pt-6">
-              <button 
+              <button
                 onClick={handlePrev}
                 className={`flex items-center px-6 py-4 rounded-xl font-bold transition-all ${step === 1 ? 'opacity-0 pointer-events-none' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
               >
                 <ChevronLeft className="w-5 h-5 mr-2" /> Voltar
               </button>
-              
-              <button 
+
+              <button
                 onClick={handleNext}
                 disabled={
-                  (step === 1 && !selectedService) || 
-                  (step === 2 && (!selectedDate || !selectedTime))
+                  sending ||
+                  (step === 1 && !selectedService) ||
+                  (step === 2 && (!selectedDate || !selectedTime)) ||
+                  (step === 3 && (!nome.trim() || whatsapp.replace(/\D/g, '').length < 10 || !veiculo.trim()))
                 }
                 className="flex items-center bg-neve-blue text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(30,144,255,0.3)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)]"
               >
-                Avançar <ChevronRight className="w-5 h-5 ml-2" />
+                {sending ? (<><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Enviando...</>) : step === 3 ? (<>Confirmar Agendamento <CheckCircle2 className="w-5 h-5 ml-2" /></>) : (<>Avançar <ChevronRight className="w-5 h-5 ml-2" /></>)}
               </button>
             </div>
           )}

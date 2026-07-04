@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { LandingPage } from './components/landing/LandingPage';
 import { Dashboard } from './components/dashboard/Dashboard';
+import { LoginGate } from './components/dashboard/LoginGate';
 import { WhatsAppFAB } from './components/shared/WhatsAppFAB';
 import { AnimatePresence, motion } from 'framer-motion';
 import Lenis from 'lenis';
@@ -13,6 +14,13 @@ type ViewState = 'landing' | 'dashboard';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>('landing');
+  const [isAuthed, setIsAuthed] = useState(() => sessionStorage.getItem('nn_auth') === '1');
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('nn_auth');
+    setIsAuthed(false);
+    setCurrentView('landing');
+  };
 
   // Scroll suave global (Lenis) sincronizado com o GSAP
   useEffect(() => {
@@ -56,7 +64,11 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Dashboard onLogout={() => setCurrentView('landing')} />
+            {isAuthed ? (
+              <Dashboard onLogout={handleLogout} />
+            ) : (
+              <LoginGate onLogin={() => setIsAuthed(true)} />
+            )}
           </motion.div>
         )}
       </AnimatePresence>
