@@ -1,4 +1,5 @@
 import { DollarSign, Car, Hourglass } from 'lucide-react';
+import { mesAtualLocal } from '../../lib/datas';
 import { motion } from 'framer-motion';
 import type { Agendamento } from '../../lib/supabase';
 import { formatBRL } from '../../lib/servicos';
@@ -6,7 +7,7 @@ import { formatBRL } from '../../lib/servicos';
 interface Props { agendamentos: Agendamento[]; }
 
 export function Scorecards({ agendamentos }: Props) {
-  const mesAtual = new Date().toISOString().slice(0, 7); // YYYY-MM
+  const mesAtual = mesAtualLocal();
   const doMes = agendamentos.filter(a => a.data?.startsWith(mesAtual));
   const confirmados = doMes.filter(a => a.status === 'confirmado');
 

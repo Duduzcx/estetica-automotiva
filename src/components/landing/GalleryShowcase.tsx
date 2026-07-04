@@ -42,12 +42,23 @@ export function GalleryShowcase() {
     resize();
     window.addEventListener('resize', resize);
 
-    for (let i = 0; i < FRAME_COUNT; i++) {
-      const img = new Image();
-      img.src = framePath(i);
-      if (i === 0) img.onload = draw;
-      images.push(img);
-    }
+    // Economia de dados: os 50 frames só baixam quando a cena se aproxima
+    let carregado = false;
+    const carregarFrames = () => {
+      if (carregado) return;
+      carregado = true;
+      for (let i = 0; i < FRAME_COUNT; i++) {
+        const img = new Image();
+        img.src = framePath(i);
+        if (i === 0) img.onload = draw;
+        images.push(img);
+      }
+    };
+    const observer = new IntersectionObserver(
+      (entries) => { if (entries[0].isIntersecting) { carregarFrames(); observer.disconnect(); } },
+      { rootMargin: '150% 0px' }
+    );
+    if (wrapRef.current) observer.observe(wrapRef.current);
 
     // A cena: chega pequeno → expande pra tela cheia → arrasta os frames → solta
     const tl = gsap.timeline({
@@ -84,7 +95,7 @@ export function GalleryShowcase() {
     // Zoom interno lento (dá vida mesmo antes do vídeo real chegar)
     tl.fromTo(canvas, { scale: 1.18 }, { scale: 1, ease: 'none', duration: 1 }, 0);
 
-    return () => window.removeEventListener('resize', resize);
+    return () => { window.removeEventListener('resize', resize); observer.disconnect(); };
   }, { scope: wrapRef });
 
   return (

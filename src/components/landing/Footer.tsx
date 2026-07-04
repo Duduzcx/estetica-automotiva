@@ -28,7 +28,7 @@ export function Footer() {
             <ul className="text-gray-400 text-sm space-y-5 font-light">
               <li className="flex items-center"><MapPin className="w-5 h-5 text-neve-blue mr-3" /> Rua Delta, 537 - Jaguari, Santana de Parnaíba - SP</li>
               <li className="flex items-center"><Phone className="w-5 h-5 text-neve-blue mr-3" /> (11) 95046-7014</li>
-              <li className="flex items-center"><Mail className="w-5 h-5 text-neve-blue mr-3" /> contato@nevenanave.com</li>
+              <li className="flex items-center"><Mail className="w-5 h-5 text-neve-blue mr-3" /><a href="https://www.instagram.com/nevenanavee" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">@nevenanavee</a></li>
             </ul>
           </div>
           <div>

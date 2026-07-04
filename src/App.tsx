@@ -1,10 +1,11 @@
-import { useState, useEffect, Component, type ReactNode } from 'react';
+import { useState, useEffect, Component, lazy, Suspense, type ReactNode } from 'react';
 import { LandingPage } from './components/landing/LandingPage';
-import { Dashboard } from './components/dashboard/Dashboard';
-import { LoginGate } from './components/dashboard/LoginGate';
+const Dashboard = lazy(() => import('./components/dashboard/Dashboard').then(m => ({ default: m.Dashboard })));
+const LoginGate = lazy(() => import('./components/dashboard/LoginGate').then(m => ({ default: m.LoginGate })));
 import { WhatsAppFAB } from './components/shared/WhatsAppFAB';
 import { AnimatePresence, motion } from 'framer-motion';
 import Lenis from 'lenis';
+import { supabase } from './lib/supabase';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -42,6 +43,7 @@ export default function App() {
   const [isAuthed, setIsAuthed] = useState(() => localStorage.getItem('nn_auth_device') === '1' || sessionStorage.getItem('nn_auth') === '1');
 
   const handleLogout = () => {
+    supabase?.auth.signOut();
     sessionStorage.removeItem('nn_auth');
     localStorage.removeItem('nn_auth_device');
     setIsAuthed(false);
@@ -91,11 +93,13 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {isAuthed ? (
-              <Dashboard onLogout={handleLogout} onBackToSite={() => setCurrentView('landing')} />
-            ) : (
-              <LoginGate onLogin={() => setIsAuthed(true)} />
-            )}
+            <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>Carregando painel...</div>}>
+              {isAuthed ? (
+                <Dashboard onLogout={handleLogout} onBackToSite={() => setCurrentView('landing')} />
+              ) : (
+                <LoginGate onLogin={() => setIsAuthed(true)} />
+              )}
+            </Suspense>
           </motion.div>
         )}
       </AnimatePresence>

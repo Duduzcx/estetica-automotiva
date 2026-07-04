@@ -1,4 +1,5 @@
 import { BarChart3 } from 'lucide-react';
+import { mesAtualLocal } from '../../lib/datas';
 import { motion } from 'framer-motion';
 import type { Agendamento } from '../../lib/supabase';
 
@@ -7,7 +8,7 @@ interface Props { agendamentos: Agendamento[]; }
 const CORES = ['bg-neve-blue', 'bg-purple-500', 'bg-green-500', 'bg-orange-500', 'bg-pink-500'];
 
 export function TopServicesChart({ agendamentos }: Props) {
-  const mesAtual = new Date().toISOString().slice(0, 7);
+  const mesAtual = mesAtualLocal();
   const base = agendamentos.filter(a => a.data?.startsWith(mesAtual) && a.status !== 'recusado');
 
   const contagem = new Map<string, number>();

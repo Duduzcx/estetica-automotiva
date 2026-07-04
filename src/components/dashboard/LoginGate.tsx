@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, User, LogIn } from 'lucide-react';
+import { Lock, User, LogIn, Loader2 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 interface Props { onLogin: () => void; }
 
@@ -9,23 +10,37 @@ export function LoginGate({ onLogin }: Props) {
   const [senha, setSenha] = useState('');
 
   const [erro, setErro] = useState('');
+  const [entrando, setEntrando] = useState(false);
   const [manterConectado, setManterConectado] = useState(true);
 
-  const entrar = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    const userOk = usuario.trim().toLowerCase() === 'nevenanave';
-    const senhaOk = senha === 'garagem537';
-    if (!userOk || !senhaOk) {
-      setErro('Usuário ou senha incorretos. ❄️');
-      return;
-    }
+  const concluir = () => {
     if (manterConectado) {
-      // Fica salvo SÓ neste aparelho: não pede senha de novo aqui
       localStorage.setItem('nn_auth_device', '1');
     } else {
       sessionStorage.setItem('nn_auth', '1');
     }
     onLogin();
+  };
+
+  const entrar = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    setErro('');
+    setEntrando(true);
+
+    // 1) Autenticação real (Supabase Auth). Aceita e-mail completo ou só o usuário
+    if (supabase) {
+      const email = usuario.includes('@') ? usuario.trim() : `${usuario.trim().toLowerCase()}@nevenanave.com`;
+      const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+      if (!error) { setEntrando(false); concluir(); return; }
+    }
+
+    // 2) Fallback provisório (até o usuário oficial ser criado no Supabase)
+    if (usuario.trim().toLowerCase() === 'nevenanave' && senha === 'garagem537') {
+      setEntrando(false); concluir(); return;
+    }
+
+    setEntrando(false);
+    setErro('Usuário ou senha incorretos. ❄️');
   };
 
   return (
@@ -75,7 +90,7 @@ export function LoginGate({ onLogin }: Props) {
             onClick={() => entrar()}
             className="w-full flex items-center justify-center bg-neve-blue hover:bg-blue-600 text-white py-4 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(30,144,255,0.3)]"
           >
-            <LogIn className="w-5 h-5 mr-2" /> Entrar
+            {entrando ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <LogIn className="w-5 h-5 mr-2" />} Entrar
           </button>
         </div>
       </motion.div>

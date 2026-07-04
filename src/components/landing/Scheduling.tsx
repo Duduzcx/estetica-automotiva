@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { hojeLocal } from '../../lib/datas';
 import { createPortal } from 'react-dom';
 import { Calendar, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets, X, CalendarCheck2, Layers, Lightbulb, Settings, Disc } from 'lucide-react';
 import { SERVICOS, formatBRL, precoLabel, type ServicoId } from '../../lib/servicos';
@@ -50,7 +51,7 @@ export function Scheduling() {
   };
 
   const timeSlotsConfig = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-  const todayDateStr = new Date().toISOString().split('T')[0];
+  const todayDateStr = hojeLocal();
 
   const toggleService = (id: ServicoId) => {
     setSelectedServices(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
@@ -66,10 +67,15 @@ export function Scheduling() {
     let ativo = true;
     setLoadingSlots(true);
     (async () => {
-      const [ags, fech] = await Promise.all([
-        supabase.from('agendamentos').select('horario').eq('data', selectedDate).in('status', ['pendente', 'confirmado']),
+      let [ags, fech] = await Promise.all([
+        // View pública só com dia+horário (não expõe nome/telefone de ninguém)
+        supabase.from('horarios_ocupados').select('horario').eq('data', selectedDate),
         supabase.from('dias_fechados').select('data').eq('data', selectedDate),
       ]);
+      if (ags.error) {
+        // Fallback enquanto a view não for criada no banco
+        ags = await supabase.from('agendamentos').select('horario').eq('data', selectedDate).in('status', ['pendente', 'confirmado']) as any;
+      }
       if (!ativo) return;
       setOcupados(ags.data ? ags.data.map((r: any) => r.horario) : []);
       setDiaFechado(!!(fech.data && fech.data.length > 0));

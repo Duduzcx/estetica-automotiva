@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { hojeLocal } from '../../lib/datas';
 import { CalendarDays, Plus, X, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
@@ -11,7 +12,7 @@ export function AgendaControl() {
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
 
-  const hoje = new Date().toISOString().slice(0, 10);
+  const hoje = hojeLocal();
 
   const carregar = async () => {
     if (!supabase) { setCarregando(false); return; }

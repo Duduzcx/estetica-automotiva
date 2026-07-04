@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { hojeLocal } from '../../lib/datas';
 import { CheckCircle2, XCircle, Clock, MessageCircle, Car, Loader2 } from 'lucide-react';
 import type { Agendamento } from '../../lib/supabase';
 import { formatBRL } from '../../lib/servicos';
@@ -15,7 +16,7 @@ const foneParaWa = (fone: string) => {
 };
 
 const fmtData = (a: Agendamento) => {
-  const hoje = new Date().toISOString().slice(0, 10);
+  const hoje = hojeLocal();
   const dia = a.data === hoje ? 'Hoje' : a.data.split('-').reverse().slice(0, 2).join('/');
   return `${dia}, ${a.horario}`;
 };
