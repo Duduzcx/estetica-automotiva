@@ -39,7 +39,7 @@ export function Hero() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: 'bottom top',
+          end: 'bottom bottom', // percorre a altura extra do hero (sticky)
           scrub: 0.6,
         },
       });
@@ -87,7 +87,9 @@ export function Hero() {
   };
 
   return (
-    <section ref={containerRef} className="relative h-screen bg-black overflow-hidden">
+    <section ref={containerRef} className="relative h-[145vh] bg-black">
+      {/* Viewport grudado: fica na tela enquanto a seção alta rola por trás */}
+      <div className="sticky top-0 h-screen overflow-hidden">
       {/* Glow Effects */}
       <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-neve-blue/20 blur-[150px] pointer-events-none z-0"></div>
       <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-900/20 blur-[150px] pointer-events-none z-0"></div>
@@ -144,6 +146,7 @@ export function Hero() {
       <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/30 animate-pulse z-20 pointer-events-none">
         <p className="text-xs uppercase tracking-[0.3em] mb-4 text-center">Scroll para Imersão</p>
         <div className="w-[1px] h-24 bg-gradient-to-b from-white/50 to-transparent mx-auto"></div>
+      </div>
       </div>
     </section>
   );
