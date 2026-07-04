@@ -9,6 +9,7 @@ export function LoginGate({ onLogin }: Props) {
   const [senha, setSenha] = useState('');
 
   const [erro, setErro] = useState('');
+  const [manterConectado, setManterConectado] = useState(true);
 
   const entrar = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -18,7 +19,12 @@ export function LoginGate({ onLogin }: Props) {
       setErro('Usuário ou senha incorretos. ❄️');
       return;
     }
-    sessionStorage.setItem('nn_auth', '1');
+    if (manterConectado) {
+      // Fica salvo SÓ neste aparelho: não pede senha de novo aqui
+      localStorage.setItem('nn_auth_device', '1');
+    } else {
+      sessionStorage.setItem('nn_auth', '1');
+    }
     onLogin();
   };
 
@@ -55,6 +61,15 @@ export function LoginGate({ onLogin }: Props) {
               className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors"
             />
           </div>
+          <label className="flex items-center gap-3 text-gray-400 text-sm cursor-pointer select-none px-1">
+            <input
+              type="checkbox"
+              checked={manterConectado}
+              onChange={e => setManterConectado(e.target.checked)}
+              className="w-4 h-4 accent-[#1E90FF]"
+            />
+            Manter conectado neste aparelho
+          </label>
           {erro && <p className="text-red-400 text-sm text-center font-semibold">{erro}</p>}
           <button
             onClick={() => entrar()}

@@ -39,10 +39,11 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>('landing');
-  const [isAuthed, setIsAuthed] = useState(() => sessionStorage.getItem('nn_auth') === '1');
+  const [isAuthed, setIsAuthed] = useState(() => localStorage.getItem('nn_auth_device') === '1' || sessionStorage.getItem('nn_auth') === '1');
 
   const handleLogout = () => {
     sessionStorage.removeItem('nn_auth');
+    localStorage.removeItem('nn_auth_device');
     setIsAuthed(false);
     setCurrentView('landing');
   };
