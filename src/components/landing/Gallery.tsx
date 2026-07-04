@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { GalleryShowcase } from './GalleryShowcase';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -75,7 +76,7 @@ export function Gallery() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-8 auto-rows-[250px] md:auto-rows-[300px]">
-          {portfolioItems.map((item, idx) => (
+          {portfolioItems.slice(0, 4).map((item, idx) => (
             <div 
               key={idx}
               data-featured={item.isFeatured ? 'true' : 'false'}
@@ -89,7 +90,26 @@ export function Gallery() {
             </div>
           ))}
         </div>
-        
+      </div>
+
+      {/* Cena imersiva: expande pra tela cheia, arrasta, e solta */}
+      <GalleryShowcase />
+
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-8 auto-rows-[250px] md:auto-rows-[300px]">
+          {portfolioItems.slice(4).map((item, idx) => (
+            <div 
+              key={idx}
+              data-featured="false"
+              className={`gallery-item group relative rounded-2xl overflow-hidden cursor-default will-change-[transform,opacity] ${item.span}`}
+            >
+              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-700 z-10 pointer-events-none"></div>
+              <div className="w-full h-full pointer-events-none">
+                <img src={item.src} alt={`Portfólio ${idx + 5}`} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
