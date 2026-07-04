@@ -40,7 +40,7 @@ export function Hero() {
           trigger: containerRef.current,
           start: 'top top',
           end: 'bottom bottom', // percorre a altura extra do hero (sticky)
-          scrub: 0.6,
+          scrub: 1,
         },
       });
 
@@ -87,7 +87,7 @@ export function Hero() {
   };
 
   return (
-    <section ref={containerRef} className="relative h-[145vh] bg-black">
+    <section ref={containerRef} className="relative h-[200vh] bg-black">
       {/* Viewport grudado: fica na tela enquanto a seção alta rola por trás */}
       <div className="sticky top-0 h-screen overflow-hidden">
       {/* Glow Effects */}
