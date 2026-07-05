@@ -39,8 +39,8 @@ export function Services() {
         <div className="w-12 h-1.5 rounded-full bg-gray-200"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-14 md:py-20">
-        <div className="mb-10 md:mb-14 text-center md:text-left">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 md:py-16">
+        <div className="mb-8 md:mb-12 text-center md:text-left">
           <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">
             Nosso Portfólio
           </h2>
@@ -50,38 +50,40 @@ export function Services() {
         </div>
 
         {/* Grade organizada: leve, sem travas de scroll */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
           {servicesData.map(({ title, desc, Icon, preco }, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.45, delay: (idx % 3) * 0.07, ease: 'easeOut' }}
-              className="group relative p-6 md:p-8 rounded-[1.75rem] bg-white border border-gray-100 shadow-[0_16px_50px_-24px_rgba(15,40,80,0.16)] overflow-hidden hover:shadow-[0_24px_60px_-20px_rgba(30,144,255,0.22)] transition-shadow duration-500"
+              transition={{ duration: 0.4, delay: (idx % 2) * 0.06, ease: 'easeOut' }}
+              className="group relative rounded-2xl md:rounded-[1.75rem] bg-white border border-gray-100 shadow-[0_16px_50px_-24px_rgba(15,40,80,0.16)] overflow-hidden hover:shadow-[0_24px_60px_-20px_rgba(30,144,255,0.22)] transition-shadow duration-500"
             >
-              <div className="absolute top-5 right-6 text-4xl md:text-5xl font-bold font-heading text-gray-100 group-hover:text-neve-blue/20 transition-colors duration-500 select-none">
-                {String(idx + 1).padStart(2, '0')}
-              </div>
+              <a href="#agendamento" className="block p-4 md:p-7 h-full">
+                <div className="hidden md:block absolute top-5 right-6 text-4xl font-bold font-heading text-gray-100 group-hover:text-neve-blue/20 transition-colors duration-500 select-none">
+                  {String(idx + 1).padStart(2, '0')}
+                </div>
 
-              <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center mb-5 bg-gradient-to-br from-neve-blue to-blue-400 text-white shadow-lg shadow-blue-500/25 transition-transform duration-500 group-hover:scale-110">
-                <Icon className="w-5 h-5 md:w-6 md:h-6" />
-              </div>
+                <div className="relative w-10 h-10 md:w-13 md:h-13 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-5 bg-gradient-to-br from-neve-blue to-blue-400 text-white shadow-lg shadow-blue-500/25 transition-transform duration-500 group-hover:scale-110">
+                  <Icon className="w-4 h-4 md:w-6 md:h-6" />
+                </div>
 
-              <h4 className="text-lg md:text-xl font-bold mb-2 text-gray-900 tracking-wide group-hover:text-neve-blue transition-colors">
-                {title}
-              </h4>
-              <p className="text-gray-600 text-sm leading-relaxed font-light mb-3">
-                {desc}
-              </p>
-              <p className="text-neve-blue font-bold text-base mb-5">{preco}</p>
+                <h4 className="text-sm md:text-lg font-bold mb-1 md:mb-2 text-gray-900 leading-snug group-hover:text-neve-blue transition-colors">
+                  {title}
+                </h4>
+                <p className="hidden md:block text-gray-600 text-sm leading-relaxed font-light mb-3">
+                  {desc}
+                </p>
+                <p className="text-neve-blue font-bold text-xs md:text-base">{preco}</p>
 
-              <a href="#agendamento" className="inline-flex items-center gap-2 text-sm font-bold text-gray-400 group-hover:text-neve-blue transition-colors">
-                Agendar este serviço
-                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                <span className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-gray-400 group-hover:text-neve-blue transition-colors mt-4">
+                  Agendar este serviço
+                  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
+
+                <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-gradient-to-r from-neve-blue to-blue-300 group-hover:w-full transition-all duration-700"></div>
               </a>
-
-              <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-gradient-to-r from-neve-blue to-blue-300 group-hover:w-full transition-all duration-700"></div>
             </motion.div>
           ))}
         </div>
