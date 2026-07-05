@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, User, LogIn, Loader2 } from 'lucide-react';
+import { Lock, User, LogIn, Loader2, ChevronLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
-interface Props { onLogin: () => void; }
+interface Props { onLogin: () => void; onBack: () => void; }
 
-export function LoginGate({ onLogin }: Props) {
+export function LoginGate({ onLogin, onBack }: Props) {
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
 
@@ -41,6 +41,13 @@ export function LoginGate({ onLogin }: Props) {
   return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center px-6 relative overflow-hidden">
       <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-neve-blue/10 blur-[150px] pointer-events-none"></div>
+
+      <button
+        onClick={onBack}
+        className="absolute top-5 left-5 z-20 flex items-center gap-1 text-gray-400 hover:text-white font-bold text-sm px-3 py-2 rounded-xl hover:bg-white/5 transition-colors"
+      >
+        <ChevronLeft className="w-5 h-5" /> Voltar ao site
+      </button>
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}

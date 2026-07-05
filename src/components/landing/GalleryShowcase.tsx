@@ -6,7 +6,7 @@ import { useGSAP } from '@gsap/react';
 gsap.registerPlugin(ScrollTrigger);
 
 // 50 frames do vídeo real da Mercedes CLA 45 AMG no estúdio
-const FRAME_COUNT = 30;
+const FRAME_COUNT = 36;
 const framePath = (i: number) => `/videos/gallery-seq/frame_${String(i + 1).padStart(3, '0')}.jpg`;
 
 export function GalleryShowcase() {

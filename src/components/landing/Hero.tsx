@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Sequência de frames (técnica de canvas: funciona em QUALQUER aparelho,
 // diferente do seek de <video> que falha no Chrome mobile)
-const FRAME_COUNT = 40;
+const FRAME_COUNT = 48;
 const framePath = (i: number) => `/videos/seq/frame_${String(i + 1).padStart(3, '0')}.jpg`;
 
 export function Hero() {

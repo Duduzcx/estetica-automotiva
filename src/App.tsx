@@ -112,7 +112,7 @@ export default function App() {
               {isAuthed ? (
                 <Dashboard onLogout={handleLogout} onBackToSite={() => setCurrentView('landing')} />
               ) : (
-                <LoginGate onLogin={() => setIsAuthed(true)} />
+                <LoginGate onLogin={() => setIsAuthed(true)} onBack={() => setCurrentView('landing')} />
               )}
             </Suspense>
           </motion.div>

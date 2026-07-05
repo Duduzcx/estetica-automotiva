@@ -21,11 +21,28 @@ const DESC: Record<ServicoId, { Icon: any; desc: string }> = {
   lavagem_entrada:     { Icon: Droplets,  desc: 'Lavagem cuidadosa e caprichada para o dia a dia.' },
 };
 
+const FOTOS: Record<ServicoId, string> = {
+  polimento_tecnico: '/gallery/card-polimento.jpg',
+  polimento_comercial: '/gallery/classico-vw.jpg',
+  restauracao_farois: '/gallery/nivus.jpg',
+  higienizacao: '/gallery/interior-mercedes.jpg',
+  descont_vidros: '/gallery/card-civic.jpg',
+  descont_pintura: '/gallery/card-mercedes.jpg',
+  cristalizacao: '/gallery/card-civic.jpg',
+  limpeza_motor: '/gallery/card-polimento.jpg',
+  revit_plasticos: '/gallery/interior-porsche.jpg',
+  coating: '/gallery/card-mercedes.jpg',
+  planos: '/gallery/fachada.jpg',
+  lavagem_detalhada: '/gallery/estudio-bmw.jpg',
+  lavagem_entrada: '/gallery/fachada.jpg',
+};
+
 const servicesData = (Object.keys(SERVICOS) as ServicoId[]).map(id => ({
   title: SERVICOS[id].nome,
   Icon: DESC[id].Icon,
   desc: DESC[id].desc,
   preco: precoLabel(id),
+  foto: FOTOS[id],
 }));
 
 export function Services() {
@@ -51,7 +68,7 @@ export function Services() {
 
         {/* Grade organizada: leve, sem travas de scroll */}
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
-          {servicesData.map(({ title, desc, Icon, preco }, idx) => (
+          {servicesData.map(({ title, desc, Icon, preco, foto }, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, y: 28 }}
@@ -60,7 +77,12 @@ export function Services() {
               transition={{ duration: 0.4, delay: (idx % 2) * 0.06, ease: 'easeOut' }}
               className="group relative rounded-2xl md:rounded-[1.75rem] bg-white border border-gray-100 shadow-[0_16px_50px_-24px_rgba(15,40,80,0.16)] overflow-hidden hover:shadow-[0_24px_60px_-20px_rgba(30,144,255,0.22)] transition-shadow duration-500"
             >
-              <a href="#agendamento" className="block p-4 md:p-7 h-full">
+              {/* Foto de fundo com véu branco pra leitura */}
+              <div className="absolute inset-0 pointer-events-none">
+                <img src={foto} alt="" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/90 to-white/60 group-hover:via-white/85 group-hover:to-white/45 transition-colors duration-500"></div>
+              </div>
+              <a href="#agendamento" className="relative block p-4 md:p-7 h-full">
                 <div className="hidden md:block absolute top-5 right-6 text-4xl font-bold font-heading text-gray-100 group-hover:text-neve-blue/20 transition-colors duration-500 select-none">
                   {String(idx + 1).padStart(2, '0')}
                 </div>
