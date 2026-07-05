@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, User, LogIn, Loader2, ChevronLeft } from 'lucide-react';
+import { Lock, User, LogIn, Loader2, ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 interface Props { onLogin: () => void; onBack: () => void; }
@@ -12,6 +12,13 @@ export function LoginGate({ onLogin, onBack }: Props) {
   const [erro, setErro] = useState('');
   const [entrando, setEntrando] = useState(false);
   const [manterConectado, setManterConectado] = useState(true);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+
+  // Tela de login 100% fixa: nada de arrastar a página
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
 
   const concluir = () => {
     if (manterConectado) {
@@ -39,7 +46,7 @@ export function LoginGate({ onLogin, onBack }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center px-6 relative overflow-hidden">
+    <div className="h-[100dvh] overflow-hidden bg-[#050505] flex items-center justify-center px-6 relative">
       <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-neve-blue/10 blur-[150px] pointer-events-none"></div>
 
       <button
@@ -73,10 +80,18 @@ export function LoginGate({ onLogin, onBack }: Props) {
             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
               value={senha} onChange={e => setSenha(e.target.value)}
-              type="password" placeholder="Senha"
+              type={mostrarSenha ? 'text' : 'password'} placeholder="Senha"
               onKeyDown={e => e.key === 'Enter' && entrar()}
-              className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors"
+              className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 pl-12 pr-12 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors"
             />
+            <button
+              type="button"
+              onClick={() => setMostrarSenha(v => !v)}
+              aria-label={mostrarSenha ? 'Esconder senha' : 'Mostrar senha'}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-500 hover:text-white transition-colors"
+            >
+              {mostrarSenha ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
           </div>
           <label className="flex items-center gap-3 text-gray-400 text-sm cursor-pointer select-none px-1">
             <input
