@@ -19,13 +19,6 @@ export function LoginGate({ onLogin, onBack }: Props) {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
   }, []);
-  const [mostrarSenha, setMostrarSenha] = useState(false);
-
-  // Tela de login 100% fixa: nada de arrastar a página
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
-  }, []);
 
   const concluir = () => {
     if (manterConectado) {
