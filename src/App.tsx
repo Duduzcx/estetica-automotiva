@@ -2,8 +2,7 @@ import { useState, useEffect, Component, lazy, Suspense, type ReactNode } from '
 import { LandingPage } from './components/landing/LandingPage';
 const Dashboard = lazy(() => import('./components/dashboard/Dashboard').then(m => ({ default: m.Dashboard })));
 const LoginGate = lazy(() => import('./components/dashboard/LoginGate').then(m => ({ default: m.LoginGate })));
-import { WhatsAppFAB } from './components/shared/WhatsAppFAB';
-import { ScheduleFAB } from './components/shared/ScheduleFAB';
+import { FloatingButtons } from './components/shared/FloatingButtons';
 import { AnimatePresence, motion } from 'framer-motion';
 import Lenis from 'lenis';
 import { supabase } from './lib/supabase';
@@ -121,8 +120,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Exibe os botões flutuantes apenas na Landing Page */}
-      {currentView === 'landing' && <ScheduleFAB />}
-      {currentView === 'landing' && <WhatsAppFAB />}
+      {currentView === 'landing' && <FloatingButtons />}
     </div>
     </ErrorBoundary>
   );

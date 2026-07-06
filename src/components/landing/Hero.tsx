@@ -48,13 +48,27 @@ export function Hero() {
     resize();
     window.addEventListener('resize', resize);
 
-    // Pré-carrega os frames; o primeiro desenha assim que chegar
-    for (let i = 0; i < FRAME_COUNT; i++) {
-      const img = new Image();
-      img.src = framePath(i);
-      if (i === 0) img.onload = draw;
-      img.decode?.().catch(() => {});
-      images.push(img);
+    // Pré-carrega os frames: o 1º entra na hora (é o que pinta a tela),
+    // o resto espera o navegador ficar ocioso pra não brigar com o
+    // carregamento inicial (CSS/JS/fontes) e deixar o site abrir mais rápido
+    const frame0 = new Image();
+    frame0.src = framePath(0);
+    frame0.onload = draw;
+    frame0.decode?.().catch(() => {});
+    images.push(frame0);
+
+    const carregarResto = () => {
+      for (let i = 1; i < FRAME_COUNT; i++) {
+        const img = new Image();
+        img.src = framePath(i);
+        img.decode?.().catch(() => {});
+        images.push(img);
+      }
+    };
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(carregarResto, { timeout: 2000 });
+    } else {
+      setTimeout(carregarResto, 300);
     }
 
     // Trava curta: prende meia tela enquanto os frames passam.
