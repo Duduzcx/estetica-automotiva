@@ -46,11 +46,11 @@ export function Transformation() {
             className="relative w-full max-w-4xl mx-auto h-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-2xl"
           >
             {/* Imagem de Fundo (DEPOIS) */}
-            <img src="/carro-limpo.png" className="absolute inset-0 w-full h-full object-cover pointer-events-none" alt="Depois - Vitrificado" />
+            <img src="/carro-limpo.jpg" className="absolute inset-0 w-full h-full object-cover pointer-events-none" alt="Depois - Vitrificado" />
             
             {/* Imagem Sobreposta (ANTES) com animação crossfade do index.css */}
             <img 
-              src="/carro-sujo.png" 
+              src="/carro-sujo.jpg" 
               className="absolute inset-0 w-full h-full object-cover pointer-events-none animate-crossfade" 
               alt="Antes - Sujo e Opaco" 
             />

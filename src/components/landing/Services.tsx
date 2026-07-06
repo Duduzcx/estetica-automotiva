@@ -30,7 +30,7 @@ const FOTOS: Record<ServicoId, string> = {
   descont_pintura: '/gallery/card-mercedes.jpg',
   cristalizacao: '/gallery/card-civic.jpg',
   limpeza_motor: '/gallery/card-polimento.jpg',
-  revit_plasticos: '/gallery/interior-porsche.jpg',
+  revit_plasticos: '/gallery/card-lancer.jpg',
   coating: '/gallery/card-mercedes.jpg',
   planos: '/gallery/fachada.jpg',
   lavagem_detalhada: '/gallery/estudio-bmw.jpg',

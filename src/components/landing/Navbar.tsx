@@ -32,7 +32,11 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
 
   return (
     <>
-      <nav style={{ zIndex: 70 }} className="fixed w-full transition-all duration-300 bg-[#04070d] md:bg-neve-dark/30 md:backdrop-blur-md border-b border-white/5" id="navbar">
+      <nav
+        style={{ zIndex: 70, transform: 'translateZ(0)', WebkitTransform: 'translateZ(0)', backfaceVisibility: 'hidden', willChange: 'transform' }}
+        className="fixed w-full transition-all duration-300 bg-[#04070d] md:bg-neve-dark/30 md:backdrop-blur-md border-b border-white/5"
+        id="navbar"
+      >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
