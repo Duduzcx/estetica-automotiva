@@ -41,12 +41,21 @@ export function Hero() {
       // Teto de resolução: os frames têm 478px de largura, desenhar o canvas
       // em retina 3x só queima GPU sem ganhar nitidez nenhuma
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      canvas.width = canvas.offsetWidth * dpr;
-      canvas.height = canvas.offsetHeight * dpr;
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      if (w === 0 || h === 0) return; // ainda não tem layout, espera o próximo evento
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
       draw();
     };
     resize();
-    window.addEventListener('resize', resize);
+    // ResizeObserver em vez de 'resize' da window: o resize da window não
+    // dispara em vários celulares quando só a barra de endereço some/aparece
+    // durante o scroll, deixando o canvas com o buffer no tamanho errado
+    // e a imagem esticada ("gorda") até o próximo evento. O ResizeObserver
+    // pega qualquer mudança real de tamanho do próprio elemento.
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
 
     // Pré-carrega os frames: o 1º entra na hora (é o que pinta a tela),
     // o resto espera o navegador ficar ocioso pra não brigar com o
@@ -89,7 +98,7 @@ export function Hero() {
       onUpdate: (self) => irParaFrame(self.progress * (FRAME_COUNT - 1)),
     });
 
-    return () => window.removeEventListener('resize', resize);
+    return () => ro.disconnect();
   }, { scope: containerRef });
 
   const revealVariants: any = {
@@ -109,8 +118,8 @@ export function Hero() {
     // Invólucro estável: o pin do GSAP reparenta a section AQUI DENTRO,
     // sem mexer nos vizinhos que o React usa como referência (fix do insertBefore)
     <div>
-    <section id="inicio" ref={containerRef} className="relative h-screen bg-black">
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <section id="inicio" ref={containerRef} className="relative h-[100svh] bg-black">
+      <div className="sticky top-0 h-[100svh] overflow-hidden">
 
         {/* Frames do detalhamento desenhados em canvas */}
         <div className="absolute inset-0 z-0 w-full h-full">

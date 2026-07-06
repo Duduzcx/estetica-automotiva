@@ -36,12 +36,18 @@ export function GalleryShowcase() {
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      canvas.width = canvas.offsetWidth * dpr;
-      canvas.height = canvas.offsetHeight * dpr;
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      if (w === 0 || h === 0) return;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
       draw();
     };
     resize();
-    window.addEventListener('resize', resize);
+    // ResizeObserver: mais confiável que 'resize' da window pra pegar
+    // mudanças de tamanho reais do elemento (evita o vídeo "esticar")
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
 
     // Economia de dados: os 50 frames só baixam quando a cena se aproxima
     let carregado = false;
@@ -94,7 +100,7 @@ export function GalleryShowcase() {
       );
     }
 
-    return () => { window.removeEventListener('resize', resize); observer.disconnect(); };
+    return () => { ro.disconnect(); observer.disconnect(); };
   }, { scope: wrapRef });
 
   return (

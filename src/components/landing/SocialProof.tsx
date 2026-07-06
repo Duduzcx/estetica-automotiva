@@ -43,7 +43,7 @@ export function SocialProof() {
 
   return (
     <section ref={sectionRef} className="relative z-10">
-      <div ref={pinWrapRef} className="h-screen flex flex-col justify-center overflow-hidden">
+      <div ref={pinWrapRef} className="h-[100svh] flex flex-col justify-center overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full mb-10">
           <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Feedback dos Clientes</h2>
           <h3 className="text-4xl md:text-6xl font-bold tracking-tight text-white">Experiência Comprovada</h3>
