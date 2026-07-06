@@ -16,6 +16,9 @@ export interface Agendamento {
   nome: string;
   whatsapp: string;
   veiculo: string;
+  carro_marca?: string | null;
+  carro_modelo?: string | null;
+  carro_ano?: number | null;
   servico: string;
   preco: number;
   data: string;    // YYYY-MM-DD

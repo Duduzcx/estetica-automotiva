@@ -1,9 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { hojeLocal } from '../../lib/datas';
 import { createPortal } from 'react-dom';
-import { Calendar, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets, X, CalendarCheck2, Layers, Lightbulb, Settings, Disc } from 'lucide-react';
+import { Calendar, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets, X, CalendarCheck2, Layers, Lightbulb, Settings, Disc, BadgeCheck } from 'lucide-react';
 import { SERVICOS, formatBRL, precoLabel, type ServicoId } from '../../lib/servicos';
 import { supabase } from '../../lib/supabase';
+import { useCarrosCatalogo } from '../../hooks/useCarrosCatalogo';
+
+const CARRO_STORAGE_KEY = 'nn_ultimo_carro';
+const OUTRO = '__outro__';
 
 const ICONES: Record<ServicoId, React.ReactNode> = {
   polimento_tecnico: <Sparkles className="w-6 h-6" />,
@@ -32,6 +36,12 @@ export function Scheduling() {
   const [nome, setNome] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [veiculo, setVeiculo] = useState('');
+  const [carroMarca, setCarroMarca] = useState('');
+  const [carroModelo, setCarroModelo] = useState('');
+  const [carroAno, setCarroAno] = useState('');
+  const [veiculoOutro, setVeiculoOutro] = useState('');
+  const [lembrarCarro, setLembrarCarro] = useState(true);
+  const [carroCarregadoDoStorage, setCarroCarregadoDoStorage] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [sending, setSending] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -49,6 +59,49 @@ export function Scheduling() {
     window.addEventListener('abrir-agendamento', abrir);
     return () => window.removeEventListener('abrir-agendamento', abrir);
   }, []);
+
+  const { marcas, modelosPorMarca } = useCarrosCatalogo();
+
+  // Pré-preenche com o último carro salvo pelo cliente neste aparelho
+  useEffect(() => {
+    if (carroCarregadoDoStorage) return;
+    try {
+      const salvo = localStorage.getItem(CARRO_STORAGE_KEY);
+      if (salvo) {
+        const { marca, modelo, ano } = JSON.parse(salvo);
+        if (marca === OUTRO) {
+          setCarroMarca(OUTRO);
+          setVeiculoOutro(modelo || '');
+        } else if (marca && modelo) {
+          setCarroMarca(marca);
+          setCarroModelo(modelo);
+          setCarroAno(ano ? String(ano) : '');
+        }
+      }
+    } catch { /* ignora storage corrompido */ }
+    setCarroCarregadoDoStorage(true);
+  }, [carroCarregadoDoStorage]);
+
+  const modelosDisponiveis = carroMarca && carroMarca !== OUTRO ? modelosPorMarca(carroMarca) : [];
+  const modeloSelecionado = modelosDisponiveis.find(m => m.modelo === carroModelo);
+  const anosDisponiveis = useMemo(() => {
+    if (!modeloSelecionado) return [];
+    const { ano_min, ano_max } = modeloSelecionado;
+    const anos: number[] = [];
+    for (let a = ano_max; a >= ano_min; a--) anos.push(a);
+    return anos;
+  }, [modeloSelecionado]);
+
+  // Monta o texto final do veículo (usado no registro e no WhatsApp)
+  useEffect(() => {
+    if (carroMarca === OUTRO) {
+      setVeiculo(veiculoOutro.trim());
+    } else if (carroMarca && carroModelo && carroAno) {
+      setVeiculo(`${carroMarca} ${carroModelo} ${carroAno}`);
+    } else {
+      setVeiculo('');
+    }
+  }, [carroMarca, carroModelo, carroAno, veiculoOutro]);
 
   const fecharModal = () => {
     setModalOpen(false);
@@ -116,6 +169,9 @@ export function Scheduling() {
       nome: nome.trim(),
       whatsapp: whatsapp.replace(/\D/g, ''),
       veiculo: veiculo.trim(),
+      carro_marca: carroMarca === OUTRO ? null : carroMarca || null,
+      carro_modelo: carroMarca === OUTRO ? null : carroModelo || null,
+      carro_ano: carroMarca === OUTRO ? null : (carroAno ? Number(carroAno) : null),
       servico: nomesServicos,
       preco: precoTotal,
       data: selectedDate,
@@ -139,6 +195,20 @@ export function Scheduling() {
         return;
       }
     }
+
+    // Lembra o carro pra próxima visita, se o cliente autorizou
+    try {
+      if (lembrarCarro && veiculo.trim()) {
+        localStorage.setItem(CARRO_STORAGE_KEY, JSON.stringify(
+          carroMarca === OUTRO
+            ? { marca: OUTRO, modelo: veiculoOutro.trim() }
+            : { marca: carroMarca, modelo: carroModelo, ano: carroAno }
+        ));
+      } else {
+        localStorage.removeItem(CARRO_STORAGE_KEY);
+      }
+    } catch { /* localStorage indisponível: sem problema, só não lembra */ }
+
     setSending(false);
     goToStep(4);
   };
@@ -152,6 +222,8 @@ export function Scheduling() {
   const resetForm = () => {
     setSelectedServices([]); setSelectedDate(''); setSelectedTime('');
     setNome(''); setWhatsapp(''); setVeiculo('');
+    setCarroMarca(''); setCarroModelo(''); setCarroAno(''); setVeiculoOutro('');
+    setCarroCarregadoDoStorage(false);
     setStep(1);
   };
 
@@ -328,8 +400,62 @@ export function Scheduling() {
                     <input value={whatsapp} onChange={e => setWhatsapp(e.target.value)} type="tel" placeholder="(11) 99999-9999" className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors" />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Modelo do Veículo</label>
-                    <input value={veiculo} onChange={e => setVeiculo(e.target.value)} type="text" placeholder="Ex: Honda Civic Preto 2022" className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors" />
+                    <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Marca</label>
+                    <select
+                      value={carroMarca}
+                      onChange={e => { setCarroMarca(e.target.value); setCarroModelo(''); setCarroAno(''); }}
+                      className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors"
+                    >
+                      <option value="" disabled>Selecione a marca</option>
+                      {marcas.map(m => <option key={m} value={m}>{m}</option>)}
+                      <option value={OUTRO}>Outra / não está na lista</option>
+                    </select>
+                  </div>
+
+                  {carroMarca === OUTRO ? (
+                    <div className="md:col-span-2">
+                      <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Modelo do Veículo</label>
+                      <input value={veiculoOutro} onChange={e => setVeiculoOutro(e.target.value)} type="text" placeholder="Ex: Honda Civic Preto 2022" className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors" />
+                    </div>
+                  ) : carroMarca ? (
+                    <>
+                      <div>
+                        <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Modelo</label>
+                        <select
+                          value={carroModelo}
+                          onChange={e => { setCarroModelo(e.target.value); setCarroAno(''); }}
+                          className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors"
+                        >
+                          <option value="" disabled>Selecione o modelo</option>
+                          {modelosDisponiveis.map(m => <option key={m.id} value={m.modelo}>{m.modelo}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Ano</label>
+                        <select
+                          value={carroAno}
+                          onChange={e => setCarroAno(e.target.value)}
+                          disabled={!carroModelo}
+                          className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors disabled:opacity-40"
+                        >
+                          <option value="" disabled>{carroModelo ? 'Selecione o ano' : 'Escolha o modelo primeiro'}</option>
+                          {anosDisponiveis.map(a => <option key={a} value={a}>{a}</option>)}
+                        </select>
+                      </div>
+                    </>
+                  ) : null}
+
+                  <div className="md:col-span-2 flex items-center gap-2 -mt-2">
+                    <input
+                      id="lembrar-carro"
+                      type="checkbox"
+                      checked={lembrarCarro}
+                      onChange={e => setLembrarCarro(e.target.checked)}
+                      className="w-4 h-4 accent-neve-blue"
+                    />
+                    <label htmlFor="lembrar-carro" className="text-gray-400 text-sm flex items-center gap-1.5 cursor-pointer">
+                      <BadgeCheck className="w-4 h-4 text-neve-blue" /> Lembrar este carro para o próximo agendamento
+                    </label>
                   </div>
                 </div>
 
