@@ -7,20 +7,23 @@
   to = "/index.html"
   status = 200
 
-[[headers]]
-  for = "/videos/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/gallery/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
+# Assets com hash no nome (JS/CSS do build): podem cachear "pra sempre"
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Vídeos (sequências de frame) e fotos de galeria: cache longo, mas não
+# "immutable" pois o conteúdo pode ser trocado sem mudar o nome do arquivo
+[[headers]]
+  for = "/videos/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/gallery/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
 
 [[headers]]
   for = "/*.png"
@@ -28,16 +31,6 @@
     Cache-Control = "public, max-age=604800"
 
 [[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/videos/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800"
-
-[[headers]]
-  for = "/gallery/*"
+  for = "/*.jpg"
   [headers.values]
     Cache-Control = "public, max-age=604800"
