@@ -32,9 +32,10 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
 
   return (
     <>
+      {createPortal(
       <nav
         style={{ zIndex: 70, transform: 'translateZ(0)', WebkitTransform: 'translateZ(0)', backfaceVisibility: 'hidden', willChange: 'transform' }}
-        className="fixed w-full transition-all duration-300 bg-[#04070d] md:bg-neve-dark/30 md:backdrop-blur-md border-b border-white/5"
+        className="fixed top-0 left-0 w-full transition-all duration-300 bg-[#04070d] md:bg-neve-dark/30 md:backdrop-blur-md border-b border-white/5"
         id="navbar"
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -70,7 +71,7 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
             </motion.div>
           </div>
         </div>
-      </nav>
+      </nav>, document.body)}
 
       {/* Menu Mobile: drawer lateral animado (portal: renderiza direto no body,
           imune a overflow/transform de qualquer seção da página) */}

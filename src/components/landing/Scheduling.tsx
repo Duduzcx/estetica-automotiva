@@ -37,12 +37,18 @@ export function Scheduling() {
   const [modalOpen, setModalOpen] = useState(false);
   const [sendError, setSendError] = useState('');
 
-  // Horário de funcionamento: 8h às 18h (de hora em hora)
   // Página travada enquanto o card está aberto
   useEffect(() => {
     document.body.style.overflow = modalOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [modalOpen]);
+
+  // Botão fixo flutuante: abre o card de agendamento direto, sem enrolação
+  useEffect(() => {
+    const abrir = () => setModalOpen(true);
+    window.addEventListener('abrir-agendamento', abrir);
+    return () => window.removeEventListener('abrir-agendamento', abrir);
+  }, []);
 
   const fecharModal = () => {
     setModalOpen(false);
