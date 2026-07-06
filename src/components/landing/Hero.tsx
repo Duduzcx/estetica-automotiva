@@ -38,9 +38,10 @@ export function Hero() {
     };
 
     const resize = () => {
-      // Teto de resolução: os frames têm 478px de largura, desenhar o canvas
-      // em retina 3x só queima GPU sem ganhar nitidez nenhuma
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      // Os frames agora são 720x1280 (bem mais nítidos que antes), então
+      // vale a pena desenhar em até 2x sem desperdiçar — só não vamos
+      // além disso pra não pesar demais em celulares mais fracos
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = canvas.offsetWidth;
       const h = canvas.offsetHeight;
       if (w === 0 || h === 0) return; // ainda não tem layout, espera o próximo evento
