@@ -38,7 +38,7 @@ export function Scheduling() {
   const [veiculo, setVeiculo] = useState('');
   const [tentouAvancarStep3, setTentouAvancarStep3] = useState(false);
   const whatsappDigits = whatsapp.replace(/\D/g, '');
-  const whatsappInvalido = whatsappDigits.length < 10 || whatsappDigits.length > 11;
+  const whatsappInvalido = whatsappDigits.length !== 11;
   const [carroMarca, setCarroMarca] = useState('');
   const [carroModelo, setCarroModelo] = useState('');
   const [carroAno, setCarroAno] = useState('');
@@ -432,7 +432,7 @@ export function Scheduling() {
                       <p className="text-red-400 text-xs mt-2">
                         {whatsappDigits.length === 0
                           ? 'Digite seu número de WhatsApp com DDD.'
-                          : 'Número inválido. Digite o DDD + número (10 ou 11 dígitos), ex: (11) 99999-9999.'}
+                          : `Número inválido (você digitou ${whatsappDigits.length} dígito${whatsappDigits.length === 1 ? '' : 's'}). O WhatsApp precisa de 11 dígitos: DDD + 9 + número. Ex: (11) 93769-6256.`}
                       </p>
                     )}
                   </div>
