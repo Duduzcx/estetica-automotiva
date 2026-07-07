@@ -192,6 +192,7 @@ export function Scheduling() {
 
       if (error) {
         setSending(false);
+        console.error('Erro ao salvar agendamento:', error);
         if (error.code === '23505') {
           // Outro cliente reservou este horário segundos atrás (trava do banco)
           setOcupados(prev => [...prev, selectedTime]);
@@ -199,7 +200,8 @@ export function Scheduling() {
           setSendError('⏰ Poxa, esse horário acabou de ser reservado por outro cliente! Escolha outro horário, por favor.');
           goToStep(2);
         } else {
-          setSendError('Não foi possível enviar. Tente novamente ou chame no WhatsApp.');
+          const detalhe = error.message ? ` (${error.code || '?'}: ${error.message})` : '';
+          setSendError(`Não foi possível enviar. Tente novamente ou chame no WhatsApp.${detalhe}`);
         }
         return;
       }
