@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import { Menu, X, Shield, Car, Sparkles, Droplets, Calendar, MapPin } from 'lucide-react';
@@ -29,6 +29,15 @@ const Foam = () => (
 
 export function Navbar({ onDashboardClick }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Trava o scroll da página de fundo enquanto o menu mobile está aberto:
+  // sem isso, arrastar rápido com o menu aberto rolava o site por trás
+  // (disparando as animações pesadas do scroll) e isso fazia a parte de
+  // baixo do menu piscar/sumir por falta de fôlego do navegador pra pintar.
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileMenuOpen]);
 
   return (
     <>
@@ -94,7 +103,11 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              style={{ position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 80, width: '80%', maxWidth: 320, backgroundColor: '#0b1320', borderLeft: '1px solid rgba(255,255,255,0.08)', boxShadow: '-20px 0 60px rgba(0,0,0,0.5)' }}
+              style={{
+                position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 80, width: '80%', maxWidth: 320,
+                backgroundColor: '#0b1320', borderLeft: '1px solid rgba(255,255,255,0.08)', boxShadow: '-20px 0 60px rgba(0,0,0,0.5)',
+                backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
+              }}
               className="md:hidden flex flex-col"
             >
               <div className="flex items-center justify-between p-5 border-b border-white/10">

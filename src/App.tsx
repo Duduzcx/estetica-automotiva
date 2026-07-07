@@ -57,6 +57,21 @@ export default function App() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  // Pré-carrega o painel (login + dashboard) assim que o navegador ficar
+  // ocioso, pra quando a pessoa clicar em "Área Restrita" já estar tudo
+  // baixado e não esperar o download do pedaço de JS na hora
+  useEffect(() => {
+    const carregar = () => {
+      import('./components/dashboard/LoginGate');
+      import('./components/dashboard/Dashboard');
+    };
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(carregar, { timeout: 4000 });
+    } else {
+      setTimeout(carregar, 2000);
+    }
+  }, []);
+
   const handleLogout = () => {
     supabase?.auth.signOut();
     sessionStorage.removeItem('nn_auth');
