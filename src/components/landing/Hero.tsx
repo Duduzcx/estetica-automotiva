@@ -9,7 +9,12 @@ gsap.registerPlugin(ScrollTrigger);
 // Sequência de frames (técnica de canvas: funciona em QUALQUER aparelho,
 // diferente do seek de <video> que falha no Chrome mobile)
 const FRAME_COUNT = 48;
-const framePath = (i: number) => `/videos/seq/frame_${String(i + 1).padStart(3, '0')}.jpg`;
+// Versão do vídeo: os nomes dos arquivos de frame não mudam quando troco o
+// vídeo, e como eles ficam em cache no navegador por 7 dias (bom pra
+// velocidade), sem isso o celular do cliente continuaria mostrando o vídeo
+// antigo mesmo depois do site atualizado. Bumped a cada troca de vídeo.
+const FRAME_VERSION = 'v2';
+const framePath = (i: number) => `/videos/seq/frame_${String(i + 1).padStart(3, '0')}.jpg?${FRAME_VERSION}`;
 
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null);

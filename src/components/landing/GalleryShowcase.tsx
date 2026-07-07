@@ -7,7 +7,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 // 50 frames do vídeo real da Mercedes CLA 45 AMG no estúdio
 const FRAME_COUNT = 36;
-const framePath = (i: number) => `/videos/gallery-seq/frame_${String(i + 1).padStart(3, '0')}.jpg`;
+// Mesmo motivo do Hero.tsx: bump esse número toda vez que trocar o vídeo
+const FRAME_VERSION = 'v1';
+const framePath = (i: number) => `/videos/gallery-seq/frame_${String(i + 1).padStart(3, '0')}.jpg?${FRAME_VERSION}`;
 
 export function GalleryShowcase() {
   const wrapRef = useRef<HTMLDivElement>(null);
