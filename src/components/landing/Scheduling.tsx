@@ -180,7 +180,16 @@ export function Scheduling() {
     };
 
     if (supabase) {
-      const { error } = await supabase.from('agendamentos').insert(registro);
+      let { error } = await supabase.from('agendamentos').insert(registro);
+
+      // Coluna carro_marca/carro_modelo/carro_ano ainda não existe no banco
+      // (o script SQL do catálogo de carros não foi rodado ainda): tenta de
+      // novo sem esses campos, pra não travar o agendamento do cliente
+      if (error && (error.code === 'PGRST204' || /column .* does not exist/i.test(error.message || ''))) {
+        const { carro_marca, carro_modelo, carro_ano, ...registroSemCarroEstruturado } = registro;
+        ({ error } = await supabase.from('agendamentos').insert(registroSemCarroEstruturado));
+      }
+
       if (error) {
         setSending(false);
         if (error.code === '23505') {
