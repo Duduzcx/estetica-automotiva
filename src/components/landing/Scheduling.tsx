@@ -36,6 +36,9 @@ export function Scheduling() {
   const [nome, setNome] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [veiculo, setVeiculo] = useState('');
+  const [tentouAvancarStep3, setTentouAvancarStep3] = useState(false);
+  const whatsappDigits = whatsapp.replace(/\D/g, '');
+  const whatsappInvalido = whatsappDigits.length < 10 || whatsappDigits.length > 11;
   const [carroMarca, setCarroMarca] = useState('');
   const [carroModelo, setCarroModelo] = useState('');
   const [carroAno, setCarroAno] = useState('');
@@ -225,7 +228,12 @@ export function Scheduling() {
   };
 
   const handleNext = () => {
-    if (step === 3) { handleSubmit(); return; }
+    if (step === 3) {
+      setTentouAvancarStep3(true);
+      if (whatsappInvalido || !nome.trim() || !veiculo.trim()) return;
+      handleSubmit();
+      return;
+    }
     if (step < 4) goToStep(step + 1);
   };
   const handlePrev = () => { if (step > 1) goToStep(step - 1); };
@@ -235,6 +243,7 @@ export function Scheduling() {
     setNome(''); setWhatsapp(''); setVeiculo('');
     setCarroMarca(''); setCarroModelo(''); setCarroAno(''); setVeiculoOutro('');
     setCarroCarregadoDoStorage(false);
+    setTentouAvancarStep3(false);
     setStep(1);
   };
 
@@ -408,7 +417,24 @@ export function Scheduling() {
                   </div>
                   <div>
                     <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">WhatsApp</label>
-                    <input value={whatsapp} onChange={e => setWhatsapp(e.target.value)} type="tel" placeholder="(11) 99999-9999" className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors" />
+                    <input
+                      value={whatsapp}
+                      onChange={e => setWhatsapp(e.target.value)}
+                      type="tel"
+                      placeholder="(11) 99999-9999"
+                      className={`w-full bg-black/40 border rounded-xl py-4 px-4 focus:outline-none focus:ring-1 transition-colors text-white ${
+                        tentouAvancarStep3 && whatsappInvalido
+                          ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                          : 'border-white/10 focus:border-neve-blue focus:ring-neve-blue'
+                      }`}
+                    />
+                    {tentouAvancarStep3 && whatsappInvalido && (
+                      <p className="text-red-400 text-xs mt-2">
+                        {whatsappDigits.length === 0
+                          ? 'Digite seu número de WhatsApp com DDD.'
+                          : 'Número inválido. Digite o DDD + número (10 ou 11 dígitos), ex: (11) 99999-9999.'}
+                      </p>
+                    )}
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Marca</label>
@@ -527,7 +553,7 @@ export function Scheduling() {
                   sending ||
                   (step === 1 && selectedServices.length === 0) ||
                   (step === 2 && (!selectedDate || !selectedTime || diaFechado)) ||
-                  (step === 3 && (!nome.trim() || whatsapp.replace(/\D/g, '').length < 10 || !veiculo.trim()))
+                  (step === 3 && (!nome.trim() || whatsappInvalido || !veiculo.trim()))
                 }
                 className="flex items-center justify-center bg-neve-blue text-white px-5 md:px-8 py-4 rounded-xl font-bold text-sm md:text-base whitespace-nowrap hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(30,144,255,0.3)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)]"
               >
