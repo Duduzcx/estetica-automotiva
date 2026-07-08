@@ -9,6 +9,24 @@ import { useCarrosCatalogo } from '../../hooks/useCarrosCatalogo';
 const CARRO_STORAGE_KEY = 'nn_ultimo_carro';
 const OUTRO = '__outro__';
 
+type Carroceria = 'hatch' | 'sedan' | 'suv' | 'caminhonete';
+
+// Multiplicador de preço por porte do carro (o dono usa isso pra cobrar mais
+// de um SUV/caminhonete do que de um hatch, já que dá mais trabalho)
+const MULTIPLICADOR_CARROCERIA: Record<Carroceria, number> = {
+  hatch: 1,
+  sedan: 1.1,
+  suv: 1.25,
+  caminhonete: 1.4,
+};
+
+const CARROCERIAS: { valor: Carroceria; label: string }[] = [
+  { valor: 'hatch', label: 'Hatch' },
+  { valor: 'sedan', label: 'Sedan' },
+  { valor: 'suv', label: 'SUV' },
+  { valor: 'caminhonete', label: 'Caminhonete' },
+];
+
 const ICONES: Record<ServicoId, React.ReactNode> = {
   polimento_tecnico: <Sparkles className="w-6 h-6" />,
   polimento_comercial: <Sparkles className="w-6 h-6" />,
@@ -40,6 +58,7 @@ export function Scheduling() {
   const whatsappDigits = whatsapp.replace(/\D/g, '');
   const whatsappInvalido = whatsappDigits.length !== 11;
   const [carroTipo, setCarroTipo] = useState<'carro' | 'moto' | 'caminhao'>('carro');
+  const [carroceria, setCarroceria] = useState<Carroceria | ''>('');
   const [carroMarca, setCarroMarca] = useState('');
   const [carroModelo, setCarroModelo] = useState('');
   const [carroAno, setCarroAno] = useState('');
@@ -121,7 +140,10 @@ export function Scheduling() {
   const toggleService = (id: ServicoId) => {
     setSelectedServices(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
-  const precoTotal = selectedServices.reduce((acc, id) => acc + SERVICOS[id].preco, 0);
+  const precoBase = selectedServices.reduce((acc, id) => acc + SERVICOS[id].preco, 0);
+  // Só carro tem carroceria selecionável; moto/caminhão não usam esse multiplicador aqui
+  const multiplicadorCarroceria = carroTipo === 'carro' && carroceria ? MULTIPLICADOR_CARROCERIA[carroceria] : 1;
+  const precoTotal = Math.round(precoBase * multiplicadorCarroceria);
   const temAPartirDe = selectedServices.some(id => (SERVICOS[id] as any).aPartirDe);
   const totalLabel = `${temAPartirDe ? 'a partir de ' : ''}${formatBRL(precoTotal)}`;
   const nomesServicos = selectedServices.map(id => SERVICOS[id].nome).join(' + ');
@@ -178,6 +200,8 @@ export function Scheduling() {
       carro_marca: carroMarca === OUTRO ? null : carroMarca || null,
       carro_modelo: carroMarca === OUTRO ? null : carroModelo || null,
       carro_ano: carroMarca === OUTRO ? null : (carroAno ? Number(carroAno) : null),
+      carro_tipo: carroTipo,
+      carroceria: carroTipo === 'carro' ? (carroceria || null) : null,
       servico: nomesServicos,
       preco: precoTotal,
       data: selectedDate,
@@ -192,7 +216,7 @@ export function Scheduling() {
       // (o script SQL do catálogo de carros não foi rodado ainda): tenta de
       // novo sem esses campos, pra não travar o agendamento do cliente
       if (error && (error.code === 'PGRST204' || /column .* does not exist/i.test(error.message || ''))) {
-        const { carro_marca, carro_modelo, carro_ano, ...registroSemCarroEstruturado } = registro;
+        const { carro_marca, carro_modelo, carro_ano, carro_tipo, carroceria: _carroceriaFallback, ...registroSemCarroEstruturado } = registro;
         ({ error } = await supabase.from('agendamentos').insert(registroSemCarroEstruturado));
       }
 
@@ -233,7 +257,7 @@ export function Scheduling() {
   const handleNext = () => {
     if (step === 3) {
       setTentouAvancarStep3(true);
-      if (whatsappInvalido || !nome.trim() || !veiculo.trim()) return;
+      if (whatsappInvalido || !nome.trim() || !veiculo.trim() || (carroTipo === 'carro' && !carroceria)) return;
       handleSubmit();
       return;
     }
@@ -244,7 +268,7 @@ export function Scheduling() {
   const resetForm = () => {
     setSelectedServices([]); setSelectedDate(''); setSelectedTime('');
     setNome(''); setWhatsapp(''); setVeiculo('');
-    setCarroTipo('carro'); setCarroMarca(''); setCarroModelo(''); setCarroAno(''); setVeiculoOutro('');
+    setCarroTipo('carro'); setCarroceria(''); setCarroMarca(''); setCarroModelo(''); setCarroAno(''); setVeiculoOutro('');
     setCarroCarregadoDoStorage(false);
     setTentouAvancarStep3(false);
     setStep(1);
@@ -450,7 +474,7 @@ export function Scheduling() {
                         <button
                           type="button"
                           key={valor}
-                          onClick={() => { setCarroTipo(valor); setCarroMarca(''); setCarroModelo(''); setCarroAno(''); }}
+                          onClick={() => { setCarroTipo(valor); setCarroMarca(''); setCarroModelo(''); setCarroAno(''); if (valor !== 'carro') setCarroceria(''); }}
                           className={`flex flex-col items-center justify-center gap-1.5 py-3 rounded-xl border text-sm font-bold transition-all ${
                             carroTipo === valor
                               ? 'border-neve-blue bg-neve-blue/10 text-neve-blue'
@@ -462,6 +486,30 @@ export function Scheduling() {
                       ))}
                     </div>
                   </div>
+                  {carroTipo === 'carro' && (
+                    <div className="md:col-span-2">
+                      <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Carroceria</label>
+                      <div className="grid grid-cols-4 gap-2">
+                        {CARROCERIAS.map(({ valor, label }) => (
+                          <button
+                            type="button"
+                            key={valor}
+                            onClick={() => setCarroceria(valor)}
+                            className={`py-3 px-1 rounded-xl border text-xs md:text-sm font-bold transition-all ${
+                              carroceria === valor
+                                ? 'border-neve-blue bg-neve-blue/10 text-neve-blue'
+                                : 'border-white/10 text-gray-400 hover:border-white/20'
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                      {tentouAvancarStep3 && carroTipo === 'carro' && !carroceria && (
+                        <p className="text-red-400 text-xs mt-2">Selecione a carroceria do carro.</p>
+                      )}
+                    </div>
+                  )}
                   <div className="md:col-span-2">
                     <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Marca</label>
                     <select
@@ -579,7 +627,7 @@ export function Scheduling() {
                   sending ||
                   (step === 1 && selectedServices.length === 0) ||
                   (step === 2 && (!selectedDate || !selectedTime || diaFechado)) ||
-                  (step === 3 && (!nome.trim() || whatsappInvalido || !veiculo.trim()))
+                  (step === 3 && (!nome.trim() || whatsappInvalido || !veiculo.trim() || (carroTipo === 'carro' && !carroceria)))
                 }
                 className="flex items-center justify-center bg-neve-blue text-white px-5 md:px-8 py-4 rounded-xl font-bold text-sm md:text-base whitespace-nowrap hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(30,144,255,0.3)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)]"
               >

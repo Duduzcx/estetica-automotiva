@@ -19,6 +19,8 @@ export interface Agendamento {
   carro_marca?: string | null;
   carro_modelo?: string | null;
   carro_ano?: number | null;
+  carro_tipo?: 'carro' | 'moto' | 'caminhao' | null;
+  carroceria?: 'hatch' | 'sedan' | 'suv' | 'caminhonete' | null;
   servico: string;
   preco: number;
   data: string;    // YYYY-MM-DD

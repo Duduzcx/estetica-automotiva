@@ -137,8 +137,13 @@ export function OrderManagement({ agendamentos, loading, updateStatus }: Props) 
                         'bg-red-500/15 text-red-400'
                       }`}>{a.status}</span>
                     </div>
-                    <p className="text-gray-400 text-sm mt-1 flex items-center gap-1.5">
+                    <p className="text-gray-400 text-sm mt-1 flex items-center gap-1.5 flex-wrap">
                       <Car className="w-4 h-4 shrink-0" /> {a.veiculo}
+                      {(a as any).carroceria && (
+                        <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-white/10 text-gray-300">
+                          {(a as any).carroceria}
+                        </span>
+                      )}
                     </p>
                     <p className="text-sm mt-2">
                       <span className="text-white font-semibold">{a.servico}</span>
