@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { hojeLocal } from '../../lib/datas';
 import { createPortal } from 'react-dom';
-import { Calendar, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets, X, CalendarCheck2, Layers, Lightbulb, Settings, Disc, BadgeCheck } from 'lucide-react';
+import { Calendar, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets, X, CalendarCheck2, Layers, Lightbulb, Settings, Disc, BadgeCheck, Bike, Truck } from 'lucide-react';
 import { SERVICOS, formatBRL, precoLabel, type ServicoId } from '../../lib/servicos';
 import { supabase } from '../../lib/supabase';
 import { useCarrosCatalogo } from '../../hooks/useCarrosCatalogo';
@@ -39,6 +39,7 @@ export function Scheduling() {
   const [tentouAvancarStep3, setTentouAvancarStep3] = useState(false);
   const whatsappDigits = whatsapp.replace(/\D/g, '');
   const whatsappInvalido = whatsappDigits.length !== 11;
+  const [carroTipo, setCarroTipo] = useState<'carro' | 'moto' | 'caminhao'>('carro');
   const [carroMarca, setCarroMarca] = useState('');
   const [carroModelo, setCarroModelo] = useState('');
   const [carroAno, setCarroAno] = useState('');
@@ -63,7 +64,7 @@ export function Scheduling() {
     return () => window.removeEventListener('abrir-agendamento', abrir);
   }, []);
 
-  const { marcas, modelosPorMarca } = useCarrosCatalogo();
+  const { marcasPorTipo, modelosPorMarca } = useCarrosCatalogo();
 
   // Pré-preenche com o último carro salvo pelo cliente neste aparelho
   useEffect(() => {
@@ -71,7 +72,8 @@ export function Scheduling() {
     try {
       const salvo = localStorage.getItem(CARRO_STORAGE_KEY);
       if (salvo) {
-        const { marca, modelo, ano } = JSON.parse(salvo);
+        const { tipo, marca, modelo, ano } = JSON.parse(salvo);
+        if (tipo) setCarroTipo(tipo);
         if (marca === OUTRO) {
           setCarroMarca(OUTRO);
           setVeiculoOutro(modelo || '');
@@ -85,7 +87,8 @@ export function Scheduling() {
     setCarroCarregadoDoStorage(true);
   }, [carroCarregadoDoStorage]);
 
-  const modelosDisponiveis = carroMarca && carroMarca !== OUTRO ? modelosPorMarca(carroMarca) : [];
+  const marcasDisponiveis = marcasPorTipo(carroTipo);
+  const modelosDisponiveis = carroMarca && carroMarca !== OUTRO ? modelosPorMarca(carroTipo, carroMarca) : [];
   const modeloSelecionado = modelosDisponiveis.find(m => m.modelo === carroModelo);
   const anosDisponiveis = useMemo(() => {
     if (!modeloSelecionado) return [];
@@ -215,8 +218,8 @@ export function Scheduling() {
       if (lembrarCarro && veiculo.trim()) {
         localStorage.setItem(CARRO_STORAGE_KEY, JSON.stringify(
           carroMarca === OUTRO
-            ? { marca: OUTRO, modelo: veiculoOutro.trim() }
-            : { marca: carroMarca, modelo: carroModelo, ano: carroAno }
+            ? { tipo: carroTipo, marca: OUTRO, modelo: veiculoOutro.trim() }
+            : { tipo: carroTipo, marca: carroMarca, modelo: carroModelo, ano: carroAno }
         ));
       } else {
         localStorage.removeItem(CARRO_STORAGE_KEY);
@@ -241,7 +244,7 @@ export function Scheduling() {
   const resetForm = () => {
     setSelectedServices([]); setSelectedDate(''); setSelectedTime('');
     setNome(''); setWhatsapp(''); setVeiculo('');
-    setCarroMarca(''); setCarroModelo(''); setCarroAno(''); setVeiculoOutro('');
+    setCarroTipo('carro'); setCarroMarca(''); setCarroModelo(''); setCarroAno(''); setVeiculoOutro('');
     setCarroCarregadoDoStorage(false);
     setTentouAvancarStep3(false);
     setStep(1);
@@ -437,6 +440,29 @@ export function Scheduling() {
                     )}
                   </div>
                   <div className="md:col-span-2">
+                    <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Tipo de Veículo</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {([
+                        { valor: 'carro' as const, label: 'Carro', Icon: Car },
+                        { valor: 'moto' as const, label: 'Moto', Icon: Bike },
+                        { valor: 'caminhao' as const, label: 'Caminhão', Icon: Truck },
+                      ]).map(({ valor, label, Icon }) => (
+                        <button
+                          type="button"
+                          key={valor}
+                          onClick={() => { setCarroTipo(valor); setCarroMarca(''); setCarroModelo(''); setCarroAno(''); }}
+                          className={`flex flex-col items-center justify-center gap-1.5 py-3 rounded-xl border text-sm font-bold transition-all ${
+                            carroTipo === valor
+                              ? 'border-neve-blue bg-neve-blue/10 text-neve-blue'
+                              : 'border-white/10 text-gray-400 hover:border-white/20'
+                          }`}
+                        >
+                          <Icon className="w-5 h-5" /> {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="md:col-span-2">
                     <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Marca</label>
                     <select
                       value={carroMarca}
@@ -444,7 +470,7 @@ export function Scheduling() {
                       className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 px-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors"
                     >
                       <option value="" disabled>Selecione a marca</option>
-                      {marcas.map(m => <option key={m} value={m}>{m}</option>)}
+                      {marcasDisponiveis.map(m => <option key={m} value={m}>{m}</option>)}
                       <option value={OUTRO}>Outra / não está na lista</option>
                     </select>
                   </div>
