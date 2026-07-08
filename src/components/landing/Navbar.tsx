@@ -15,18 +15,6 @@ const LINKS = [
   { label: 'Localização', href: '#localizacao', Icon: MapPin },
 ];
 
-const Foam = () => (
-  <svg aria-hidden="true" className="absolute -top-[0.55em] left-0 w-full h-[0.75em] z-10 pointer-events-none" viewBox="0 0 120 22" fill="none" preserveAspectRatio="none">
-    <ellipse cx="12" cy="16" rx="13" ry="7" fill="#eef2f7"/>
-    <ellipse cx="33" cy="11" rx="15" ry="9" fill="#ffffff"/>
-    <ellipse cx="58" cy="14" rx="16" ry="9" fill="#f8fafc"/>
-    <ellipse cx="83" cy="10" rx="14" ry="9" fill="#ffffff"/>
-    <ellipse cx="106" cy="15" rx="13" ry="7" fill="#eef2f7"/>
-    <circle cx="117" cy="5" r="2.2" fill="#ffffff"/>
-    <circle cx="3.5" cy="6" r="1.8" fill="#eef2f7"/>
-  </svg>
-);
-
 export function Navbar({ onDashboardClick }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -52,10 +40,6 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
               <a href="#inicio" className="flex items-center gap-3">
                 <img src="/logo-mark.png" alt="Neve na Nave" className="h-10 w-auto md:h-12 md:w-auto drop-shadow-[0_0_14px_rgba(30,144,255,0.45)]" />
-                <span className="relative inline-block pt-[0.3em] translate-y-[0.14em] leading-none">
-                  <Foam />
-                  <span className="brand-text text-xl md:text-2xl relative leading-none">Neve na Nave</span>
-                </span>
               </a>
             </motion.div>
 
