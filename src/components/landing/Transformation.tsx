@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Check, ChevronsLeftRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Check, ChevronsLeftRight, Sparkles, Lightbulb } from 'lucide-react';
 
 const containerVariants: any = {
   hidden: { opacity: 0 },
@@ -18,10 +18,48 @@ const slideRightVariants: any = {
   }
 };
 
+interface Exemplo {
+  id: string;
+  Icon: typeof Sparkles;
+  tab: string;
+  titulo: string;
+  descricao: string;
+  itens: string[];
+  antes: string;
+  depois: string;
+}
+
+const EXEMPLOS: Exemplo[] = [
+  {
+    id: 'pintura',
+    Icon: Sparkles,
+    tab: 'Pintura',
+    titulo: 'Polimento Técnico',
+    descricao: 'Arraste a linha ao lado para comparar o antes e o depois do nosso Polimento Técnico. A profundidade e o reflexo são restaurados de forma impecável.',
+    itens: ['Remoção de 95% dos micro-riscos', 'Nivelamento perfeito do verniz', 'Reflexo de espelho impecável'],
+    antes: '/carro-sujo.jpg',
+    depois: '/carro-limpo.jpg',
+  },
+  {
+    id: 'farol',
+    Icon: Lightbulb,
+    tab: 'Farol',
+    titulo: 'Restauração de Farol',
+    descricao: 'Faróis amarelados e opacos perdem até 60% da iluminação — além de deixar o carro com cara de mais velho. Arraste pra ver a diferença do nosso polimento de farol.',
+    itens: ['Remove o amarelado e a opacidade', 'Recupera o alcance da luz à noite', 'Protege contra novos riscos'],
+    antes: '/farol-antes.jpg',
+    depois: '/farol-depois.jpg',
+  },
+];
+
 export function Transformation() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [ativo, setAtivo] = useState(0);
   const [pos, setPos] = useState(50); // % da tela ocupado pelo "depois"
   const draggingRef = useRef(false);
+  const exemplo = EXEMPLOS[ativo];
+
+  const trocarExemplo = (i: number) => { setAtivo(i); setPos(50); };
 
   const atualizarPos = useCallback((clientX: number) => {
     const el = containerRef.current;
@@ -51,18 +89,37 @@ export function Transformation() {
             variants={containerVariants}
           >
             <motion.h2 variants={slideRightVariants} className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Resultados Reais</motion.h2>
-            <motion.h3 variants={slideRightVariants} className="text-4xl md:text-6xl font-bold mb-8 leading-tight tracking-tight">A Arte da <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500 animate-shimmer">Transformação</span></motion.h3>
-            <motion.p variants={slideRightVariants} className="text-gray-400 text-lg mb-10 font-light leading-relaxed">Arraste a linha ao lado para comparar o antes e o depois do nosso Polimento Técnico. A profundidade e o reflexo são restaurados de forma impecável.</motion.p>
-            <motion.ul variants={containerVariants} className="space-y-5 mb-8">
-              {["Remoção de 95% dos micro-riscos", "Nivelamento perfeito do verniz", "Reflexo de espelho impecável"].map((item, i) => (
-                <motion.li key={i} variants={slideRightVariants} className="flex items-center text-gray-300 font-medium tracking-wide">
-                  <div className="w-6 h-6 rounded-full bg-neve-blue/10 flex items-center justify-center mr-4">
-                    <Check className="text-neve-blue w-3 h-3" />
-                  </div>
-                  {item}
-                </motion.li>
+            <motion.h3 variants={slideRightVariants} className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">A Arte da <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500 animate-shimmer">Transformação</span></motion.h3>
+
+            <motion.div variants={slideRightVariants} className="flex gap-2 mb-8">
+              {EXEMPLOS.map((ex, i) => (
+                <button
+                  key={ex.id}
+                  onClick={() => trocarExemplo(i)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold border transition-all ${
+                    ativo === i ? 'border-neve-blue bg-neve-blue/10 text-neve-blue' : 'border-white/10 text-gray-400 hover:border-white/20'
+                  }`}
+                >
+                  <ex.Icon className="w-4 h-4" /> {ex.tab}
+                </button>
               ))}
-            </motion.ul>
+            </motion.div>
+
+            <AnimatePresence mode="wait">
+              <motion.div key={exemplo.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+                <p className="text-gray-400 text-lg mb-10 font-light leading-relaxed">{exemplo.descricao}</p>
+                <ul className="space-y-5 mb-8">
+                  {exemplo.itens.map((item, i) => (
+                    <li key={i} className="flex items-center text-gray-300 font-medium tracking-wide">
+                      <div className="w-6 h-6 rounded-full bg-neve-blue/10 flex items-center justify-center mr-4">
+                        <Check className="text-neve-blue w-3 h-3" />
+                      </div>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </AnimatePresence>
           </motion.div>
           
           <motion.div 
@@ -75,7 +132,7 @@ export function Transformation() {
             className="relative w-full max-w-4xl mx-auto h-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-2xl select-none touch-none cursor-ew-resize"
           >
             {/* Imagem de base (DEPOIS) */}
-            <img src="/carro-limpo.jpg" className="absolute inset-0 w-full h-full object-cover pointer-events-none" alt="Depois - Vitrificado" draggable={false} />
+            <img src={exemplo.depois} className="absolute inset-0 w-full h-full object-cover pointer-events-none" alt={`Depois - ${exemplo.titulo}`} draggable={false} />
             
             {/* Imagem recortada (ANTES), revelada conforme o arraste */}
             <div
@@ -83,9 +140,9 @@ export function Transformation() {
               style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
             >
               <img
-                src="/carro-sujo.jpg"
+                src={exemplo.antes}
                 className="absolute inset-0 w-full h-full object-cover"
-                alt="Antes"
+                alt={`Antes - ${exemplo.titulo}`}
                 draggable={false}
               />
             </div>
