@@ -5,7 +5,7 @@ const LoginGate = lazy(() => import('./components/dashboard/LoginGate').then(m =
 import { FloatingButtons } from './components/shared/FloatingButtons';
 import { AnimatePresence, motion } from 'framer-motion';
 import Lenis from 'lenis';
-import { supabase } from './lib/supabase';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -45,16 +45,24 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>('landing');
   const [isAuthed, setIsAuthed] = useState(() => localStorage.getItem('nn_auth_device') === '1' || sessionStorage.getItem('nn_auth') === '1');
+  const [supabaseClient, setSupabaseClient] = useState<SupabaseClient | null>(null);
 
   // A porta do painel obedece à sessão REAL do Supabase (é ela que o banco
   // respeita). O supabase-js guarda e renova essa sessão sozinho no aparelho.
+  // Carregado sob demanda (não trava o carregamento inicial da landing page
+  // com uma biblioteca que só interessa a quem mexe no painel).
   useEffect(() => {
-    if (!supabase) return;
-    supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_ev, session) => {
-      setIsAuthed(!!session);
+    let unsubscribe: (() => void) | undefined;
+    import('./lib/supabase').then(({ supabase }) => {
+      if (!supabase) return;
+      setSupabaseClient(supabase);
+      supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
+      const { data: sub } = supabase.auth.onAuthStateChange((_ev, session) => {
+        setIsAuthed(!!session);
+      });
+      unsubscribe = () => sub.subscription.unsubscribe();
     });
-    return () => sub.subscription.unsubscribe();
+    return () => unsubscribe?.();
   }, []);
 
   // Pré-carrega o painel (login + dashboard) assim que o navegador ficar
@@ -73,7 +81,7 @@ export default function App() {
   }, []);
 
   const handleLogout = () => {
-    supabase?.auth.signOut();
+    supabaseClient?.auth.signOut();
     sessionStorage.removeItem('nn_auth');
     localStorage.removeItem('nn_auth_device');
     setIsAuthed(false);

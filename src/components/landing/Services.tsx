@@ -23,18 +23,18 @@ const DESC: Record<ServicoId, { Icon: any; desc: string }> = {
 
 const FOTOS: Record<ServicoId, string> = {
   polimento_tecnico: '/gallery/card-polimento.jpg',
-  polimento_comercial: '/gallery/classico-vw.jpg',
-  restauracao_farois: '/gallery/nivus.jpg',
-  higienizacao: '/gallery/interior-mercedes.jpg',
+  polimento_comercial: '/gallery/card-classico-vw.jpg',
+  restauracao_farois: '/gallery/card-nivus.jpg',
+  higienizacao: '/gallery/card-higienizacao.jpg',
   descont_vidros: '/gallery/card-civic.jpg',
   descont_pintura: '/gallery/card-mercedes.jpg',
   cristalizacao: '/gallery/card-civic.jpg',
   limpeza_motor: '/gallery/card-polimento.jpg',
   revit_plasticos: '/gallery/card-lancer.jpg',
   coating: '/gallery/card-mercedes.jpg',
-  planos: '/gallery/fachada.jpg',
-  lavagem_detalhada: '/gallery/estudio-bmw.jpg',
-  lavagem_entrada: '/gallery/fachada.jpg',
+  planos: '/gallery/card-fachada.jpg',
+  lavagem_detalhada: '/gallery/card-estudio-bmw.jpg',
+  lavagem_entrada: '/gallery/card-fachada.jpg',
 };
 
 const servicesData = (Object.keys(SERVICOS) as ServicoId[]).map(id => ({
