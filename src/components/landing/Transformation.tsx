@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ChevronsLeftRight, Sparkles, Lightbulb } from 'lucide-react';
+import { Check, ChevronsLeftRight, Sparkles, Lightbulb, Droplets } from 'lucide-react';
 
 const containerVariants: any = {
   hidden: { opacity: 0 },
@@ -49,6 +49,16 @@ const EXEMPLOS: Exemplo[] = [
     itens: ['Remove o amarelado e a opacidade', 'Recupera o alcance da luz à noite', 'Protege contra novos riscos'],
     antes: '/farol-antes.jpg',
     depois: '/farol-depois.jpg',
+  },
+  {
+    id: 'parabrisa',
+    Icon: Droplets,
+    tab: 'Parabrisa',
+    titulo: 'Descontaminação de Vidro',
+    descricao: 'Aquele filme embaçado que borra a visão à noite e cansa a vista na chuva não é sujeira comum — é resíduo cravado no vidro. Arraste pra ver a diferença da nossa descontaminação de parabrisa.',
+    itens: ['Remove resíduos cravados no vidro', 'Melhora a visibilidade à noite e na chuva', 'Reduz o embaçamento e o ofuscamento de faróis'],
+    antes: '/parabrisa-antes.jpg',
+    depois: '/parabrisa-depois.jpg',
   },
 ];
 
