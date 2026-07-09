@@ -31,16 +31,6 @@ interface Exemplo {
 
 const EXEMPLOS: Exemplo[] = [
   {
-    id: 'pintura',
-    Icon: Sparkles,
-    tab: 'Pintura',
-    titulo: 'Polimento Técnico',
-    descricao: 'Arraste a linha ao lado para comparar o antes e o depois do nosso Polimento Técnico. A profundidade e o reflexo são restaurados de forma impecável.',
-    itens: ['Remoção de 95% dos micro-riscos', 'Nivelamento perfeito do verniz', 'Reflexo de espelho impecável'],
-    antes: '/carro-sujo.jpg',
-    depois: '/carro-limpo.jpg',
-  },
-  {
     id: 'farol',
     Icon: Lightbulb,
     tab: 'Farol',
@@ -59,6 +49,16 @@ const EXEMPLOS: Exemplo[] = [
     itens: ['Remove resíduos cravados no vidro', 'Melhora a visibilidade à noite e na chuva', 'Reduz o embaçamento e o ofuscamento de faróis'],
     antes: '/parabrisa-antes.jpg',
     depois: '/parabrisa-depois.jpg',
+  },
+  {
+    id: 'pintura',
+    Icon: Sparkles,
+    tab: 'Pintura',
+    titulo: 'Polimento Técnico',
+    descricao: 'Arraste a linha ao lado para comparar o antes e o depois do nosso Polimento Técnico. A profundidade e o reflexo são restaurados de forma impecável.',
+    itens: ['Remoção de 95% dos micro-riscos', 'Nivelamento perfeito do verniz', 'Reflexo de espelho impecável'],
+    antes: '/carro-sujo.jpg',
+    depois: '/carro-limpo.jpg',
   },
 ];
 

@@ -74,7 +74,7 @@ export function Gallery() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-8 auto-rows-[250px] md:auto-rows-[300px]">
+        <div className="grid grid-cols-1 md:grid-cols-4 md:grid-flow-dense gap-8 auto-rows-[250px] md:auto-rows-[300px]">
           {portfolioItems.slice(0, 4).map((item, idx) => (
             <div 
               key={idx}
@@ -95,7 +95,7 @@ export function Gallery() {
       <GalleryShowcase />
 
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-8 auto-rows-[250px] md:auto-rows-[300px]">
+        <div className="grid grid-cols-1 md:grid-cols-4 md:grid-flow-dense gap-8 auto-rows-[250px] md:auto-rows-[300px]">
           {portfolioItems.slice(4).map((item, idx) => (
             <div 
               key={idx}
