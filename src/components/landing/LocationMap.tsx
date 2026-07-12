@@ -3,7 +3,7 @@ import { MapPin, Navigation } from 'lucide-react';
 
 export function LocationMap() {
   return (
-    <section className="py-16 md:py-32 relative z-10 bg-neve-black">
+    <section id="localizacao" className="py-16 md:py-32 relative z-10 bg-neve-black">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div 
@@ -22,12 +22,12 @@ export function LocationMap() {
               </div>
               <div>
                 <h4 className="text-white font-bold text-lg mb-1">Endereço Premium</h4>
-                <p className="text-gray-400">Av. das Estrelas, 1000 - Alphaville<br/>Santana de Parnaíba - SP, 06500-000</p>
+                <p className="text-gray-400">Rua Delta, 537 - Jaguari<br/>Santana de Parnaíba - SP, 06533-205</p>
               </div>
             </div>
 
             <a 
-              href="https://maps.google.com" 
+              href="https://www.google.com/maps/dir/?api=1&destination=Rua+Delta,+537,+Santana+de+Parna%C3%ADba+-+SP" 
               target="_blank" 
               rel="noreferrer"
               className="inline-flex items-center justify-center bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 py-4 rounded-full font-bold uppercase tracking-widest text-sm transition-all hover:border-neve-blue/50 group"
@@ -44,7 +44,7 @@ export function LocationMap() {
           >
             <div className="absolute inset-0 bg-neve-blue/10 pointer-events-none z-10 mix-blend-overlay"></div>
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117032.54011885816!2d-47.01693836171542!3d-23.46513251503378!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94cf02517830b05b%3A0xc3f60f644b93fb7a!2sSantana%20de%20Parna%C3%ADba%2C%20SP!5e0!3m2!1spt-BR!2sbr!4v1689871141753!5m2!1spt-BR!2sbr" 
+              src="https://www.google.com/maps?q=-23.4199329,-46.8732197&z=16&hl=pt-BR&output=embed" 
               width="100%" 
               height="100%" 
               style={{ border: 0, filter: 'grayscale(100%) invert(90%) contrast(80%)' }} 

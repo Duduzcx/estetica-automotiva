@@ -2,22 +2,20 @@ import { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { GalleryShowcase } from './GalleryShowcase';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function Gallery() {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const portfolioItems = [
-    { type: 'image', src: 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
-    { type: 'video', src: 'https://res.cloudinary.com/demo/video/upload/v1689363065/docs/cars.mp4', span: 'col-span-1 row-span-1', isFeatured: true },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
-    { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', span: 'col-span-1 row-span-1' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1619682817481-e994891cd1f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: '/gallery/interior-mercedes.jpg', alt: 'Higienização interna Mercedes AMG', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: '/gallery/fachada.jpg', alt: 'Fachada da Neve na Nave com Golf detalhado', span: 'col-span-1 row-span-1', isFeatured: true },
+    { type: 'image', src: '/gallery/interior-porsche.jpg', alt: 'Interior vinho de Porsche 911 Carrera detalhado', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: '/gallery/estudio-bmw.jpg', alt: 'BMW e moto no estúdio Neve na Nave', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: '/gallery/classico-vw.jpg', alt: 'VW clássico detalhado no estúdio', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: '/gallery/nivus.jpg', alt: 'VW Nivus preto após detalhamento', span: 'col-span-1 row-span-1' },
   ];
 
   useGSAP(() => {
@@ -60,28 +58,6 @@ export function Gallery() {
       }
     });
 
-    // Scrubbing for ALL videos
-    videoRefs.current.forEach((video) => {
-      if (!video) return;
-      
-      const setupVideoScrub = () => {
-        let tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: video,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          }
-        });
-        tl.to(video, { currentTime: video.duration || 5, ease: "none" });
-      };
-
-      if (video.readyState >= 1) {
-        setupVideoScrub();
-      } else {
-        video.addEventListener('loadedmetadata', setupVideoScrub);
-      }
-    });
   }, { scope: sectionRef });
 
   return (
@@ -96,8 +72,8 @@ export function Gallery() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-8 auto-rows-[250px] md:auto-rows-[280px]">
-          {portfolioItems.map((item, idx) => (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 auto-rows-[250px] md:auto-rows-[280px]">
+          {portfolioItems.slice(0, 4).map((item, idx) => (
             <div 
               key={idx}
               data-featured={item.isFeatured ? 'true' : 'false'}
@@ -106,23 +82,31 @@ export function Gallery() {
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-700 z-10 pointer-events-none"></div>
               
               <div className="w-full h-full pointer-events-none">
-                {item.type === 'image' ? (
-                  <img src={item.src} alt={`Portfólio ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
-                ) : (
-                  <video 
-                    ref={el => { videoRefs.current[idx] = el; }}
-                    src={item.src} 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90 will-change-[transform,opacity]" 
-                    muted 
-                    playsInline 
-                    preload="auto"
-                  />
-                )}
+                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
               </div>
             </div>
           ))}
         </div>
-        
+      </div>
+
+      {/* Cena imersiva: expande pra tela cheia, arrasta, e solta */}
+      <GalleryShowcase />
+
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 auto-rows-[250px] md:auto-rows-[280px]">
+          {portfolioItems.slice(4).map((item, idx) => (
+            <div 
+              key={idx}
+              data-featured="false"
+              className={`gallery-item group relative rounded-2xl overflow-hidden cursor-default will-change-[transform,opacity] ${item.span}`}
+            >
+              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-700 z-10 pointer-events-none"></div>
+              <div className="w-full h-full pointer-events-none">
+                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

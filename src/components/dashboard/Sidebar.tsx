@@ -1,11 +1,12 @@
-import { LayoutDashboard, CalendarDays, Users, DollarSign, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Users, DollarSign, Settings, LogOut, ChevronLeft } from 'lucide-react';
 
 
 interface SidebarProps {
   onLogout: () => void;
+  onBackToSite: () => void;
 }
 
-export function Sidebar({ onLogout }: SidebarProps) {
+export function Sidebar({ onLogout, onBackToSite }: SidebarProps) {
   const menuItems = [
     { icon: <LayoutDashboard className="w-5 h-5" />, label: "Visão Geral", active: true },
     { icon: <CalendarDays className="w-5 h-5" />, label: "Agendamentos", active: false },
@@ -17,9 +18,7 @@ export function Sidebar({ onLogout }: SidebarProps) {
   return (
     <div className="w-64 h-screen bg-neve-dark border-r border-white/5 hidden md:flex flex-col sticky top-0">
       <div className="p-8 border-b border-white/5">
-        <span className="text-2xl font-bold tracking-tighter text-white uppercase font-heading">
-          Neve<span className="text-neve-blue">na Nave</span>
-        </span>
+        <img src="/logo-mark.png" alt="Neve na Nave" className="h-14 w-auto drop-shadow-[0_0_14px_rgba(30,144,255,0.45)]" />
       </div>
 
       <nav className="flex-1 py-8 px-4 space-y-2">
@@ -38,7 +37,14 @@ export function Sidebar({ onLogout }: SidebarProps) {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-white/5">
+      <div className="p-4 border-t border-white/5 space-y-1">
+        <button
+          onClick={onBackToSite}
+          className="w-full flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium text-sm"
+        >
+          <ChevronLeft className="w-5 h-5 mr-3" />
+          Voltar ao Site
+        </button>
         <button 
           onClick={onLogout}
           className="w-full flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-red-500/10 hover:text-red-400 transition-all font-medium text-sm"

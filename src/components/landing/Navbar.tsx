@@ -1,61 +1,145 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Shield } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Menu, X, Shield, Car, Sparkles, Droplets, Calendar, MapPin } from 'lucide-react';
 
 interface NavbarProps {
   onDashboardClick: () => void;
 }
 
+const LINKS = [
+  { label: 'Início', href: '#inicio', Icon: Car },
+  { label: 'Serviços', href: '#servicos', Icon: Sparkles },
+  { label: 'Galeria', href: '#galeria', Icon: Droplets },
+  { label: 'Agendamento', href: '#agendamento', Icon: Calendar },
+  { label: 'Localização', href: '#localizacao', Icon: MapPin },
+];
+
 export function Navbar({ onDashboardClick }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Trava o scroll da página de fundo enquanto o menu mobile está aberto:
+  // sem isso, arrastar rápido com o menu aberto rolava o site por trás
+  // (disparando as animações pesadas do scroll) e isso fazia a parte de
+  // baixo do menu piscar/sumir por falta de fôlego do navegador pra pintar.
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileMenuOpen]);
+
   return (
     <>
-      <nav className="fixed w-full z-40 transition-all duration-300 backdrop-blur-md bg-neve-dark/30 border-b border-white/5" id="navbar">
+      {createPortal(
+      <nav
+        style={{ zIndex: 70, transform: 'translateZ(0)', WebkitTransform: 'translateZ(0)', backfaceVisibility: 'hidden', willChange: 'transform' }}
+        className="fixed top-0 left-0 w-full transition-all duration-300 bg-[#04070d] md:bg-neve-dark/30 md:backdrop-blur-md border-b border-white/5"
+        id="navbar"
+      >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
-              <span className="text-2xl md:text-3xl font-bold tracking-tighter text-white uppercase font-heading">Neve<span className="text-neve-blue">na Nave</span></span>
+              <a href="#inicio" className="flex items-center gap-3">
+                <img src="/logo-mark.png" alt="Neve na Nave" className="h-10 w-auto md:h-12 md:w-auto drop-shadow-[0_0_14px_rgba(30,144,255,0.45)]" />
+              </a>
             </motion.div>
-            
+
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="hidden md:flex items-center space-x-6">
               <button onClick={onDashboardClick} title="Área Restrita" aria-label="Área Restrita" className="text-gray-400 hover:text-white transition-colors flex items-center">
                 <Shield className="w-5 h-5" />
               </button>
-              <a href="#agendamento" className="bg-neve-blue text-white px-8 py-3.5 rounded-full font-bold tracking-wide hover:bg-neve-blueHover transition-all duration-300 shadow-[0_0_20px_rgba(30,144,255,0.2)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)] hover:-translate-y-1 inline-block">
-                Agendar Avaliação
+              <a href="#agendamento" className="bg-neve-blue text-white px-6 py-3 rounded-full font-bold tracking-wide hover:bg-neve-blueHover transition-all duration-300 shadow-[0_0_20px_rgba(30,144,255,0.2)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)] hover:-translate-y-1 inline-block text-sm">
+                Agendar
               </a>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="md:hidden flex items-center">
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white focus:outline-none w-10 h-10 flex items-center justify-center">
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Menu" className="text-white focus:outline-none w-10 h-10 flex items-center justify-center">
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </motion.div>
           </div>
         </div>
-      </nav>
+      </nav>, document.body)}
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
+      {/* Menu Mobile: drawer lateral animado (portal: renderiza direto no body,
+          imune a overflow/transform de qualquer seção da página) */}
+      {createPortal(<AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            exit={{ opacity: 0, y: -20 }} 
-            className="fixed inset-0 z-30 bg-neve-dark/95 backdrop-blur-xl pt-24 px-6 md:hidden flex flex-col"
-          >
-            <div className="flex flex-col space-y-6 mt-8">
-              <a href="#servicos" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-bold text-white border-b border-white/5 pb-4">Serviços Premium</a>
-              <a href="#galeria" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-bold text-white border-b border-white/5 pb-4">Galeria</a>
-              <a href="#agendamento" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-bold text-white border-b border-white/5 pb-4">Agendamento</a>
-              <button onClick={() => { setIsMobileMenuOpen(false); onDashboardClick(); }} className="text-2xl font-bold text-neve-blue border-b border-white/5 pb-4 text-left flex items-center">
-                <Shield className="w-6 h-6 mr-3" /> Área Restrita
-              </button>
-            </div>
-          </motion.div>
+          <>
+            {/* Fundo escurecido (fecha ao tocar) */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{ position: 'fixed', inset: 0, zIndex: 75, backgroundColor: 'rgba(0,0,0,0.6)' }}
+              className="md:hidden"
+            />
+
+            {/* Painel lateral */}
+            <motion.aside
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+              style={{
+                position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 80, width: '80%', maxWidth: 320,
+                backgroundColor: '#0b1320', borderLeft: '1px solid rgba(255,255,255,0.08)', boxShadow: '-20px 0 60px rgba(0,0,0,0.5)',
+                backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
+              }}
+              className="md:hidden flex flex-col"
+            >
+              <div className="flex items-center justify-between p-5 border-b border-white/10">
+                <img src="/logo-mark.png" alt="Neve na Nave" className="h-12 w-auto drop-shadow-[0_0_14px_rgba(30,144,255,0.45)]" />
+                <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Fechar" className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white rounded-xl hover:bg-white/5">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <nav className="flex-1 px-3 py-4 overflow-y-auto">
+                {LINKS.map((l, i) => (
+                  <motion.a
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    initial={{ opacity: 0, x: 24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.06 * i + 0.1, duration: 0.3 }}
+                    className="flex items-center gap-4 text-white text-lg font-bold py-4 px-4 rounded-xl active:bg-white/10 transition-colors border-b border-white/5"
+                  >
+                    <span className="w-10 h-10 rounded-xl bg-neve-blue/10 flex items-center justify-center">
+                      <l.Icon className="w-5 h-5 text-neve-blue" />
+                    </span>
+                    {l.label}
+                  </motion.a>
+                ))}
+              </nav>
+
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35 }}
+                className="p-4 border-t border-white/10 space-y-3"
+              >
+                <a
+                  href="#agendamento"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block text-center bg-neve-blue text-white font-bold rounded-xl py-4 shadow-[0_0_20px_rgba(30,144,255,0.3)] active:bg-blue-600"
+                >
+                  Agendar Avaliação
+                </a>
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); onDashboardClick(); }}
+                  className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-gray-300 font-bold rounded-xl py-3.5 active:bg-white/10"
+                >
+                  <Shield className="w-4 h-4" /> Área Restrita
+                </button>
+              </motion.div>
+            </motion.aside>
+          </>
         )}
-      </AnimatePresence>
+      </AnimatePresence>, document.body)}
+
     </>
   );
 }

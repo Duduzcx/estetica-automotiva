@@ -2,6 +2,9 @@
 @config "../tailwind.config.js";
 
 @layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
     @apply bg-neve-dark text-white overflow-x-hidden font-sans;
   }
@@ -22,6 +25,35 @@
 }
 
 @layer utilities {
+  .whatsapp-fab, .schedule-fab {
+    transition: opacity 0.35s ease, visibility 0.35s ease !important;
+  }
+  body.fab-oculto .whatsapp-fab, body.fab-oculto .schedule-fab {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  /* Legenda do vídeo: só aparece com a cena travada (nunca meio-cortada) */
+  .showcase-caption {
+    opacity: 0;
+    transition: opacity 0.45s ease;
+  }
+  body.fab-oculto .showcase-caption {
+    opacity: 1;
+  }
+
+  /* Letras no estilo da logo: azul brilhante com contorno escuro */
+  .brand-text {
+    font-family: 'Luckiest Guy', cursive;
+    background: linear-gradient(180deg, #8ecbff 0%, #1E90FF 48%, #0a5cb8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 0.045em #14181d;
+    letter-spacing: 0.03em;
+    line-height: 1;
+  }
+
   /* Animação Premium para textos em degradê */
   .animate-shimmer {
     background-size: 300% 300%;

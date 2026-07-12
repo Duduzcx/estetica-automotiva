@@ -1,127 +1,115 @@
-import { useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
+import { motion } from 'framer-motion';
+import {
+  Shield, Sparkles, Car, Droplets, Layers, Lightbulb, Settings, Disc,
+  ArrowRight,
+} from 'lucide-react';
+import { SERVICOS, precoLabel, type ServicoId } from '../../lib/servicos';
 
-gsap.registerPlugin(ScrollTrigger);
+const DESC: Record<ServicoId, { Icon: any; desc: string }> = {
+  polimento_tecnico:   { Icon: Sparkles,  desc: 'Correção de verniz em multiníveis. Remove riscos, hologramas e marcas profundas.' },
+  polimento_comercial: { Icon: Sparkles,  desc: 'Renovação rápida de brilho para realçar a pintura no dia a dia.' },
+  restauracao_farois:  { Icon: Lightbulb, desc: 'Transparência original de volta, com proteção UV prolongada.' },
+  higienizacao:        { Icon: Car,       desc: 'Limpeza interna profunda, hidratação e eliminação de odores.' },
+  descont_vidros:      { Icon: Droplets,  desc: 'Remove chuva ácida, minerais e manchas — visão cristalina.' },
+  descont_pintura:     { Icon: Layers,    desc: 'Elimina partículas cravadas que a lavagem comum não tira.' },
+  cristalizacao:       { Icon: Shield,    desc: 'Repelência de água nos vidros: muito mais segurança na chuva.' },
+  limpeza_motor:       { Icon: Settings,  desc: 'Cofre do motor limpo e conservado, com produtos seguros.' },
+  revit_plasticos:     { Icon: Disc,      desc: 'Plásticos externos com cor e viço de carro novo.' },
+  coating:             { Icon: Shield,    desc: 'Camada de proteção cerâmica com brilho intenso e duradouro.' },
+  planos:              { Icon: Sparkles,  desc: 'Sua nave sempre impecável com cuidados recorrentes.' },
+  lavagem_detalhada:   { Icon: Droplets,  desc: 'Processo artesanal completo, cantinho por cantinho.' },
+  lavagem_entrada:     { Icon: Droplets,  desc: 'Lavagem cuidadosa e caprichada para o dia a dia.' },
+};
+
+const FOTOS: Record<ServicoId, string> = {
+  polimento_tecnico: '/gallery/card-polimento.jpg',
+  polimento_comercial: '/gallery/card-classico-vw.jpg',
+  restauracao_farois: '/gallery/card-nivus.jpg',
+  higienizacao: '/gallery/card-higienizacao.jpg',
+  descont_vidros: '/gallery/card-civic.jpg',
+  descont_pintura: '/gallery/card-mercedes.jpg',
+  cristalizacao: '/gallery/card-civic.jpg',
+  limpeza_motor: '/gallery/card-polimento.jpg',
+  revit_plasticos: '/gallery/card-lancer.jpg',
+  coating: '/gallery/card-mercedes.jpg',
+  planos: '/gallery/card-fachada.jpg',
+  lavagem_detalhada: '/gallery/card-estudio-bmw.jpg',
+  lavagem_entrada: '/gallery/card-fachada.jpg',
+};
+
+const servicesData = (Object.keys(SERVICOS) as ServicoId[]).map(id => ({
+  title: SERVICOS[id].nome,
+  Icon: DESC[id].Icon,
+  desc: DESC[id].desc,
+  preco: precoLabel(id),
+  foto: FOTOS[id],
+}));
 
 export function Services() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    const cards = gsap.utils.toArray('.service-card');
-    
-    // Calculate total width needed to scroll
-    const getTotalWidth = () => {
-      let width = 0;
-      cards.forEach((card: any) => {
-        width += card.offsetWidth;
-      });
-      width += (cards.length - 1) * 24; // gap
-      return width;
-    };
-
-    let scrollTween = gsap.to(containerRef.current, {
-      x: () => -(getTotalWidth() - window.innerWidth + 200),
-      ease: "none",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        pin: true,
-        scrub: 0.5,
-        end: () => "+=" + (getTotalWidth() * 1.2), // Mais rápido e responsivo
-        invalidateOnRefresh: true
-      }
-    });
-
-    // Focus & Blur effect on cards as they come into the center of the screen
-    cards.forEach((card: any) => {
-      // Set initial inactive state
-      gsap.set(card, { opacity: 0.4, scale: 0.9, filter: "blur(4px)" });
-      
-      gsap.to(card, {
-        scale: 1.05,
-        opacity: 1,
-        filter: "blur(0px)",
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: card,
-          containerAnimation: scrollTween,
-          start: "left center+=400", // Fica nítido mais cedo
-          end: "center center",
-          scrub: 0.5,
-        }
-      });
-
-      // Fade out and blur again when leaving the center
-      gsap.to(card, {
-        scale: 0.9,
-        opacity: 0.4,
-        filter: "blur(4px)",
-        ease: "power2.in",
-        scrollTrigger: {
-          trigger: card,
-          containerAnimation: scrollTween,
-          start: "center center-=400", // Só começa a embaçar quando já está bem à esquerda
-          end: "right center-=500",
-          scrub: 0.5,
-        }
-      });
-    });
-  }, { scope: sectionRef });
-
-  const servicesData = [
-    { title: "Vitrificação Cerâmica", icon: "fa-solid fa-shield-halved", desc: "Proteção de até 5 anos com dureza 9H. Brilho espelhado e repelência extrema." },
-    { title: "Polimento Técnico", icon: "fa-solid fa-wand-magic-sparkles", desc: "Correção de verniz em multiníveis. Remoção de riscos, hologramas e marcas." },
-    { title: "Higienização Interna", icon: "fa-solid fa-car-side", desc: "Limpeza detalhada, hidratação de couro e oxi-sanitização para eliminar odores." },
-    { title: "Lavagem Detalhada", icon: "fa-solid fa-droplet", desc: "Processo artesanal com snow foam, pincéis de detalhamento e ceras premium." },
-    { title: "Aplicação de PPF", icon: "fa-solid fa-layer-group", desc: "A armadura transparente definitiva contra pedras, riscos e desgastes externos." },
-    { title: "Restauração de Faróis", icon: "fa-regular fa-lightbulb", desc: "Devolvemos a transparência original e aplicamos proteção UV prolongada." },
-    { title: "Detalhamento de Motor", icon: "fa-solid fa-gears", desc: "Limpeza a seco meticulosa e condicionamento de borrachas para proteção." },
-    { title: "Proteção de Rodas", icon: "fa-solid fa-ring", desc: "Coating cerâmico para rodas, evitando impregnação de pó de freio e sujeira pesada." }
-  ];
-
   return (
-    <section ref={sectionRef} id="servicos" className="relative bg-white overflow-hidden">
-      {/* Top Glassmorphism Divider */}
-      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black to-transparent z-20 border-t border-white/10 backdrop-blur-sm pointer-events-none"></div>
+    <section
+      id="servicos"
+      className="relative z-10 bg-white rounded-t-[2.5rem] -mt-10 overflow-hidden"
+    >
+      {/* Alça decorativa no topo da "folha" branca */}
+      <div className="pt-5 pb-0 flex justify-center">
+        <div className="w-12 h-1.5 rounded-full bg-gray-200"></div>
+      </div>
 
-      <div ref={wrapperRef} className="h-screen flex flex-col justify-center pt-20">
-        
-        <div className="px-6 lg:px-16 mb-12 shrink-0">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 md:py-16">
+        <div className="mb-8 md:mb-12 text-center md:text-left">
           <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">
             Nosso Portfólio
           </h2>
-          <h3 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 whitespace-normal break-words max-w-4xl">
+          <h3 className="text-4xl md:text-6xl font-bold tracking-tight text-gray-900">
             Serviços Premium
           </h3>
         </div>
 
-        {/* This container will slide left */}
-        <div ref={containerRef} className="flex gap-6 px-6 lg:px-16 pb-12 w-max">
-          {servicesData.map((srv, idx) => (
-            <div 
+        {/* Grade organizada: leve, sem travas de scroll */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
+          {servicesData.map(({ title, desc, Icon, preco, foto }, idx) => (
+            <motion.div
               key={idx}
-              className="service-card group relative w-[85vw] max-w-[320px] md:max-w-[450px] md:w-[450px] shrink-0 p-6 md:p-10 rounded-[2rem] bg-gray-50 border border-gray-200 cursor-pointer will-change-[transform,filter,opacity]"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.4, delay: (idx % 2) * 0.06, ease: 'easeOut' }}
+              className="group relative rounded-2xl md:rounded-[1.75rem] bg-white border border-gray-100 shadow-[0_16px_50px_-24px_rgba(15,40,80,0.16)] overflow-hidden hover:shadow-[0_24px_60px_-20px_rgba(30,144,255,0.22)] transition-shadow duration-500"
             >
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-white shadow-sm rounded-2xl flex items-center justify-center mb-8 text-neve-blue text-xl md:text-2xl transition-all duration-500 group-hover:bg-neve-blue group-hover:text-white">
-                <i className={srv.icon}></i>
+              {/* Foto de fundo com véu branco pra leitura */}
+              <div className="absolute inset-0 pointer-events-none">
+                <img src={foto} alt="" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/90 to-white/60 group-hover:via-white/85 group-hover:to-white/45 transition-colors duration-500"></div>
               </div>
-              <h4 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-gray-900 tracking-wide group-hover:text-neve-blue transition-colors whitespace-normal break-words">{srv.title}</h4>
-              <p className="text-gray-600 text-sm md:text-base leading-relaxed font-light whitespace-normal break-words">{srv.desc}</p>
-              
-              <div className="absolute top-6 right-6 md:top-8 md:right-8 text-gray-200 text-4xl md:text-5xl font-bold font-heading group-hover:text-gray-300 transition-colors">
-                0{idx + 1}
-              </div>
-            </div>
+              <a href="#agendamento" className="relative block p-4 md:p-7 h-full">
+                <div className="hidden md:block absolute top-5 right-6 text-4xl font-bold font-heading text-gray-100 group-hover:text-neve-blue/20 transition-colors duration-500 select-none">
+                  {String(idx + 1).padStart(2, '0')}
+                </div>
+
+                <div className="relative w-10 h-10 md:w-13 md:h-13 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-5 bg-gradient-to-br from-neve-blue to-blue-400 text-white shadow-lg shadow-blue-500/25 transition-transform duration-500 group-hover:scale-110">
+                  <Icon className="w-4 h-4 md:w-6 md:h-6" />
+                </div>
+
+                <h4 className="text-sm md:text-lg font-bold mb-1 md:mb-2 text-gray-900 leading-snug group-hover:text-neve-blue transition-colors">
+                  {title}
+                </h4>
+                <p className="hidden md:block text-gray-600 text-sm leading-relaxed font-light mb-3">
+                  {desc}
+                </p>
+                <p className="text-neve-blue font-bold text-xs md:text-base">{preco}</p>
+
+                <span className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-gray-400 group-hover:text-neve-blue transition-colors mt-4">
+                  Agendar este serviço
+                  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
+
+                <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-gradient-to-r from-neve-blue to-blue-300 group-hover:w-full transition-all duration-700"></div>
+              </a>
+            </motion.div>
           ))}
         </div>
-        
       </div>
-      
-      {/* Bottom Glassmorphism Divider */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-neve-dark to-transparent z-20 border-b border-white/5 backdrop-blur-sm pointer-events-none"></div>
     </section>
   );
 }

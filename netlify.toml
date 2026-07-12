@@ -6,3 +6,31 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Assets com hash no nome (JS/CSS do build): podem cachear "pra sempre"
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Vídeos (sequências de frame) e fotos de galeria: cache longo, mas não
+# "immutable" pois o conteúdo pode ser trocado sem mudar o nome do arquivo
+[[headers]]
+  for = "/videos/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/gallery/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

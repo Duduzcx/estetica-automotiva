@@ -1,0 +1,116 @@
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Lock, User, LogIn, Loader2, ChevronLeft, Eye, EyeOff } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+
+interface Props { onLogin: () => void; onBack: () => void; }
+
+export function LoginGate({ onLogin, onBack }: Props) {
+  const [usuario, setUsuario] = useState('');
+  const [senha, setSenha] = useState('');
+
+  const [erro, setErro] = useState('');
+  const [entrando, setEntrando] = useState(false);
+  const [manterConectado, setManterConectado] = useState(true);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+
+  // Tela de login 100% fixa: nada de arrastar a página
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  const concluir = () => {
+    if (manterConectado) {
+      localStorage.setItem('nn_auth_device', '1');
+    } else {
+      sessionStorage.setItem('nn_auth', '1');
+    }
+    onLogin();
+  };
+
+  const entrar = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    setErro('');
+    setEntrando(true);
+
+    // Autenticação real (Supabase Auth). Aceita e-mail completo ou só o usuário
+    if (supabase) {
+      const email = usuario.includes('@') ? usuario.trim() : `${usuario.trim().toLowerCase()}@nevenanave.com`;
+      const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+      if (!error) { setEntrando(false); concluir(); return; }
+    }
+
+    setEntrando(false);
+    setErro('Usuário ou senha incorretos. ❄️');
+  };
+
+  return (
+    <div className="h-[100dvh] overflow-hidden bg-[#050505] flex items-center justify-center px-6 relative">
+      <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-neve-blue/10 blur-[150px] pointer-events-none"></div>
+
+      <button
+        onClick={onBack}
+        className="absolute top-5 left-5 z-20 flex items-center gap-1 text-gray-400 hover:text-white font-bold text-sm px-3 py-2 rounded-xl hover:bg-white/5 transition-colors"
+      >
+        <ChevronLeft className="w-5 h-5" /> Voltar ao site
+      </button>
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-md bg-neve-dark/60 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl relative z-10"
+      >
+        <div className="flex flex-col items-center mb-8">
+          <img src="/logo.png" alt="Neve na Nave" className="h-32 w-auto drop-shadow-[0_0_25px_rgba(30,144,255,0.4)] mb-4" />
+          <h1 className="text-2xl font-bold text-white">Área Restrita</h1>
+          <p className="text-gray-400 text-sm mt-1">Painel de operações da Neve na Nave</p>
+        </div>
+
+        <div className="space-y-4">
+          <div className="relative">
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+            <input
+              value={usuario} onChange={e => setUsuario(e.target.value)}
+              type="text" placeholder="Usuário"
+              className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors"
+            />
+          </div>
+          <div className="relative">
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+            <input
+              value={senha} onChange={e => setSenha(e.target.value)}
+              type={mostrarSenha ? 'text' : 'password'} placeholder="Senha"
+              onKeyDown={e => e.key === 'Enter' && entrar()}
+              className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-4 pl-12 pr-12 focus:outline-none focus:border-neve-blue focus:ring-1 focus:ring-neve-blue transition-colors"
+            />
+            <button
+              type="button"
+              onClick={() => setMostrarSenha(v => !v)}
+              aria-label={mostrarSenha ? 'Esconder senha' : 'Mostrar senha'}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-500 hover:text-white transition-colors"
+            >
+              {mostrarSenha ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
+          </div>
+          <label className="flex items-center gap-3 text-gray-400 text-sm cursor-pointer select-none px-1">
+            <input
+              type="checkbox"
+              checked={manterConectado}
+              onChange={e => setManterConectado(e.target.checked)}
+              className="w-4 h-4 accent-[#1E90FF]"
+            />
+            Manter conectado neste aparelho
+          </label>
+          {erro && <p className="text-red-400 text-sm text-center font-semibold">{erro}</p>}
+          <button
+            onClick={() => entrar()}
+            className="w-full flex items-center justify-center bg-neve-blue hover:bg-blue-600 text-white py-4 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(30,144,255,0.3)]"
+          >
+            {entrando ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <LogIn className="w-5 h-5 mr-2" />} Entrar
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
