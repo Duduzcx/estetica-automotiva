@@ -65,15 +65,25 @@ export function Hero() {
       <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-neve-blue/20 blur-[150px] pointer-events-none z-0"></div>
       <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-900/20 blur-[150px] pointer-events-none z-0"></div>
 
-      {/* Video Scrub Background */}
-      <div className="absolute inset-0 z-0 w-full h-full">
-        <video 
+      {/* Video Scrub Background (Mobile only) */}
+      <div className="md:hidden absolute inset-0 z-0 w-full h-full">
+        <video
           ref={videoRef}
-          src="https://res.cloudinary.com/demo/video/upload/v1689363065/docs/cars.mp4" 
+          src="https://res.cloudinary.com/demo/video/upload/v1689363065/docs/cars.mp4"
           className="w-full h-full object-cover opacity-60 will-change-[transform,filter,opacity]"
-          muted 
+          muted
           playsInline
           preload="auto"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent"></div>
+      </div>
+
+      {/* Fixed Photo Background (Desktop only) */}
+      <div className="hidden md:block absolute inset-0 z-0 w-full h-full">
+        <img
+          src="/pexels-furkanakt-31928396.jpg"
+          alt="Audi detalhado"
+          className="w-full h-full object-cover opacity-60"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent"></div>
       </div>
@@ -93,7 +103,7 @@ export function Hero() {
         <motion.div variants={revealVariants} className="overflow-hidden mb-8">
           <h1 className="text-5xl md:text-7xl lg:text-[6.5rem] font-bold text-white leading-[1.05] tracking-tight whitespace-normal break-words">
             Sua nave <br className="hidden md:block" /> 
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neve-blue to-white">impecável.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neve-blue via-white to-neve-blue animate-shimmer">impecável.</span>
           </h1>
         </motion.div>
 

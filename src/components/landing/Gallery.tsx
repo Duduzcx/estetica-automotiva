@@ -10,13 +10,14 @@ export function Gallery() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const portfolioItems = [
-    { type: 'image', src: 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 md:col-span-1 row-span-1' },
-    { type: 'video', src: 'https://res.cloudinary.com/demo/video/upload/v1689363065/docs/cars.mp4', span: 'col-span-1 md:col-span-2 row-span-2', isFeatured: true },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
+    { type: 'video', src: 'https://res.cloudinary.com/demo/video/upload/v1689363065/docs/cars.mp4', span: 'col-span-1 row-span-1', isFeatured: true },
     { type: 'image', src: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 md:col-span-2 row-span-1' },
-    { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', span: 'col-span-1 row-span-2' },
-    { type: 'image', src: 'https://images.unsplash.com/photo-1619682817481-e994891cd1f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 md:col-span-2 row-span-2' },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
+    { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1619682817481-e994891cd1f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
     { type: 'image', src: 'https://images.unsplash.com/photo-1601362840469-51e4d8d58785?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
+    { type: 'image', src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80', span: 'col-span-1 row-span-1' },
   ];
 
   useGSAP(() => {
@@ -87,17 +88,15 @@ export function Gallery() {
     <section id="galeria" ref={sectionRef} className="py-24 md:py-40 relative z-10 bg-neve-dark overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
         
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 md:mb-24">
-          <div>
-            <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Galeria Imersiva</h2>
-            <h3 className="text-4xl md:text-6xl font-bold tracking-tight text-white">Nossas Obras de Arte</h3>
-          </div>
-          <p className="text-gray-400 max-w-sm mt-6 md:mt-0 text-sm md:text-base">
+        <div className="flex flex-col items-end md:items-center text-right md:text-center mb-16 md:mb-24">
+          <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Galeria Imersiva</h2>
+          <h3 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-6">Nossas Obras de Arte</h3>
+          <p className="text-gray-400 max-w-2xl text-sm md:text-base">
             Cada detalhe importa. Veja de perto o resultado do nosso perfeccionismo aplicado aos carros mais exclusivos.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-8 auto-rows-[250px] md:auto-rows-[300px]">
+        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-8 auto-rows-[250px] md:auto-rows-[280px]">
           {portfolioItems.map((item, idx) => (
             <div 
               key={idx}

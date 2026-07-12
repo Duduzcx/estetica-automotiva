@@ -19,8 +19,8 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
             </motion.div>
             
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="hidden md:flex items-center space-x-6">
-              <button onClick={onDashboardClick} className="text-gray-400 hover:text-white transition-colors flex items-center font-semibold text-sm">
-                <Shield className="w-4 h-4 mr-2" /> Área Restrita
+              <button onClick={onDashboardClick} title="Área Restrita" aria-label="Área Restrita" className="text-gray-400 hover:text-white transition-colors flex items-center">
+                <Shield className="w-5 h-5" />
               </button>
               <a href="#agendamento" className="bg-neve-blue text-white px-8 py-3.5 rounded-full font-bold tracking-wide hover:bg-neve-blueHover transition-all duration-300 shadow-[0_0_20px_rgba(30,144,255,0.2)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)] hover:-translate-y-1 inline-block">
                 Agendar Avaliação
