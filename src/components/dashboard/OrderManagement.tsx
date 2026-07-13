@@ -183,39 +183,45 @@ export function OrderManagement({ agendamentos, loading, updateStatus, deleteAge
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 w-full md:w-auto">
-                    <button onClick={() => chamar(a)} title="Chamar no WhatsApp"
-                      className="shrink-0 p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-[#25D366] hover:text-white transition-all">
-                      <MessageCircle className="w-5 h-5" />
-                    </button>
-                    {aba === 'ativos' && a.status !== 'confirmado' && (
-                      <button onClick={() => aprovar(a)}
-                        className="flex-1 md:flex-none min-w-0 flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-green-500/15 text-green-400 hover:bg-green-500 hover:text-white font-bold text-xs md:text-sm transition-all">
-                        <CheckCircle2 className="w-4 h-4 mr-1 md:mr-1.5 shrink-0" /> Aprovar
-                      </button>
+                  <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                    {aba === 'ativos' && (
+                      <div className="flex gap-2 w-full md:contents">
+                        {a.status !== 'confirmado' && (
+                          <button onClick={() => aprovar(a)}
+                            className="flex-1 md:flex-none min-w-0 flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-green-500/15 text-green-400 hover:bg-green-500 hover:text-white font-bold text-sm transition-all">
+                            <CheckCircle2 className="w-4 h-4 mr-1.5 shrink-0" /> Aprovar
+                          </button>
+                        )}
+                        {a.status !== 'recusado' && (
+                          <button onClick={() => recusar(a)}
+                            className="flex-1 md:flex-none min-w-0 flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-red-500/15 text-red-400 hover:bg-red-500 hover:text-white font-bold text-sm transition-all">
+                            <XCircle className="w-4 h-4 mr-1.5 shrink-0" /> Recusar
+                          </button>
+                        )}
+                      </div>
                     )}
-                    {aba === 'ativos' && a.status !== 'recusado' && (
-                      <button onClick={() => recusar(a)}
-                        className="flex-1 md:flex-none min-w-0 flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-red-500/15 text-red-400 hover:bg-red-500 hover:text-white font-bold text-xs md:text-sm transition-all">
-                        <XCircle className="w-4 h-4 mr-1 md:mr-1.5 shrink-0" /> Recusar
+                    <div className="flex gap-2 w-full md:contents">
+                      <button onClick={() => chamar(a)} title="Chamar no WhatsApp"
+                        className="flex-1 md:flex-none shrink-0 flex items-center justify-center p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-[#25D366] hover:text-white transition-all">
+                        <MessageCircle className="w-5 h-5" />
                       </button>
-                    )}
-                    {aba === 'ativos' && a.status !== 'pendente' && (
-                      <button onClick={() => moverParaHistorico(a.id)} title="Mover pro histórico"
-                        className="shrink-0 p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white transition-all">
-                        <Archive className="w-5 h-5" />
+                      {aba === 'ativos' && a.status !== 'pendente' && (
+                        <button onClick={() => moverParaHistorico(a.id)} title="Mover pro histórico"
+                          className="flex-1 md:flex-none shrink-0 flex items-center justify-center p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white transition-all">
+                          <Archive className="w-5 h-5" />
+                        </button>
+                      )}
+                      {aba === 'historico' && historicoManual.includes(a.id) && (
+                        <button onClick={() => devolverAosAtivos(a.id)} title="Devolver aos ativos"
+                          className="flex-1 md:flex-none shrink-0 flex items-center justify-center p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-neve-blue hover:text-white transition-all">
+                          <ArchiveRestore className="w-5 h-5" />
+                        </button>
+                      )}
+                      <button onClick={() => excluir(a)} title="Excluir agendamento"
+                        className="flex-1 md:flex-none shrink-0 flex items-center justify-center p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-red-600 hover:text-white transition-all">
+                        <Trash2 className="w-5 h-5" />
                       </button>
-                    )}
-                    {aba === 'historico' && historicoManual.includes(a.id) && (
-                      <button onClick={() => devolverAosAtivos(a.id)} title="Devolver aos ativos"
-                        className="shrink-0 p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-neve-blue hover:text-white transition-all">
-                        <ArchiveRestore className="w-5 h-5" />
-                      </button>
-                    )}
-                    <button onClick={() => excluir(a)} title="Excluir agendamento"
-                      className="shrink-0 p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-red-600 hover:text-white transition-all">
-                      <Trash2 className="w-5 h-5" />
-                    </button>
+                    </div>
                   </div>
                 </div>
               </motion.div>
