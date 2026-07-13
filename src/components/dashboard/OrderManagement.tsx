@@ -9,7 +9,7 @@ interface Props {
   agendamentos: Agendamento[];
   loading: boolean;
   updateStatus: (id: string, status: Agendamento['status']) => void;
-  deleteAgendamento: (id: string) => void;
+  deleteAgendamento: (id: string) => Promise<{ ok: boolean; erro?: string }>;
 }
 
 // Além da regra automática (3+ dias), o dono pode mandar um agendamento
@@ -53,9 +53,13 @@ export function OrderManagement({ agendamentos, loading, updateStatus, deleteAge
   const devolverAosAtivos = (id: string) => {
     setHistoricoManual(prev => prev.filter(x => x !== id));
   };
-  const excluir = (a: Agendamento) => {
+  const excluir = async (a: Agendamento) => {
     if (!window.confirm(`Excluir o agendamento de ${a.nome}? Essa ação não pode ser desfeita.`)) return;
-    deleteAgendamento(a.id);
+    const { ok, erro } = await deleteAgendamento(a.id);
+    if (!ok) {
+      window.alert(`Não foi possível excluir: ${erro || 'erro desconhecido'}.\n\nO agendamento voltou pra lista.`);
+      return;
+    }
     devolverAosAtivos(a.id);
   };
 

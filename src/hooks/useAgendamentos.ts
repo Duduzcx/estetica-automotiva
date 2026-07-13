@@ -43,12 +43,20 @@ export function useAgendamentos() {
     }
   }, []);
 
-  const deleteAgendamento = useCallback(async (id: string) => {
+  const deleteAgendamento = useCallback(async (id: string): Promise<{ ok: boolean; erro?: string }> => {
+    const anterior = agendamentos;
     setAgendamentos(prev => prev.filter(a => a.id !== id));
-    if (supabase) {
-      await supabase.from('agendamentos').delete().eq('id', id);
+    if (!supabase) return { ok: true };
+
+    const { error } = await supabase.from('agendamentos').delete().eq('id', id);
+    if (error) {
+      // Reverte: se o banco recusou (RLS sem policy de delete, por ex.), o
+      // registro não pode sumir da tela só pra "voltar sozinho" 15s depois.
+      setAgendamentos(anterior);
+      return { ok: false, erro: error.message };
     }
-  }, []);
+    return { ok: true };
+  }, [agendamentos]);
 
   return { agendamentos, loading, updateStatus, deleteAgendamento, refresh: fetchAll };
 }
