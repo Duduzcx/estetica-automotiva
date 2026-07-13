@@ -64,7 +64,7 @@ export function Gallery() {
     <section id="galeria" ref={sectionRef} className="py-24 md:py-40 relative z-10 bg-neve-dark overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
         
-        <div className="flex flex-col items-end md:items-center text-right md:text-center mb-16 md:mb-24">
+        <div className="flex flex-col items-start md:items-center text-left md:text-center mb-16 md:mb-24">
           <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">Galeria Imersiva</h2>
           <h3 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-6">Nossas Obras de Arte</h3>
           <p className="text-gray-400 max-w-2xl text-sm md:text-base">
@@ -95,14 +95,14 @@ export function Gallery() {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 auto-rows-[250px] md:auto-rows-[280px]">
           {portfolioItems.slice(4).map((item, idx) => (
-            <div 
+            <div
               key={idx}
               data-featured="false"
-              className={`gallery-item group relative rounded-2xl overflow-hidden cursor-default will-change-[transform,opacity] ${item.span}`}
+              className={`gallery-item group relative rounded-2xl overflow-hidden cursor-default will-change-[transform,opacity] bg-black/30 ${item.span}`}
             >
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-700 z-10 pointer-events-none"></div>
               <div className="w-full h-full pointer-events-none">
-                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
+                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-full object-contain md:object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
               </div>
             </div>
           ))}
