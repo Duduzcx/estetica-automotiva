@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { hojeLocal } from '../../lib/datas';
 import { createPortal } from 'react-dom';
 import { Calendar, Car, Shield, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Sparkles, Droplets, X, CalendarCheck2, Layers, Lightbulb, Settings, Disc, BadgeCheck, Bike, Truck } from 'lucide-react';
@@ -69,6 +69,25 @@ export function Scheduling() {
   const [sending, setSending] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [sendError, setSendError] = useState('');
+
+  // Arrastar com o mouse pra rolar o card no PC (no celular o touch já rola
+  // nativamente; no desktop o overflow-y só respondia à roda do mouse/scrollbar)
+  const scrollBodyRef = useRef<HTMLDivElement>(null);
+  const dragState = useRef({ dragging: false, startY: 0, startScroll: 0 });
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== 'mouse') return;
+    const el = scrollBodyRef.current;
+    if (!el) return;
+    dragState.current = { dragging: true, startY: e.clientY, startScroll: el.scrollTop };
+    el.setPointerCapture(e.pointerId);
+  };
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = scrollBodyRef.current;
+    if (!el || !dragState.current.dragging) return;
+    el.scrollTop = dragState.current.startScroll - (e.clientY - dragState.current.startY);
+  };
+  const handlePointerUp = () => { dragState.current.dragging = false; };
 
   // Página travada enquanto o card está aberto
   useEffect(() => {
@@ -322,7 +341,14 @@ export function Scheduling() {
           </div>
 
           {/* Corpo rolável */}
-          <div className="flex-1 overflow-y-auto overscroll-contain p-5 md:p-8">
+          <div
+            ref={scrollBodyRef}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerUp}
+            className="flex-1 overflow-y-auto overscroll-contain p-5 md:p-8 md:cursor-grab md:active:cursor-grabbing md:select-none"
+          >
 
           {/* Progress Bar */}
           <div className="flex justify-between items-center mb-8 relative z-10">
@@ -489,13 +515,13 @@ export function Scheduling() {
                   {carroTipo === 'carro' && (
                     <div className="md:col-span-2">
                       <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Carroceria</label>
-                      <div className="grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         {CARROCERIAS.map(({ valor, label }) => (
                           <button
                             type="button"
                             key={valor}
                             onClick={() => setCarroceria(valor)}
-                            className={`py-3 px-1 rounded-xl border text-xs md:text-sm font-bold transition-all ${
+                            className={`py-3 px-2 rounded-xl border text-xs md:text-sm font-bold transition-all ${
                               carroceria === valor
                                 ? 'border-neve-blue bg-neve-blue/10 text-neve-blue'
                                 : 'border-white/10 text-gray-400 hover:border-white/20'
