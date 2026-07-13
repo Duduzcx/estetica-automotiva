@@ -102,7 +102,12 @@ export function Gallery() {
             >
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-700 z-10 pointer-events-none"></div>
               <div className="w-full aspect-[4/3] max-h-[380px] md:aspect-auto md:h-full md:max-h-none pointer-events-none">
-                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
+                <img
+                  src={item.src}
+                  alt={(item as any).alt || 'Portfólio Neve na Nave'}
+                  loading="lazy"
+                  className={`w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform ${item.src.includes('classico-vw') ? 'object-[center_75%]' : ''}`}
+                />
               </div>
             </div>
           ))}
