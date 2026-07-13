@@ -55,9 +55,9 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
               <button onClick={onDashboardClick} title="Área Restrita" aria-label="Área Restrita" className="text-gray-400 hover:text-white transition-colors flex items-center">
                 <Shield className="w-5 h-5" />
               </button>
-              <a href="#agendamento" className="bg-neve-blue text-white px-6 py-3 rounded-full font-bold tracking-wide hover:bg-neve-blueHover transition-all duration-300 shadow-[0_0_20px_rgba(30,144,255,0.2)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)] hover:-translate-y-1 inline-block text-sm">
+              <button onClick={() => window.dispatchEvent(new CustomEvent('abrir-agendamento'))} className="bg-neve-blue text-white px-6 py-3 rounded-full font-bold tracking-wide hover:bg-neve-blueHover transition-all duration-300 shadow-[0_0_20px_rgba(30,144,255,0.2)] hover:shadow-[0_0_30px_rgba(30,144,255,0.5)] hover:-translate-y-1 inline-block text-sm">
                 Agendar
-              </a>
+              </button>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="md:hidden flex items-center">
@@ -129,13 +129,12 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
                 transition={{ delay: 0.35 }}
                 className="p-4 border-t border-white/10 space-y-3"
               >
-                <a
-                  href="#agendamento"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block text-center bg-neve-blue text-white font-bold rounded-xl py-4 shadow-[0_0_20px_rgba(30,144,255,0.3)] active:bg-blue-600"
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); window.dispatchEvent(new CustomEvent('abrir-agendamento')); }}
+                  className="w-full block text-center bg-neve-blue text-white font-bold rounded-xl py-4 shadow-[0_0_20px_rgba(30,144,255,0.3)] active:bg-blue-600"
                 >
                   Agendar Avaliação
-                </a>
+                </button>
                 <button
                   onClick={() => { setIsMobileMenuOpen(false); onDashboardClick(); }}
                   className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-gray-300 font-bold rounded-xl py-3.5 active:bg-white/10"
