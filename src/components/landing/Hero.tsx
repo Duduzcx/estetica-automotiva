@@ -128,8 +128,8 @@ export function Hero() {
     // Invólucro estável: o pin do GSAP reparenta a section AQUI DENTRO,
     // sem mexer nos vizinhos que o React usa como referência (fix do insertBefore)
     <div>
-    <section id="inicio" ref={containerRef} className="relative h-[100svh] bg-black">
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
+    <section id="inicio" ref={containerRef} className="relative h-[100svh] md:h-screen bg-black">
+      <div className="sticky top-0 h-[100svh] md:h-screen overflow-hidden">
 
         {/* Frames do detalhamento desenhados em canvas (Mobile only) */}
         <div className="md:hidden absolute inset-0 z-0 w-full h-full">
