@@ -370,6 +370,7 @@ export function Scheduling() {
           {/* Corpo rolável */}
           <div
             ref={scrollBodyRef}
+            data-lenis-prevent
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
