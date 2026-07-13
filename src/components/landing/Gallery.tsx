@@ -106,7 +106,7 @@ export function Gallery() {
                   src={item.src}
                   alt={(item as any).alt || 'Portfólio Neve na Nave'}
                   loading="lazy"
-                  className={`w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform ${item.src.includes('classico-vw') ? 'object-[center_75%]' : ''}`}
+                  className={`w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform ${item.src.includes('classico-vw') || item.src.includes('nivus') ? 'object-[center_75%]' : ''}`}
                 />
               </div>
             </div>
