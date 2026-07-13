@@ -71,28 +71,39 @@ export function Scheduling() {
   const [sendError, setSendError] = useState('');
 
   // Arrastar com o mouse pra rolar o card no PC (no celular o touch já rola
-  // nativamente; no desktop o overflow-y só respondia à roda do mouse/scrollbar)
+  // nativamente). Só vira "arrastar" depois de um limiar de movimento -
+  // sem isso, o pointer capture roubava o clique dos cards de serviço.
   const scrollBodyRef = useRef<HTMLDivElement>(null);
-  const dragState = useRef({ dragging: false, startY: 0, startScroll: 0 });
+  const dragState = useRef({ down: false, dragging: false, startY: 0, startScroll: 0, pointerId: 0 });
+  const LIMIAR_DRAG = 6;
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType !== 'mouse') return;
     const el = scrollBodyRef.current;
     if (!el) return;
-    dragState.current = { dragging: true, startY: e.clientY, startScroll: el.scrollTop };
-    el.setPointerCapture(e.pointerId);
+    dragState.current = { down: true, dragging: false, startY: e.clientY, startScroll: el.scrollTop, pointerId: e.pointerId };
   };
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = scrollBodyRef.current;
-    if (!el || !dragState.current.dragging) return;
-    el.scrollTop = dragState.current.startScroll - (e.clientY - dragState.current.startY);
+    const st = dragState.current;
+    if (!el || !st.down) return;
+    const delta = e.clientY - st.startY;
+    if (!st.dragging) {
+      if (Math.abs(delta) < LIMIAR_DRAG) return;
+      st.dragging = true;
+      el.setPointerCapture(st.pointerId);
+    }
+    el.scrollTop = st.startScroll - delta;
   };
-  const handlePointerUp = () => { dragState.current.dragging = false; };
+  const handlePointerUp = () => { dragState.current.down = false; dragState.current.dragging = false; };
 
-  // Página travada enquanto o card está aberto
+  // Página travada enquanto o card está aberto. Trava no <html> também,
+  // não só no <body> - só o body deixava o site "vazar" scroll por trás
+  // do card em alguns navegadores desktop.
   useEffect(() => {
     document.body.style.overflow = modalOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    document.documentElement.style.overflow = modalOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; document.documentElement.style.overflow = ''; };
   }, [modalOpen]);
 
   // Botão fixo flutuante: abre o card de agendamento direto, sem enrolação

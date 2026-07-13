@@ -186,14 +186,14 @@ export function OrderManagement({ agendamentos, loading, updateStatus, deleteAge
                     </button>
                     {aba === 'ativos' && a.status !== 'confirmado' && (
                       <button onClick={() => aprovar(a)}
-                        className="flex-1 md:flex-none min-w-0 flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-green-500/15 text-green-400 hover:bg-green-500 hover:text-white font-bold text-sm transition-all">
-                        <CheckCircle2 className="w-4 h-4 mr-1.5 shrink-0" /> Aprovar
+                        className="flex-1 md:flex-none min-w-0 flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-green-500/15 text-green-400 hover:bg-green-500 hover:text-white font-bold text-xs md:text-sm transition-all">
+                        <CheckCircle2 className="w-4 h-4 mr-1 md:mr-1.5 shrink-0" /> Aprovar
                       </button>
                     )}
                     {aba === 'ativos' && a.status !== 'recusado' && (
                       <button onClick={() => recusar(a)}
-                        className="flex-1 md:flex-none min-w-0 flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-red-500/15 text-red-400 hover:bg-red-500 hover:text-white font-bold text-sm transition-all">
-                        <XCircle className="w-4 h-4 mr-1.5 shrink-0" /> Recusar
+                        className="flex-1 md:flex-none min-w-0 flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-red-500/15 text-red-400 hover:bg-red-500 hover:text-white font-bold text-xs md:text-sm transition-all">
+                        <XCircle className="w-4 h-4 mr-1 md:mr-1.5 shrink-0" /> Recusar
                       </button>
                     )}
                     {aba === 'ativos' && a.status !== 'pendente' && (
