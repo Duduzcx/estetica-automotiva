@@ -56,6 +56,9 @@ export function Services() {
         <div className="w-12 h-1.5 rounded-full bg-gray-200"></div>
       </div>
 
+      {/* Transição suave saindo do Hero, sem cortar a foto (desktop) */}
+      <div className="hidden md:block absolute top-0 inset-x-0 h-12 bg-gradient-to-b from-black/20 to-white pointer-events-none"></div>
+
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 md:py-16">
         <div className="mb-8 md:mb-12 text-center md:text-left">
           <h2 className="text-neve-blue font-bold tracking-[0.2em] uppercase text-xs mb-4 font-heading">
