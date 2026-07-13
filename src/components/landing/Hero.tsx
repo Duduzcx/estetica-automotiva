@@ -147,6 +147,8 @@ export function Hero() {
           />
           <div className="absolute inset-0 bg-black/60"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/40"></div>
+          {/* Transição suave pro branco de Serviços, pra não cortar seco */}
+          <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
         </div>
 
         {/* Content Layer */}
