@@ -101,8 +101,8 @@ export function Gallery() {
               className={`gallery-item group relative rounded-2xl overflow-hidden cursor-default will-change-[transform,opacity] ${item.span}`}
             >
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-700 z-10 pointer-events-none"></div>
-              <div className="w-full h-auto md:h-full pointer-events-none">
-                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-auto md:h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
+              <div className="w-full aspect-[4/3] max-h-[380px] md:aspect-auto md:h-full md:max-h-none pointer-events-none">
+                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
               </div>
             </div>
           ))}
