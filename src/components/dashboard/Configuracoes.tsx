@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Settings, Save, CheckCircle2, Volume2 } from 'lucide-react';
+import { Settings, Save, CheckCircle2, Volume2, Bell, BellOff, BellRing, Loader2 } from 'lucide-react';
+import { ativarNotificacoes, desativarNotificacoes, pushSuportado, statusInscricao } from '../../lib/push';
 
 const CONFIG_KEY = 'nn_config_painel';
 
@@ -31,12 +32,18 @@ const lerConfig = (): ConfigPainel => {
 export function Configuracoes() {
   const [config, setConfig] = useState<ConfigPainel>(lerConfig);
   const [salvo, setSalvo] = useState(false);
+  const [notifStatus, setNotifStatus] = useState<'ativo' | 'inativo' | 'negado' | 'carregando'>('carregando');
+  const [notifErro, setNotifErro] = useState('');
 
   useEffect(() => {
     if (!salvo) return;
     const t = setTimeout(() => setSalvo(false), 2500);
     return () => clearTimeout(t);
   }, [salvo]);
+
+  useEffect(() => {
+    statusInscricao().then(setNotifStatus);
+  }, []);
 
   const campo = (chave: keyof ConfigPainel) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setConfig(prev => ({ ...prev, [chave]: e.target.value }));
@@ -45,6 +52,19 @@ export function Configuracoes() {
   const salvar = () => {
     localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
     setSalvo(true);
+  };
+
+  const alternarNotificacoes = async () => {
+    setNotifErro('');
+    setNotifStatus('carregando');
+    if (notifStatus === 'ativo') {
+      await desativarNotificacoes();
+      setNotifStatus('inativo');
+      return;
+    }
+    const { ok, erro } = await ativarNotificacoes();
+    if (!ok) { setNotifErro(erro || 'Não foi possível ativar.'); setNotifStatus(await statusInscricao()); return; }
+    setNotifStatus('ativo');
   };
 
   return (
@@ -102,6 +122,42 @@ export function Configuracoes() {
             className="w-5 h-5 accent-neve-blue"
           />
         </label>
+
+        <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <span className="flex items-center gap-3 text-white font-medium text-sm">
+              {notifStatus === 'ativo' ? <BellRing className="w-5 h-5 text-neve-blue" /> : <Bell className="w-5 h-5 text-neve-blue" />}
+              Notificação neste aparelho (painel fechado ou aberto)
+            </span>
+            {!pushSuportado() ? (
+              <span className="text-gray-500 text-xs font-semibold">Não suportado neste navegador</span>
+            ) : notifStatus === 'negado' ? (
+              <span className="text-red-400 text-xs font-semibold">Bloqueada nas permissões do navegador</span>
+            ) : (
+              <button
+                onClick={alternarNotificacoes}
+                disabled={notifStatus === 'carregando'}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                  notifStatus === 'ativo'
+                    ? 'bg-white/10 text-gray-300 hover:bg-red-500/20 hover:text-red-400'
+                    : 'bg-neve-blue text-white hover:bg-blue-600'
+                }`}
+              >
+                {notifStatus === 'carregando' ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : notifStatus === 'ativo' ? (
+                  <><BellOff className="w-4 h-4" /> Desativar</>
+                ) : (
+                  <><Bell className="w-4 h-4" /> Ativar</>
+                )}
+              </button>
+            )}
+          </div>
+          {notifErro && <p className="text-red-400 text-xs mt-3">{notifErro}</p>}
+          <p className="text-gray-500 text-xs mt-3">
+            Ative em cada aparelho/navegador que deve receber o aviso de novo agendamento.
+          </p>
+        </div>
 
         <div className="flex items-center gap-3 pt-2">
           <button
