@@ -1,20 +1,24 @@
+import type { ReactNode } from 'react';
 import { LayoutDashboard, CalendarDays, Users, DollarSign, Settings, LogOut, ChevronLeft } from 'lucide-react';
 
+export type TabKey = 'visao' | 'agendamentos' | 'clientes' | 'financeiro' | 'config';
+
+export const TABS: { key: TabKey; label: string; icon: ReactNode }[] = [
+  { key: 'visao', label: 'Visão Geral', icon: <LayoutDashboard className="w-5 h-5" /> },
+  { key: 'agendamentos', label: 'Agendamentos', icon: <CalendarDays className="w-5 h-5" /> },
+  { key: 'clientes', label: 'Clientes', icon: <Users className="w-5 h-5" /> },
+  { key: 'financeiro', label: 'Financeiro', icon: <DollarSign className="w-5 h-5" /> },
+  { key: 'config', label: 'Configurações', icon: <Settings className="w-5 h-5" /> },
+];
 
 interface SidebarProps {
+  active: TabKey;
+  onSelect: (key: TabKey) => void;
   onLogout: () => void;
   onBackToSite: () => void;
 }
 
-export function Sidebar({ onLogout, onBackToSite }: SidebarProps) {
-  const menuItems = [
-    { icon: <LayoutDashboard className="w-5 h-5" />, label: "Visão Geral", active: true },
-    { icon: <CalendarDays className="w-5 h-5" />, label: "Agendamentos", active: false },
-    { icon: <Users className="w-5 h-5" />, label: "Clientes", active: false },
-    { icon: <DollarSign className="w-5 h-5" />, label: "Financeiro", active: false },
-    { icon: <Settings className="w-5 h-5" />, label: "Configurações", active: false },
-  ];
-
+export function Sidebar({ active, onSelect, onLogout, onBackToSite }: SidebarProps) {
   return (
     <div className="w-64 h-screen bg-neve-dark border-r border-white/5 hidden md:flex flex-col sticky top-0">
       <div className="p-8 border-b border-white/5">
@@ -22,12 +26,13 @@ export function Sidebar({ onLogout, onBackToSite }: SidebarProps) {
       </div>
 
       <nav className="flex-1 py-8 px-4 space-y-2">
-        {menuItems.map((item, idx) => (
-          <button 
-            key={idx}
+        {TABS.map((item) => (
+          <button
+            key={item.key}
+            onClick={() => onSelect(item.key)}
             className={`w-full flex items-center px-4 py-3 rounded-xl transition-all font-medium text-sm ${
-              item.active 
-                ? 'bg-neve-blue/10 text-neve-blue' 
+              active === item.key
+                ? 'bg-neve-blue/10 text-neve-blue'
                 : 'text-gray-400 hover:text-white hover:bg-white/5'
             }`}
           >

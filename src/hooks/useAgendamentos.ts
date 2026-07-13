@@ -43,5 +43,12 @@ export function useAgendamentos() {
     }
   }, []);
 
-  return { agendamentos, loading, updateStatus, refresh: fetchAll };
+  const deleteAgendamento = useCallback(async (id: string) => {
+    setAgendamentos(prev => prev.filter(a => a.id !== id));
+    if (supabase) {
+      await supabase.from('agendamentos').delete().eq('id', id);
+    }
+  }, []);
+
+  return { agendamentos, loading, updateStatus, deleteAgendamento, refresh: fetchAll };
 }

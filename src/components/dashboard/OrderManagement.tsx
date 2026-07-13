@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { hojeLocal } from '../../lib/datas';
-import { CheckCircle2, XCircle, Clock, MessageCircle, Car, Loader2, Archive, Inbox } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, MessageCircle, Car, Loader2, Archive, Inbox, Trash2, ArchiveRestore } from 'lucide-react';
 import type { Agendamento } from '../../lib/supabase';
 import { formatBRL } from '../../lib/servicos';
 
@@ -9,7 +9,17 @@ interface Props {
   agendamentos: Agendamento[];
   loading: boolean;
   updateStatus: (id: string, status: Agendamento['status']) => void;
+  deleteAgendamento: (id: string) => void;
 }
+
+// Além da regra automática (3+ dias), o dono pode mandar um agendamento
+// direto pro histórico na mão. Guardado local (não é um dado do negócio,
+// só uma preferência de organização do painel neste aparelho).
+const HISTORICO_MANUAL_KEY = 'nn_historico_manual';
+const lerHistoricoManual = (): string[] => {
+  try { return JSON.parse(localStorage.getItem(HISTORICO_MANUAL_KEY) || '[]'); }
+  catch { return []; }
+};
 
 const foneParaWa = (fone: string) => {
   const digits = fone.replace(/\D/g, '');
@@ -29,8 +39,25 @@ const diasDesde = (data: string) => {
   return Math.floor((hoje.getTime() - alvo.getTime()) / 86400000);
 };
 
-export function OrderManagement({ agendamentos, loading, updateStatus }: Props) {
+export function OrderManagement({ agendamentos, loading, updateStatus, deleteAgendamento }: Props) {
   const [aba, setAba] = useState<'ativos' | 'historico'>('ativos');
+  const [historicoManual, setHistoricoManual] = useState<string[]>(lerHistoricoManual);
+
+  useEffect(() => {
+    localStorage.setItem(HISTORICO_MANUAL_KEY, JSON.stringify(historicoManual));
+  }, [historicoManual]);
+
+  const moverParaHistorico = (id: string) => {
+    setHistoricoManual(prev => prev.includes(id) ? prev : [...prev, id]);
+  };
+  const devolverAosAtivos = (id: string) => {
+    setHistoricoManual(prev => prev.filter(x => x !== id));
+  };
+  const excluir = (a: Agendamento) => {
+    if (!window.confirm(`Excluir o agendamento de ${a.nome}? Essa ação não pode ser desfeita.`)) return;
+    deleteAgendamento(a.id);
+    devolverAosAtivos(a.id);
+  };
 
   const abrirWhats = (a: Agendamento, mensagem: string) => {
     const url = `https://wa.me/${foneParaWa(a.whatsapp)}?text=${encodeURIComponent(mensagem)}`;
@@ -75,7 +102,7 @@ export function OrderManagement({ agendamentos, loading, updateStatus }: Props) 
 
   // Agendamentos já decididos (confirmado/recusado) com mais de 3 dias vão
   // pra "pasta" de Histórico, pra não lotar a lista principal do dia a dia
-  const historico = agendamentos.filter(a => a.status !== 'pendente' && diasDesde(a.data) > 3);
+  const historico = agendamentos.filter(a => a.status !== 'pendente' && (diasDesde(a.data) > 3 || historicoManual.includes(a.id)));
   const ativos = agendamentos.filter(a => !historico.includes(a));
   const listaExibida = aba === 'ativos' ? ativos : historico;
 
@@ -152,23 +179,39 @@ export function OrderManagement({ agendamentos, loading, updateStatus }: Props) 
                     </p>
                   </div>
 
-                  <div className={`grid gap-2 w-full md:flex md:w-auto ${a.status === 'pendente' ? 'grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)]' : 'grid-cols-[auto_minmax(0,1fr)]'}`}>
+                  <div className="flex flex-wrap gap-2 w-full md:w-auto">
                     <button onClick={() => chamar(a)} title="Chamar no WhatsApp"
                       className="shrink-0 p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-[#25D366] hover:text-white transition-all">
                       <MessageCircle className="w-5 h-5" />
                     </button>
                     {aba === 'ativos' && a.status !== 'confirmado' && (
                       <button onClick={() => aprovar(a)}
-                        className="w-full md:w-auto flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-green-500/15 text-green-400 hover:bg-green-500 hover:text-white font-bold text-sm transition-all">
-                        <CheckCircle2 className="w-4 h-4 mr-1.5" /> Aprovar
+                        className="flex-1 md:flex-none min-w-0 flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-green-500/15 text-green-400 hover:bg-green-500 hover:text-white font-bold text-sm transition-all">
+                        <CheckCircle2 className="w-4 h-4 mr-1.5 shrink-0" /> Aprovar
                       </button>
                     )}
                     {aba === 'ativos' && a.status !== 'recusado' && (
                       <button onClick={() => recusar(a)}
-                        className="w-full md:w-auto flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-red-500/15 text-red-400 hover:bg-red-500 hover:text-white font-bold text-sm transition-all">
-                        <XCircle className="w-4 h-4 mr-1.5" /> Recusar
+                        className="flex-1 md:flex-none min-w-0 flex items-center justify-center px-2 md:px-4 py-3 rounded-xl bg-red-500/15 text-red-400 hover:bg-red-500 hover:text-white font-bold text-sm transition-all">
+                        <XCircle className="w-4 h-4 mr-1.5 shrink-0" /> Recusar
                       </button>
                     )}
+                    {aba === 'ativos' && a.status !== 'pendente' && (
+                      <button onClick={() => moverParaHistorico(a.id)} title="Mover pro histórico"
+                        className="shrink-0 p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white transition-all">
+                        <Archive className="w-5 h-5" />
+                      </button>
+                    )}
+                    {aba === 'historico' && historicoManual.includes(a.id) && (
+                      <button onClick={() => devolverAosAtivos(a.id)} title="Devolver aos ativos"
+                        className="shrink-0 p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-neve-blue hover:text-white transition-all">
+                        <ArchiveRestore className="w-5 h-5" />
+                      </button>
+                    )}
+                    <button onClick={() => excluir(a)} title="Excluir agendamento"
+                      className="shrink-0 p-3 rounded-xl bg-white/5 text-gray-300 hover:bg-red-600 hover:text-white transition-all">
+                      <Trash2 className="w-5 h-5" />
+                    </button>
                   </div>
                 </div>
               </motion.div>

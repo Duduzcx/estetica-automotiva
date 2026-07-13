@@ -1,7 +1,10 @@
-import { Sidebar } from './Sidebar';
+import { Sidebar, TABS, type TabKey } from './Sidebar';
 import { Scorecards } from './Scorecards';
 import { OrderManagement } from './OrderManagement';
 import { TopServicesChart } from './TopServicesChart';
+import { Clientes } from './Clientes';
+import { Financeiro } from './Financeiro';
+import { Configuracoes } from './Configuracoes';
 import { Menu, LayoutDashboard, LogOut, X, ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,15 +16,25 @@ interface DashboardProps {
   onBackToSite: () => void;
 }
 
+const TITULOS: Record<TabKey, { titulo: string; sub: string }> = {
+  visao: { titulo: 'Painel de Operações', sub: 'Bem-vindo de volta à Neve na Nave.' },
+  agendamentos: { titulo: 'Agendamentos', sub: 'Todos os pedidos, ativos e no histórico.' },
+  clientes: { titulo: 'Clientes', sub: 'Quem já passou pela Neve na Nave.' },
+  financeiro: { titulo: 'Financeiro', sub: 'Faturamento e receita ao longo do tempo.' },
+  config: { titulo: 'Configurações', sub: 'Preferências do painel.' },
+};
+
 export function Dashboard({ onLogout, onBackToSite }: DashboardProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { agendamentos, loading, updateStatus } = useAgendamentos();
+  const [tab, setTab] = useState<TabKey>('visao');
+  const { agendamentos, loading, updateStatus, deleteAgendamento } = useAgendamentos();
+  const { titulo, sub } = TITULOS[tab];
 
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans flex overflow-hidden">
       
       {/* Desktop Sidebar */}
-      <Sidebar onLogout={onLogout} onBackToSite={onBackToSite} />
+      <Sidebar active={tab} onSelect={setTab} onLogout={onLogout} onBackToSite={onBackToSite} />
 
       {/* Mobile Topbar */}
       <div className="md:hidden fixed top-0 w-full bg-neve-dark/80 backdrop-blur-md border-b border-white/5 z-40 p-4 flex justify-between items-center">
@@ -41,8 +54,22 @@ export function Dashboard({ onLogout, onBackToSite }: DashboardProps) {
             initial={{ opacity: 0, x: -100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -100 }}
-            className="md:hidden fixed inset-0 z-30 bg-neve-dark/95 backdrop-blur-xl pt-24 px-6 flex flex-col"
+            className="md:hidden fixed inset-0 z-30 bg-neve-dark/95 backdrop-blur-xl pt-24 px-6 flex flex-col overflow-y-auto pb-8"
           >
+             <div className="space-y-2 mb-6">
+               {TABS.map(item => (
+                 <button
+                   key={item.key}
+                   onClick={() => { setTab(item.key); setMobileMenuOpen(false); }}
+                   className={`w-full flex items-center px-4 py-4 rounded-xl transition-all font-bold text-base ${
+                     tab === item.key ? 'bg-neve-blue/10 text-neve-blue' : 'text-gray-300 hover:text-white hover:bg-white/5'
+                   }`}
+                 >
+                   <span className="mr-3">{item.icon}</span>
+                   {item.label}
+                 </button>
+               ))}
+             </div>
              <button
                 onClick={onBackToSite}
                 className="w-full flex items-center justify-center px-4 py-4 rounded-xl text-white bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-bold text-lg"
@@ -69,11 +96,11 @@ export function Dashboard({ onLogout, onBackToSite }: DashboardProps) {
             <div>
               <h1 className="text-2xl md:text-3xl font-bold font-heading flex items-center">
                 <LayoutDashboard className="w-6 h-6 mr-3 text-neve-blue hidden md:block" />
-                Painel de Operações
+                {titulo}
               </h1>
-              <p className="text-gray-400 mt-2 text-sm">Bem-vindo de volta à Neve na Nave.</p>
+              <p className="text-gray-400 mt-2 text-sm">{sub}</p>
             </div>
-            
+
             <div className="hidden md:flex items-center space-x-4">
               <div className="w-10 h-10 rounded-full bg-neve-blue/20 border border-neve-blue flex items-center justify-center text-neve-blue font-bold">
                 ES
@@ -81,18 +108,31 @@ export function Dashboard({ onLogout, onBackToSite }: DashboardProps) {
             </div>
           </header>
 
-          <Scorecards agendamentos={agendamentos} />
+          {tab === 'visao' && (
+            <>
+              <Scorecards agendamentos={agendamentos} />
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <div className="xl:col-span-2">
+                  <OrderManagement agendamentos={agendamentos} loading={loading} updateStatus={updateStatus} deleteAgendamento={deleteAgendamento} />
+                </div>
+                <div>
+                  <TopServicesChart agendamentos={agendamentos} />
+                  <AgendaControl />
+                </div>
+              </div>
+            </>
+          )}
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-            <div className="xl:col-span-2">
-              <OrderManagement agendamentos={agendamentos} loading={loading} updateStatus={updateStatus} />
-            </div>
-            <div>
-              <TopServicesChart agendamentos={agendamentos} />
-              <AgendaControl />
-            </div>
-          </div>
-          
+          {tab === 'agendamentos' && (
+            <OrderManagement agendamentos={agendamentos} loading={loading} updateStatus={updateStatus} deleteAgendamento={deleteAgendamento} />
+          )}
+
+          {tab === 'clientes' && <Clientes agendamentos={agendamentos} />}
+
+          {tab === 'financeiro' && <Financeiro agendamentos={agendamentos} />}
+
+          {tab === 'config' && <Configuracoes />}
+
         </div>
       </div>
     </div>
