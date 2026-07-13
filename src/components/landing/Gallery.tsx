@@ -93,7 +93,7 @@ export function Gallery() {
       <GalleryShowcase />
 
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:auto-rows-[280px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:auto-rows-[460px]">
           {portfolioItems.slice(4).map((item, idx) => (
             <div
               key={idx}

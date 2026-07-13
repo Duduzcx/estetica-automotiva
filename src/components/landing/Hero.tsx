@@ -22,7 +22,11 @@ export function Hero() {
 
   useGSAP(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    // No desktop a trava de scroll (pin) só existia pra sincronizar os
+    // frames do vídeo no canvas mobile; lá o fundo é uma foto fixa, então
+    // travar o scroll só deixava a primeira seção lenta pra descer à toa.
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+    if (isDesktop || !canvas) return;
     // alpha:false = compositing mais barato (o fundo é sempre opaco)
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;

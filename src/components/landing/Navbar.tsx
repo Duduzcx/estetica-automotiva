@@ -36,11 +36,19 @@ export function Navbar({ onDashboardClick }: NavbarProps) {
         id="navbar"
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="relative flex items-center justify-between h-16 md:h-20">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex-shrink-0">
               <a href="#inicio" className="flex items-center gap-3">
                 <img src="/logo-mark.png" alt="Neve na Nave" className="h-10 w-auto md:h-12 md:w-auto drop-shadow-[0_0_14px_rgba(30,144,255,0.45)]" />
               </a>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="hidden md:flex items-center space-x-8 absolute left-1/2 -translate-x-1/2">
+              {LINKS.map(l => (
+                <a key={l.href} href={l.href} className="text-gray-300 hover:text-white transition-colors font-semibold text-sm">
+                  {l.label}
+                </a>
+              ))}
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="hidden md:flex items-center space-x-6">
