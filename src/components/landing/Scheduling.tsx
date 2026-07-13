@@ -97,13 +97,29 @@ export function Scheduling() {
   };
   const handlePointerUp = () => { dragState.current.down = false; dragState.current.dragging = false; };
 
-  // Página travada enquanto o card está aberto. Trava no <html> também,
-  // não só no <body> - só o body deixava o site "vazar" scroll por trás
-  // do card em alguns navegadores desktop.
+  // Página travada enquanto o card está aberto. overflow:hidden sozinho não
+  // segura o autoscroll de clique do meio do mouse no PC (o site atrás
+  // continuava descendo) - position:fixed tira o body do fluxo de vez,
+  // não sobra nada pra rolar por trás do card.
   useEffect(() => {
-    document.body.style.overflow = modalOpen ? 'hidden' : '';
-    document.documentElement.style.overflow = modalOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; document.documentElement.style.overflow = ''; };
+    if (!modalOpen) return;
+    const scrollY = window.scrollY;
+    const { style } = document.body;
+    style.position = 'fixed';
+    style.top = `-${scrollY}px`;
+    style.left = '0';
+    style.right = '0';
+    style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      style.position = '';
+      style.top = '';
+      style.left = '';
+      style.right = '';
+      style.overflow = '';
+      document.documentElement.style.overflow = '';
+      window.scrollTo(0, scrollY);
+    };
   }, [modalOpen]);
 
   // Botão fixo flutuante: abre o card de agendamento direto, sem enrolação
