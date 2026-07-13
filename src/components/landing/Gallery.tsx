@@ -93,16 +93,16 @@ export function Gallery() {
       <GalleryShowcase />
 
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 auto-rows-[250px] md:auto-rows-[280px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:auto-rows-[280px]">
           {portfolioItems.slice(4).map((item, idx) => (
             <div
               key={idx}
               data-featured="false"
-              className={`gallery-item group relative rounded-2xl overflow-hidden cursor-default will-change-[transform,opacity] bg-black/30 ${item.span}`}
+              className={`gallery-item group relative rounded-2xl overflow-hidden cursor-default will-change-[transform,opacity] ${item.span}`}
             >
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-700 z-10 pointer-events-none"></div>
-              <div className="w-full h-full pointer-events-none">
-                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-full object-contain md:object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
+              <div className="w-full h-auto md:h-full pointer-events-none">
+                <img src={item.src} alt={(item as any).alt || 'Portfólio Neve na Nave'} loading="lazy" className="w-full h-auto md:h-full object-cover transition-transform duration-1000 group-hover:scale-110 will-change-transform" />
               </div>
             </div>
           ))}
