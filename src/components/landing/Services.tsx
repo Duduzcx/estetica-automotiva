@@ -49,10 +49,10 @@ export function Services() {
   return (
     <section
       id="servicos"
-      className="relative z-10 bg-white rounded-t-[2.5rem] -mt-10 overflow-hidden"
+      className="relative z-10 bg-white rounded-t-[2.5rem] -mt-10 md:mt-0 md:rounded-t-none overflow-hidden"
     >
-      {/* Alça decorativa no topo da "folha" branca */}
-      <div className="pt-5 pb-0 flex justify-center">
+      {/* Alça decorativa no topo da "folha" branca (só faz sentido com a sobreposição do mobile) */}
+      <div className="md:hidden pt-5 pb-0 flex justify-center">
         <div className="w-12 h-1.5 rounded-full bg-gray-200"></div>
       </div>
 
